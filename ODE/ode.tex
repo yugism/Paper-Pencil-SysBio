@@ -1,0 +1,831 @@
+\chapter{常微分方程式の数値積分法}
+%\chapter{常微分方程式の数値積分法 I: 1段階法と多段階法、陽的解法と陰的解法}
+本章の目標はMATLABに装備されている数値積分法の仕組みを理解することにある。Runge-Kutta法の次数、Butcher表の見かた、陽的、陰的、埋め込み型、可変ステップ、硬い方程式といった概念を理解し、適切な数値積分アルゴリズムを選択する判断力を身に付けることを目指す。
+
+\section{Taylor 展開の式を使わないのはなぜか？}
+数値積分はTaylor展開と比べてどこがいいのか？
+
+\[y(x_0 + h) = y(x_0) + h \cdot y^{\prime}(x_0) + \frac{h^2}{2!} y^{\prime  \prime}(x_0) + \cdots\]
+
+Taylor展開では、高階微分の項が複雑になる。数値積分公式は、微分項の計算なしに積分ができるすぐれものの近似式である。
+
+\section{分類}
+\begin{tabular}{l||c|c}
+      & 1段階法               & 多段階法 \\
+\hline
+陽公式 & Euler, Runge-Kutta   & Adams \\
+\hline
+陰公式 & Implicit Euler, Implicit Runge-Kutta   & Gear \\
+\hline
+\end{tabular}
+\\
+
+陽公式　左辺 \(y_{n+1}\) 、右辺 \(y_{n}\) など (n+1未満) 陰公式　左
+辺 \(y_{n+1}\) 右辺も \(y_{n+1}\)。まず陽公式で\(y_{n+1}\)を予測し、そ
+れを陰公式に代入して修正する、といった使い方をする。
+
+%1段階法:  y_n+1 = a * y_n 
+%多段解法: y_n+1 = a* y_n + b * y_n-1 + ... + p * y_n-m
+
+\section{紙と鉛筆の限界を知る}
+線形なら対角化すれば解析的に解ける。
+
+\[
+\left\{
+\begin{array}{lll}
+\frac{d}{dt}[A] & = & - 2k [A] \\
+\frac{d}{dt}[B] & = & 2k [A] - k[B]\\
+\frac{d}{dt}[C] & = & k [B] \\
+\end{array}
+\right.
+\]
+
+
+
+\[
+\frac{d}{dt}
+\left(
+\begin{array}{r}
+A\\
+B\\
+C\\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{rrr}
+-2 & 0 & 0\\
+2 & -1 & 0\\
+0 & 1 & 0\\
+\end{array}
+\right)
+\left(
+\begin{array}{r}
+A\\
+B\\
+C\\
+\end{array}
+\right)
+\begin{array}{r}
+\ \\
+\ \\
+, \\
+\end{array}
+ \left(
+\begin{array}{r}
+A_0 \\ 
+B_0 \\
+C_0 \\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{r}
+1\  {\rm mM} \\
+0\  {\rm mM} \\
+0\  {\rm mM} \\
+\end{array}
+\right)
+\]
+
+
+\[\frac{d}{dt}{\mathbf x} = {\mathbf A}{\mathbf x}\]
+
+
+\begin{eqnarray*}
+{\mathbf A}{\mathbf P} & = & {\mathbf P}{\mathbf \Lambda}\\
+{\mathbf P}^{-1}{\mathbf A}{\mathbf P} & = & {\mathbf \Lambda}\\
+{\mathbf P}^{-1}{\mathbf A} & = & {\mathbf \Lambda}{\mathbf P}^{-1}\\
+\end{eqnarray*}
+
+\begin{eqnarray*}
+{\mathbf P}^{-1}\frac{d}{dt}{\mathbf x} & = & {\mathbf P}^{-1}{\mathbf A}{\mathbf x} \\
+\frac{d}{dt}({\mathbf P}^{-1}{\mathbf x}) & = & {\mathbf \Lambda}({\mathbf P}^{-1}{\mathbf x}) \\
+\end{eqnarray*}
+
+\[
+\frac{d}{dt}{\mathbf P}^{-1}{\mathbf x} 
+= 
+\left(
+\begin{array}{rrr}
+0 & 0 & 0 \\
+0 & -1 & 0 \\
+0 & 0 & -2 \\
+\end{array}
+\right)
+{\mathbf P}^{-1}{\mathbf x}
+\]
+
+\begin{eqnarray*}
+{\mathbf P}^{-1}{\mathbf x} 
+& = &
+\left(
+\begin{array}{c}
+C_1 \\
+C_2 \exp(-t)\\
+C_3 \exp(-2t)\\
+\end{array}
+\right)\\
+ & = &
+\left(
+\begin{array}{rrr}
+1 & 1 & 1 \\
+2 & 1 & 0 \\
+1 & 0 & 0 \\
+\end{array}
+\right)
+\left(
+\begin{array}{rrr}
+A\\ 
+B\\
+C\\
+\end{array}
+\right)
+\end{eqnarray*}
+
+よって
+
+\begin{eqnarray*}
+A + B + C & = & C_1 \\
+2A + B    & = & C_2 \exp(-t) \\
+A         & = & C_3 \exp(-2t)\\ 
+\end{eqnarray*}
+
+\[
+\left(
+\begin{array}{r}
+A_0 \\ 
+B_0 \\
+C_0 \\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{r}
+1\  {\rm mM} \\
+0\  {\rm mM} \\
+0\  {\rm mM} \\
+\end{array}
+\right)
+\]
+より \(C_3 = 1\)、\(C_2 = 2\)、\(C_1 = 1\)とわかる。
+
+\begin{eqnarray*}
+A + B + C & = & 1 \\
+2A + B    & = & 2 \exp(-t) \\
+A         & = & \exp(-2t)\\ 
+\end{eqnarray*}
+
+この連立方程式を解いて、
+
+\[
+\left(
+\begin{array}{r}
+A \\ 
+B \\
+C \\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{c}
+\exp(-2t) \\
+2\exp(-t) - 2\exp(-2t) \\
+1 - 2\exp(-t) + \exp(-2t) \\
+\end{array}
+\right) {\rm mM}
+\]
+
+\section{1段階法}
+\subsection{陽的な1段階法: Euler法}
+最も単純な数値積分アルゴリズムはEuler法です。定義としては、Taylor展開の式
+
+\[y(x_0 + h) = y(x_0) + h \cdot y^{\prime}(x_0) + \frac{h^2}{2!} y^{\prime  \prime}(x_0) + \cdots\]
+
+から2次以降の項を取り除いた次の式がEuler法です。
+
+\[y(x_0 + h) = y(x_0) + h \cdot y^{\prime}(x_0) \]
+
+Euler法の近似精度は、Taylor展開式の1次までの精度と同等です。
+
+\indent これだと一般的すぎるので、生物の場合にあてはめて考えてみましょ
+う。時刻tにおける物質Sの濃度を\(S(t)\)とし、そこから微小時間\(\Delta
+t\)だけ進んだ時刻\(t+\Delta t\)における物質Sの濃度を\(S(t+\Delta t)\)で
+表します。これを上のEuler法の定義に当てはめると、
+
+\[S(t+\Delta t) = S(t) + \Delta t S^{\prime}(t)\]
+
+となります。 \(S^{\prime}(t)\)というのはSの時間微分\(\displaystyle\frac{dS}{dt}\)のことですので、
+
+\[S(t+\Delta t) = S(t) + \Delta t \frac{dS}{dt}\]
+
+という式が得られます。\(\displaystyle\frac{dS}{dt}\)は反応速度式で表されます。ここではテストケースとして \(\displaystyle\frac{dS}{dt} = -k \cdot S\) としてみましょう。
+
+\[S(t+\Delta t) = S(t) - \Delta t \cdot k \cdot S\]
+
+これを増分の形にすると、
+
+\begin{eqnarray*}
+\Delta S(t) & = & S(t+\Delta t) - S(t)\\
+            & = & - \Delta t \cdot k \cdot S\\
+\end{eqnarray*}
+
+よってEuler法を用いる場合、微小時間\(\Delta t\)の間にSがどの程度増減す
+るかは\(- \Delta t \cdot k \cdot S\)で計算できることがわかりました。\\
+
+\subsection{演習}
+\begin{enumerate}
+\item グルコース濃度の変動に関する常微分方程式\(\frac{d{\rm [Glucose]}}{dt}=-k{\rm [Glucose]}\)をオイラー法で解きなさい。積分ステップ幅\(\Delta t=1.0 {\rm sec}\)とし、\(t=0 \sim 5.0\) secの範囲について解くこと。反応定数\(k=0.2 {\rm sec}^{-1}\)、\(t=0\) sec のとき[Glucose]=1.0mMとする。
+\item (1)の常微分方程式の解析解を求め、\(t = 5.0\) sec 時点までの数値解との時系列平均誤差\(\displaystyle\varepsilon=\frac{1}{n}\sum_{i=1}^n\frac{|X^{\rm analytical}_i - X^{\rm numerical}_i|}{ X^{\rm analytical}_i}\)を計算しなさい。
+\item 積分ステップ幅\(\Delta t\)を1.0 secより大きくした場合と小さくした場合では、解析解との時系列平均誤差がどのように変化するか仮説を立てなさい。理由も述べること。
+\item 仮説を検証しなさい。
+\end{enumerate}
+
+\subsection{陰的な1段階法: 陰的Euler法}
+
+\subsection{ステップ刻み幅を決めるには「絶対安定」 の概念が必要}
+
+
+
+\section{多段階法}
+多段階法とは以下のような一般式で書ける数値積分法のことである。
+
+\[\alpha_{0} y_{n} + \alpha_{1} y_{n-1} + \cdots + \alpha_{k} y_{n-k} = h(\beta_{0}f_{n} + \beta_{1}f_{n-1} + \cdots  + \beta_{m}f_{n-m})\]
+
+\(y_n\)は\(t_n\)時点における\(y\)の値を意味する。また、\(y_{n-k}=y(t_n-kh)\)、\(f=y^{\prime}\)である。
+
+\subsection{利点}
+Eulerと比べてどこがいいのか？→高次の項を入れて局所離散誤差を小さくできる。RKと異なり、導関数はステップあたり1回計算すれば済む。
+
+
+\subsection{陽的な多段階法: Adams-Bashforth法}
+陽的な多段階法の代表例である。あまり使ったことはないが、Gear法を理解する目的で足がかりとなるので紹介する。
+
+Adams法は
+
+\[ y_n = \alpha_1 y_{n-1} + h( \beta_1 f_{n-1} + \beta_2 f_{n-2})\]
+
+という形の多段階法である。係数\(\alpha, \beta\)をTaylor展開から定める。
+まず上の式を書き換える。
+
+\[ y(t_n) = \alpha_1 y(t_{n-1}) + h( \beta_1 f( t_{n-1} , y(t_{n-1}) ) + \beta_2 f( t_{n-2} , y(t_{n-2}) ))\]
+
+\(t_{n-1} = t - h\)より、Taylor展開する。
+
+\begin{eqnarray*}
+y(t_n) & \simeq & \alpha_1 \left\{y(t_{n}) - h \frac{d}{dt} y(t_n) + \frac{h^2}{2} \frac{d^2}{dt^2} y(t_{n}) \right\} \\
+ & + & h \beta_1 \left\{ f(t_n) - h \frac{d}{dt} f(t_n) + \frac{h^2}{2} \frac{d^2}{dt^2} f(t_{n}) \right\}\\
+ & + & h \beta_2 \left\{ f(t_n) - 2h \frac{d}{dt} f(t_n) + \frac{4h^2}{2} \frac{d^2}{dt^2} f(t_{n}) \right\}\\
+\end{eqnarray*}
+
+hの次数が同じ項ごとに整理する。
+
+\[
+\begin{array}{lccll}
+h^0 & : & y(t_n) & = & \alpha_1 y(t_n)\\
+h^1 & : & 0 & = & - \alpha_1 h y^{\prime}(t_n) + h \beta_1 y^{\prime}(t_n) + h \beta_2 y^{\prime}(t_n)\\
+h^2 & : & 0 & = & \alpha_1 \frac{h^2}{2} y^{\prime\prime}(t_n) - h^2 \beta_1 y^{\prime\prime}(t_n) -2 h^2 \beta_2 y^{\prime\prime}(t_n)\\
+\end{array}
+\]
+
+これで、\(\alpha, \beta\)に関する連立方程式を立てることができる。
+
+\[
+\left\{
+\begin{array}{lcl}
+1 & = & \alpha_1 \\
+0 & = & - \alpha_1 + \beta_1 + \beta_2 \\
+0 & = & \frac{1}{2} \alpha_1 - \beta_1 -2 \beta_2 \\
+\end{array}
+\right.
+\]
+
+これを解くと、2次のAdams-Bashforth法の係数は\(\alpha_1 = 1, \beta_1 = \frac{3}{2}, \beta_2 = \frac{1}{2}\)と求まる。よってAdams-Bashforth法は
+
+\[ y_n = y_{n-1} + h \left( \frac{3}{2} f_{n-1} + \frac{1}{2} f_{n-2}\right)\]
+
+と書ける。
+化学反応系 \(\displaystyle\frac{dS}{dt} = -k \cdot S\) にあてはめると、
+
+\[\Delta S = \Delta t \left( - \frac{3}{2} k \cdot S_{t=t-\Delta t} - \frac{1}{2} k \cdot S_{t=t-2\Delta t}\right)\]
+
+となる。
+
+
+\subsection{陰的な多段階法: Adams-Moulton法}
+
+\subsection{予測子修正子法}
+予測子修正子(predictor-corrector)法とは、陽公式と陰公式を組み合わせて両者のいいとこどりを図る方法のことである。Adams-Bashforth法とAdams-Moulton法を組み合わせる例が有名である。MATLABのode113がこれにあたる。
+
+\begin{tabular}{c||l|l}
+      & 長所 & 短所 \\
+\hline
+陽公式 & 過去の値を使って、次のステップの値が出せる & 安定性で陰公式に劣る\\
+陰公式 & 安定性が優れている & 現時点の値がないと計算できない \\
+\end{tabular}
+
+陽公式で予測値を計算し(予測子)、予測値をもとに現時点の値を陰公式で計算(修正子)
+
+Backward Differential Formula(ode15s)
+
+\section{安定性}
+\subsection{絶対安定}
+\subsubsection{線形テスト問題}
+
+\subsubsection{多段階法}
+安定性多項式の根がすべて1未満。
+\paragraph{安定性多項式}
+\subsubsection{Runge-Kutta法}
+
+
+%\chapter{常微分方程式の数値積分法 II: Runge-Kutta法}
+
+
+\section{Runge-Kutta法}
+1段階法に分類される数値積分法の中では、Runge-Kutta法とその亜種がシステム生物学の数理モデルに用いられる。
+\subsection{利点}
+LMと同じく、高次の項を入れて局所離散誤差を小さくしたかったことが発明の動機。LMは段数分だけ前のステップの値を用意しなければならないが、RKは1ステップ前の値から計算できる。しかし、次数分だけ導関数を計算する必要がある点は劣る。安定領域はAdams系より広い？
+
+\subsection{s段の陽的Runge-Kutta法}
+\[
+\left\{
+\begin{array}{lcl}
+k_1 & = & f( x_0 , y_0 )\\
+k_2 & = & f( x_0 + c_2 h , y_0 + h a_{21}k_1 )\\
+k_3 & = & f( x_0 + c_3 h , y_0 + h ( a_{31}k_1 + a_{32} k_2 ))\\
+    & \vdots  & \\
+k_s & = & f( x_0 + c_s h , y_0 + h ( a_{s1}k_1 + a_{s,s-1} k_{s-1}))\\
+ & & \\
+y_1 & = & y_0 + h(b_1 k_1 + \cdots + b_s k_s)\\
+\end{array}
+\right.
+\]
+
+ただし
+
+\begin{eqnarray*}
+c_2 & = & a_{21} \\
+c_3 & = & a_{31} + a_{32}\\
+    & \vdots & \\
+c_s & = & a_{s1} + \cdots + a_{s,s-1}\\
+\end{eqnarray*}
+
+これをs段の陽的Runge-Kutta法と呼ぶ。
+
+\subsection{Butcher表}
+s段の陽的Runge-Kutta法の係数を以下の形式で表記したものをButcher表と呼ぶ。今後、さまざまな数値積分法のアルゴリズムを説明する際に標準的に用いられる形式なので、慣れて欲しい。
+
+\[
+\begin{array}{lrr|rrrrr}
+k_1 の係数 && 0      &        &       &         &        &\\
+k_2 && c_2    & a_{21}  &       &         &        &\\
+k_3 && c_3    & a_{31}  & a_{32} &        &         & \\
+    &&\vdots & \vdots & \vdots & \ddots &         & \\
+k_s && c_s    & a_{s1}  & a_{s2} & \cdots & a_{s,s-1} &  \\  
+\cline{3-7}
+y_1 &&       & b_1    & b_2    & \cdots & b_{s-1} & b_s \\
+\end{array}
+\]
+
+\subsection{Runge-Kutta法の係数を決める(RK2)}
+2段2次のRunge-Kutta法は以下のようになる。
+\[
+\left\{
+\begin{array}{lcl}
+k_1 & = & f( x_0 , y_0 )\\
+k_2 & = & f( x_0 + \frac{h}{2} , y_0 + \frac{h}{2} k_1 )\\
+ & & \\
+y_1 & = & y_0 + h k_2\\
+\end{array}
+\right.
+\]
+
+\subsection{Runge-Kutta法の次数}
+一般に、
+
+\[
+|| y(x_0+h) - y_1 || \leq Kh^{p+1}
+\]
+
+となるRunge-Kutta公式のことを「p次のRunge-Kutta法」と呼ぶ。Taylor級数とは、p次の項まで一致する。
+
+\subsection{Taylor展開との精度比較}
+まず、ステップの長さを半分にしたEuler法を書く
+
+\begin{eqnarray*}
+y_1 & = & y_0 + hf\left( x_0 + \frac{h}{2} , y_0 + \frac{h}{2}f_0 \right) \\
+\end{eqnarray*}
+
+2変数関数のTaylor展開公式を用いてこれを展開する。
+
+\[
+\begin{array}{lclcl}
+f\left( x_0 + \frac{h}{2} , y_0 + \frac{h}{2}f_0 \right) & = & f( x_0 , y_0 ) & + & \left(\frac{h}{2}\frac{\partial }{\partial x} + \frac{h}{2}f_0 \frac{\partial }{\partial y}\right) f(x_0 , y_0)\\
+ & & & + & \frac{1}{2!} \left(\frac{h}{2}\frac{\partial }{\partial x} + \frac{h}{2}f_0 \frac{\partial }{\partial y}\right)^2 f(x_0 , y_0) + \cdots\\
+ & = & f(x_0,y_0) & + & \frac{h}{2}\left(f_x + f f_y\right) (x_0 , y_0)\\
+ & & & + & \frac{1}{2} \left(\frac{h^2}{4}\frac{\partial^2 }{\partial x^2} + \frac{h^2}{2} f_0 \frac{\partial }{\partial x}\frac{\partial }{\partial y} + \frac{h^2}{4}f_0^2\frac{\partial^2 }{\partial y^2}\right) f(x_0 , y_0) + \cdots\\
+ & = & f(x_0 , y_0) & + & \frac{h}{2}\left(f_x + f f_y\right) (x_0 , y_0)\\
+ & & & + & \frac{h^2}{8} \left(f_{xx} + 2 f f_{xy} + f^2 f_{yy}\right) (x_0 , y_0) + \cdots\\
+\hspace{2em}\therefore \hspace{2em}y_1 & = & y_0 + hf(x_0 , y_0) & + & \frac{h^2}{2}\left(f_x + f_y f\right) (x_0 , y_0)\\
+               &  &                     & + & \frac{h^3}{8} \left(f_{xx} + 2 f_{xy} f + f_{yy} f^2\right) (x_0 , y_0) + \cdots\\
+\end{array}
+\]
+
+これと厳密解の精度を比較するため、厳密解のTaylor展開を行う。
+
+\[
+\begin{array}{lclcl}
+y(x_0 + h) & = & y_0 & + & hy^{\prime}(x_0 , y_0) + \frac{h^2}{2}y^{\prime \prime}(x_0 , y_0) + \frac{h^3}{6}y^{\prime \prime \prime}(x_0 , y_0) + \cdots\\
+    & = & y_0 & + & hf(x_0 , y_0) + \frac{h^2}{2}(f_x + f_yf)(x_0 , y_0) \\
+    &   &     & + & \frac{h^3}{6}(f_{xx} + 2f_{xy}f + f_{yy}f^2 + f_{x}f_{y} + f_{y}^2 f)(x_0 , y_0) + \cdots\\
+\end{array}
+\]
+
+数値解と厳密解の差をとる。1階微分の項までは両者一致するので、2階の項の差がものを言う。
+
+\[
+y(x_0+h) - y_1 = \frac{h^3}{24}\{(f_{xx} + 2f_{xy}f + f_{yy}f^2 + 4 ( f_{x}f_{y} + f_{y}^2 f )\}(x_0 , y_0) + \cdots\\
+\]
+
+よって、
+
+\[
+|| y(x_0+h) - y_1 || \leq Kh^3
+\]
+
+となるので、前述の2段のRunge-Kutta法の式は2次の精度である。
+
+\subsection{素材？}
+\begin{eqnarray*}
+\frac{dy}{dx} & = & f(x,y) \\
+df & = & \frac{\partial f}{\partial x} dx + \frac{\partial f}{\partial y} dy\\
+\frac{df}{dx} & = & \frac{\partial f}{\partial x} + \frac{\partial f}{\partial y}\frac{dy}{dx}\\
+              & = & y^{\prime \prime}\\
+y^{\prime \prime} & = & f_x + f_yf\\
+\end{eqnarray*}
+
+\begin{eqnarray*}
+dy^{\prime \prime} & = & \frac{\partial y^{\prime \prime}}{\partial x} dx + \frac{\partial y^{\prime \prime}}{\partial y}dy\\
+\frac{dy^{\prime \prime}}{dx} & = & \frac{\partial y^{\prime \prime}}{\partial x} + \frac{\partial y^{\prime \prime}}{\partial y}\frac{dy}{dx}\\
+ & = & \frac{\partial}{\partial x}(f_x + f_yf) + \frac{\partial }{\partial y}(f_x + f_yf)\frac{dy}{dx}\\
+ & = & \{f_{xx} + (f_{xy}f + f_{y}f_{x})\} + \{f_{xy} + (f_{yy}f + f_{y}^2)\}f\\
+y^{\prime \prime \prime} & = & f_{xx} + 2f_{xy}f + f_{yy}f^2 + f_{x}f_{y} + f_{y}^2 f\\
+\end{eqnarray*}
+
+\section{ステップ幅の変更}
+\subsection{埋め込み型公式}
+「公式名\(p(\hat{p}\))」は次数\(p\)、誤差評価に用いる式の次数\(\hat{p}\)であることを示す(例: Dormand-Prince 5(4), Bogacki-Shampine 3(2)がそれぞれode45, ode23に対応)。
+また、「Dormand-Prince法は陽的なRunge-Kutta(5,4)の式である」のようにも書かれる。
+
+埋め込み型＝可変ステップ
+
+\subsection{RK3(2)の係数を求める}
+\subsubsection{RK3の係数}
+まず、3段3次公式の係数を求める。
+
+\[
+\left\{
+\begin{array}{lclc}
+k_1 & = & f(x_n,y_n) & (1)\\
+k_2 & = & f(x_n+c_2h,y_n+ha_{21}k_1) & (2)\\
+k_3 & = & f(x_n+c_2h,y_n+h(a_{31}k_1+a_{32}k_2)) & (3)\\
+y_{n+1} & = & y_n + h(b_1k_1 + b_2k_2 + b_3k_3) & (4)\\
+\end{array}
+\right.
+\]
+
+\(k_2\)をテイラー展開する。今ここで求めたいのは3次公式なので、\(h^3\)が掛かる項までテイラー展開して、厳密解と比較しなければならない。\(k_2\)には上の(4)式で\(h\)が掛かるので、\(h^2\)の項まで展開すれば事足りる。
+
+\[
+\begin{array}{lclcl}
+k_2 & = & f(x_n,y_n) & + & \frac{h}{1!}\left(c_2\frac{\partial}{\partial x} + a_{21}k_1 \frac{\partial}{\partial y}\right)f \\
+   &   &            & + &\frac{h^2}{2!}\left(c_2\frac{\partial}{\partial x}+a_{21}k_1\frac{\partial}{\partial y}\right)^2f+O(h^3)\\
+    & = & f(x_n,y_n) & + & h(c_2 f_x + a_{21} f f_y)+\frac{h^2}{2}(c_2^2 f_{xx}\\
+    &   &            & + & 2 c_2 a_{21} f f_{xy} + a_{21}^2 f^2 f_{yy})+O(h^3)\\
+\end{array}
+\]
+
+\(k_3\)も同様にテイラー展開する。
+
+\[
+\begin{array}{lclcl}
+k_3 & = & f(x_n,y_n) & + & \frac{h}{1!}\left(c_3\frac{\partial}{\partial x} + ( a_{31}k_1 + a_{32}k_2) \frac{\partial}{\partial y}\right)f\\
+    &   &            & + & \frac{h^2}{2!}\left(c_3\frac{\partial}{\partial x}+ ( a_{31}k_1 + a_{32}k_2 )\frac{\partial}{\partial y}\right)^2f+O(h^3)\\
+    & = & f(x_n,y_n) & + & h (c_3 f_x + a_{31} f f_y + a_{32}k_2 f_y) \\
+    &   &            & + & \frac{h^2}{2}\{ c_3^2 f_{xx}+ 2 c_3 ( a_{31}f + a_{32}k_2 )f_{xy} + ( a_{31}f + a_{32}k_2 )^2 f_{yy} + O(h^3)\\
+\end{array}
+\]
+
+\(k_2\)が掛かっている項を\(f\)で書き直しておきたい。そこで\(a_{32}k_2\)を
+
+\[a_{32}k_2 = a_{32} \left\{ f + h ( c_2 f_x + a_{21} ff_y ) + O(h^2) \right\}\]
+
+あるいは
+
+\[a_{32}k_2 = a_{32} ( f + O(h) )\]
+
+と表す。これらを項ごとの\(h\)の次数に応じて\(k_3\)のテイラー展開式に代入する。
+
+\[
+\begin{array}{lclcl}
+k_3 & = & f(x_n,y_n) & + & h [ c_3 f_x + a_{31} f f_y + a_{32} \left\{ f + h ( c_2 f_x + a_{21} ff_y ) + O(h^2) \right\} f_y ]\\
+    &   &            & + & \frac{h^2}{2} [ c_3^2 f_{xx}+ 2 c_3 \{ a_{31}f + a_{32} ( f + O(h) ) \}f_{xy} + \{ a_{31}f + a_{32} ( f + O(h) ) \}^2 f_{yy}]\\
+\end{array}
+\]
+
+さてこれでRK公式のテイラー展開が完了した。次にやることは厳密解もテイラー展開し、\(h\)の次数ごとに各項をRK公式と厳密解とで比較することである。厳密解のテイラー展開は、次の通りである。
+
+\[
+\begin{array}{rcl}
+y(x+h) & = & \displaystyle{ y(x) + h\frac{dy}{dx} + \frac{h^2}{2!}\frac{d^2y}{dx^2} + \frac{h^3}{3!}\frac{d^3y}{dx^3} + O(h^4) }\\
+y(x+h) - y(x) & = & \displaystyle{ hf + \frac{h^2}{2}(f_x + f_y f) + \frac{h^3}{6}( f_{xx} + 2f_{xy} f + f_{yy}f^2 + f_yf_x + f_y^2 f ) + O(h^4) }\\
+\end{array}
+\]
+
+\(\displaystyle{\frac{d^2y}{dx} = f_x + f_y f}\)となるのは、全微分の公式\(\displaystyle{\frac{df}{dx} = \frac{\partial f}{\partial x} + \frac{\partial f}{\partial y}\frac{df}{dx}}\)による。
+
+さて、RK公式と厳密解のテイラー級数を\(h\)の次数ごとに比較しよう。\\
+
+\begin{tabular}{llcl}
+     & 厳密解 &    & RK公式 \\
+\\
+1次 : & \(hf\)  & = & \(h( b_1 + b_2 + b_3 )f\)\\
+\\
+2次 : & \(\displaystyle{\frac{h^2}{2}}(f_x + f_yf)\)    & = & \(\displaystyle{b_2h^2(c_2 f_x + a_{21} f f_y)}\) \\
+      &                                                & + & \(b_3h^2 ( c_3 f_x + a_{31} f f_y + a_{32}ff_y )\)\\
+\\
+3次 : & \(\displaystyle{\frac{h^3}{6}(f_{xx} + 2f_{xy}f + f_{yy}f^2 + f_yf_x + f_y^2f)}\) & = & \(\displaystyle{\frac{1}{2}b_2h^3(c_2^2f_{xx} + 2c_2a_{21}ff_{xy} + a_{21}^2 f^2 f_{yy})}\)\\
+      & & + & \(b_3h^3 a_{32}(c_2f_x + a_{21}ff_y)f_y\)\\
+      & & + & \(\displaystyle{\frac{1}{2}b_3h^3\{c_3^2f_{xx}}\)\\ 
+      & &   & \(+ 2c_3a_{31}ff_{xy} + 2c_3a_{32}ff_{xy}\)\\
+      & &   & \(+(a_{31}+a_{32})^2f^2f_{yy}\}\)\\ 
+\end{tabular}
+
+\(h\)が1次の項の比較より、
+
+\[b_1 + b_2 + b_3 = 1\]
+
+次いで、\(h^2\)の項を比較すると、
+
+\begin{tabular}{llcl}
+\(f_x\)について : & \(\displaystyle{\frac{h^2}{2}f_x}\) & = & \(\displaystyle{b_2h^2c_2f_x + b_3h^2c_3f_x}\)\\
+                 & \(\displaystyle{\frac{1}{2}}\) & = & \(\displaystyle{b_2 c_2 + b_3 c_3}\)\\
+\(ff_y\)について : & \(\displaystyle{\frac{h^2}{2}f_yf}\) & = & \(\displaystyle{b_2h^2a_{21}ff_y + b_3h^2(a_{31}+a_{32})ff_y}\) \\
+                  & \(\displaystyle{\frac{1}{2}}\) & = & \(\displaystyle{b_2 a_{21} + b_3 ( a_{31} + a_{32})}\) \\
+\end{tabular}
+
+最後に\(h^3\)の項を比較する。
+
+\begin{tabular}{llcl}
+\(f_{xx}について\) : & \(\displaystyle{\frac{h^3}{6}f_{xx}}\) & = & \(\displaystyle{\frac{1}{2} b_2 h^3 c_2^2 f_{xx} + \frac{1}{2}b_3h^3c_3^2f_{xx}}\)\\
+& \(\displaystyle{\frac{1}{6}}\) & = & \(\displaystyle{\frac{1}{2} b_2 c_2^2 + \frac{1}{2} b_3 c_3^2}\)\\
+\(ff_{xy}について\) : & \(\displaystyle{\frac{h^3}{6}(2f_{xy}f)}\) & = & \(\displaystyle{\frac{1}{2}b_2h^3(2c_2a_{21}ff_{xy}) + \frac{1}{2}b_3h^3(2c_3a_{31}ff_{xy} + 2c_3a_{32}ff_{xy})}\)\\
+& \(\displaystyle{\frac{1}{3}}\) & = & \(b_2 c_2 a_{21} + b_3 c_3 ( a_{31} + a_{32} )\)\\
+\(f_{yy}f^2について\) : & \(\displaystyle{\frac{h^3}{6}f_{yy}f^2}\) & = & \(\displaystyle{\frac{1}{2}b_2h^3a_{21}^2f^2f_{yy} + \frac{1}{2}b_{3}h^3(a_{31}+a_{32})^2f^2f_{yy}}\)\\
+& \(\displaystyle{\frac{1}{6}}\) & = & \(\displaystyle{\frac{1}{2}b_2a_{21}^2 + \frac{1}{2}b_{3}(a_{31}+a_{32})^2}\)\\
+\(f_yf_xについて\) : & \(\displaystyle{\frac{h^3}{6}f_yf_x}\) & = & \(\displaystyle{b_3h^3a_{32}c_2f_xf_y}\)\\
+& \(\displaystyle{\frac{1}{6}}\) & = & \(b_3 a_{32} c_2\)\\
+\(f_y^2fについて\) : & \(\displaystyle{\frac{h^3}{6}f_y^2f}\) & = & \(b_3h^3a_{32}a_{21}ff_y^2\)\\
+& \(\displaystyle{\frac{1}{6}}\) & = & \(b_3 a_{32} a_{21}\)\\
+\end{tabular}
+
+これで係数間の条件式が次のように揃った。
+
+\[
+\left\{
+\begin{array}{l}
+c_2 = a_{21}\\
+c_3 = a_{31} + a_{32}\\
+b_1 + b_2 + b_3 = 1\\
+\displaystyle{b_2 c_2 + b_3 c_3 = \frac{1}{2}}\\
+\displaystyle{b_2 c_2^2 + b_3 c_3^2 = \frac{1}{3}}\\
+\displaystyle{b_3 a_{32} c_2^2  = \frac{1}{6}}\\
+\end{array}
+\right.
+\]
+
+求めたい係数8個(\(a_{21}, a_{31}, a_{32}, b_1, b_2, b_3, c_2, c_3\))に対して条件式6本なので、不定パラメータを\(c_2 = u, c_3 = v\)のようにおく。
+
+\[
+\left\{
+\begin{array}{lcl}
+b_2 u + b_3 v & = & \frac{1}{2}\\ 
+b_2 u^2 + b_3 v^2 & = & \frac{1}{3}\\ 
+\end{array}
+\right.
+\]
+
+より
+
+\[
+\left\{
+\begin{array}{lcl}
+b_2 u^2 + b_3 uv & = & \frac{1}{2}u\\ 
+b_2 u^2 + b_3 v^2 & = & \frac{1}{3}\\ 
+\end{array}
+\right.
+\]
+
+\begin{eqnarray*}
+(uv-v^2) b_3 & = & \frac{1}{2}u -\frac{1}{3}\\
+b_3 & = & \frac{\frac{1}{2}u-\frac{1}{3}}{uv-v^2}\\
+    & = & \frac{3u-2}{6v(u-v)}\\
+\end{eqnarray*}
+
+また同様に
+
+\[
+\left\{
+\begin{array}{lcl}
+b_2 uv + b_3 v^2 & = & \frac{1}{2}v\\ 
+b_2 u^2 + b_3 v^2 & = & \frac{1}{3}\\ 
+\end{array}
+\right.
+\]
+
+より
+
+\begin{eqnarray*}
+(uv-u^2) b_2 & = & \frac{1}{2}v -\frac{1}{3}\\
+b_2 & = & \frac{3v-2}{6u(v-u)}\\
+\end{eqnarray*}
+
+また、\(\displaystyle{b_3a_{32}c_2=\frac{1}{6}}\)より、
+
+\begin{eqnarray*}
+\frac{3u-2}{6v(u-v)} a_{32}u & = & \frac{1}{6}\\
+a_{32} & = & \frac{v(u-v)}{u(3u-2)}\\ 
+\end{eqnarray*}
+
+残りの変数は次のように書ける。
+
+\begin{eqnarray*}
+b_1 & = & 1 - b_2 - b_3 \\
+a_{21} & = & c_2 = u \\
+a_{31} & = & c_3 - a_{32} = v - a_{32} \\ 
+\end{eqnarray*}
+
+\subsubsection{埋め込み型公式(RK2)の係数決定}
+埋め込み型公式とは、Runge-Kutta式の係数\(b_1, b_2 , b_3 , \cdots \)の値だけを変えた式\(\hat{y}_{n+1} = y_n + h (\hat{b}_1 k_1 + \cdots + \hat{b}_s k_s)\)のことである。通常、埋め込み型公式はRunge-Kutta式より1次多いか少ない次数にしておき、両者の差がユーザー定義の誤差限界値\(\varepsilon_{\rm tol}\)を越えないようにステップ幅\(h\)を調節する。これを数式で書くと以下のようになる。
+
+\[|y_{1i} - \hat{y}_{1i}| \leq \varepsilon_{\rm tol}\]
+
+(中略)
+
+RK3(2)公式では \(\hat{b}_3 = 0\)なので、
+
+\[\hat{b}_1 = 1 - \hat{b}_2\]
+
+\(b_2u + b_3v = \frac{1}{2}\)に\(\hat{b}_3 = 0\)を代入して、
+
+\[
+\begin{array}{lcl}
+\hat{b}_2 u & = & \frac{1}{2}\\
+\hat{b}_2   & = & \frac{1}{2u} = \frac{1}{2c_2}\\
+\hat{b}_1   & = & 1 - \frac{1}{2c_2}\\
+\end{array}
+\]
+
+ルンゲの2次公式の係数をこの埋め込み型公式(RK2)にあてはめる。ルンゲの2次公式のブッチャー表は
+
+\[
+\begin{array}{c|cc}
+0           &             & \\
+\frac{1}{2} & \frac{1}{2} & \\
+\hline
+            & 0           & 1\\
+\end{array}
+\] 
+
+であるから、\(c_2 = \frac{1}{2}, a_{21}=\frac{1}{2}, \hat{b}_1 = 0, \hat{b}_2 = 1\) が得られ、RK3のブッチャー表は
+
+\[
+\begin{array}{c|ccc}
+0           &             &        & \\
+\frac{1}{2} & \frac{1}{2} &        & \\
+c_3         & a_{31}       & a_{32} & \\
+\hline
+            & b_1         & b_2    & b_3\\
+\end{array}
+\] 
+
+となる。この形のRK3には、たとえばRalstonの公式がある(REF.FIXME)。
+
+\[
+\begin{array}{c|ccc}
+0           &             &             & \\
+\frac{1}{2} & \frac{1}{2} &             & \\
+\frac{3}{4} & 0           & \frac{3}{4} & \\
+\hline
+            & \frac{2}{9} & \frac{1}{3} & \frac{4}{9}\\
+\end{array}
+\] 
+
+よって、Ralstonの公式にしたい場合、\(a_{31} = 0, a_{32} = \frac{3}{4}, b_1 = \frac{2}{9}, b_2 = \frac{1}{3}, b_3 = \frac{4}{9}, c_3 = \frac{3}{4}\)とすればよい。Ralstonの式以外にもRK3公式は複数提案されている。これらは誤差係数の議論から導出されているが、本書の目的である「プライマー」としての役割を越えるため取り扱わない。(REF.FIXME)を参照されたい。
+
+\subsection{ステップ幅変更アルゴリズム}
+
+\[|y_{1i} - \hat{y}_{1i}| \leq \varepsilon_{\rm tol}\]
+
+まず、
+
+\[{\rm err} = \sqrt{\frac{1}{n}\sum^n_{i=1}\left(\frac{y_{1i} - \hat{y}_{1i}}{\varepsilon_{\rm tol}}\right)^2}\]
+
+errが1を上回らないようにしたい。
+
+\[
+\begin{array}{lcl}
+{\rm err} & \simeq & C h^{q+1} \\
+1 & \simeq & C h_{\rm opt}^{q+1} \\
+\end{array}
+\]
+
+より
+
+\[
+\begin{array}{rcl}
+{\rm err} & \simeq & ( \frac{h}{h_{\rm opt}} )^{q+1} \\
+h_{\rm opt} & \simeq & h (\frac{1}{\rm err})^{\frac{1}{q+1}}\\ 
+\end{array}
+\]
+
+許容誤算限界値を下回るステップ幅\(h_{\rm opt}\)を得る。ステップ幅を変更するアルゴリズムは以下の通りである。
+
+\begin{enumerate}
+\item errが1以下であれば、ステップ幅\(h\)は変更せずに用いる。
+\item errが1を上回ったら、\(h_{\rm opt}\)を計算し、新しい\(h\)として採用する。
+\end{enumerate}
+
+%\chapter{常微分方程式の数値積分法 II: 硬い方程式とGear法}
+\section{硬い方程式}
+\subsection{Gear法または後退微分法(BDF: Backward Differential Formula)}
+陰的な多段階法の代表例であり、後述する「硬い方程式」に強い。
+
+\[\alpha_{0} y_{n} + \alpha_{1} y_{n-1} + \cdots + \alpha_{k} y_{n-k} = h f_{n}\]
+
+という形の多段階法である。陽的Adams法同様、Taylor展開で係数を求める。Gearの"Numerical initial value problems" pp.214 に"stiffly stable method"として登場する。
+
+\begin{eqnarray*}
+L.H.S. & \simeq & \alpha_0 y(t_n) \\ 
+       & +      & \alpha_1 \left\{y(t_{n}) - h \frac{d}{dt} y(t_n) + \frac{h^2}{2} \frac{d^2}{dt^2} y(t_{n}) \right\} \\
+       & +      & \alpha_2 \left\{y(t_{n}) - 2h \frac{d}{dt} y(t_n) + \frac{4h^2}{2} \frac{d^2}{dt^2} y(t_{n}) \right\} \\
+R.H.S. & = & h \frac{d}{dt}y(t_{n}) \\
+\end{eqnarray*}
+
+hの次数が同じ項ごとに整理する。
+
+\[
+\begin{array}{lccll}
+h^0 & : & \alpha_0 y(t_n) + \alpha_1 y(t_n) + \alpha_2 y(t_n) & = & 0\\
+h^1 & : & - \alpha_1 h y^{\prime}(t_n) - 2h \alpha_2 y^{\prime}(t_n) & = & h y^{\prime}(t_n)\\
+h^2 & : & \alpha_1 \frac{h^2}{2} y^{\prime\prime}(t_n) + \alpha_2 2h^2 y^{\prime\prime}(t_n) & = & 0\\
+\end{array}
+\]
+
+\[
+\left\{
+\begin{array}{lcl}
+\alpha_0 + \alpha_1 + \alpha_2 & = & 0 \\
+- \alpha_1 - 2 \alpha_2  & = & 1\\ 
+\frac{1}{2} \alpha_1  + 2 \alpha_2  & = & 0\\
+\end{array}
+\right.
+\]
+
+これを解くと、2次のGear法の係数は\(\alpha_0 = \frac{3}{2}, \alpha_1 = -2, \alpha_2 = \frac{1}{2}\)と求まる。
+
+よって2次のGear法は
+
+\[\frac{3}{2} y_{n} - 2 y_{n-1} + \frac{1}{2} y_{n-2} = h f_{n}\]
+
+化学反応系 \(\displaystyle\frac{dS}{dt} = -k \cdot S\) にあてはめると、
+
+\[\frac{3}{2} S_t  - 2 S_{t-\Delta t}  + \frac{1}{2} S_{t-2\Delta t}= - \Delta t \cdot k \cdot S_{t}\]
+
+となる。
+
+
+\subsection{硬い方程式(stiff equation)の安定性}
+\subsubsection{硬度比(stiffness ratio)}
+連立常微分方程式のヤコビ行列の固有値から、その系の「硬さ」を推定できる。\\
+
+\[ \mbox{硬度比} = \frac{|\mbox{実部最大の固有値}|}{|\mbox{実部最小の固有値}|} \]
+
+\(\mbox{硬度比} > 10^4\) 程度のとき、その微分方程式のことを「硬い(stiff)」 という。
+
+\subsubsection{A安定}
+離散変数法の絶対安定領域が、複素平面の左半面を含むこと。
+1段階、2段階のBDFはA安定である。
+
+\subsubsection{硬安定(stiffly stable)}
+\begin{itemize}
+\item 左半面における原点近傍
+\item 左半面を走る虚軸の平行線のうち、その左側全体が絶対安定領域になっっているものが存在する
+\end{itemize}
+
+1〜6段階のBDFは硬安定である。
+
+\section{Further reading}
+三井斌友「常微分方程式の数値解法」岩波書店
+Gear, Springer's yellow book
+\verb+http://www.scholarpedia.org/article/Backward_differentiation_formulas+ by Gear
