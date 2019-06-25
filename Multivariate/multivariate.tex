@@ -1,0 +1,1719 @@
+\chapter{システム生物学と多変量解析}
+本章の目的は、PLS回帰を理解し、Janes らの仕事を追試することである。
+
+\section{概要}
+PLS回帰は以下の基礎知識に支えられている。\\
+
+\begin{tabular}{|c|c|}
+\hline
+\multicolumn{2}{|c|}{ PLS回帰 }\\
+\hline
+\multicolumn{2}{|c|}{ 主成分回帰(PCR) }\\
+\hline 
+重回帰(MLR) & 主成分分析(PCA)\\
+\hline
+\end{tabular}
+
+よって、この概念図の下から順に取り扱う。また、特異値分解(singular
+value decomposition)を知っているとこれらの手法を統一的に理解することが
+できる。
+
+\section{準備1: 特異値分解}
+任意の\(m \times n\)行列{\bf A}は以下のような3つの行列(それぞれ「回転・引き延ばし・回転」に対応)の積の形に書くことができる。
+
+
+\[
+\begin{array}{ccccc}
+\underset{m \times n}{\mathbf A} & = & \underset{m \times m}{\mathbf U} & \underset{m \times n}{\mathbf \Sigma} &\underset{n \times n}{\mathbf V^T}
+\end{array}
+\]
+
+{\bf U}を左特異行列(left singular matrix)、{\bf V}を右特異行列、\({\mathbf \Sigma}\)を特異値行列と呼ぶ。
+
+\[
+\underset{m \times m}{\mathbf U} = 
+\left(
+\begin{array}{cc|c}
+ & & \\
+\multicolumn{2}{c|}{ \underset{m \times r}{{\mathbf A} \mbox{の列空間の基底}}} & \underset{m \times (m-r)}{{\mathbf A} \mbox{の左零空間}}\\
+ & & \\
+%\hdotsfor{4}\\
+\end{array}
+\right)
+\]
+
+\[
+\underset{m \times n}{\mathbf \Sigma}
+=
+\left(
+\begin{array}{ccc|c}
+\sigma_1 & & \lower1.5ex\hbox{\text{\huge{0}}}& \\
+ & \ddots & & \lower1.5ex\hbox{\text{\huge{0}}}\\
+\text{\huge{0}} & & {\sigma_r} & \\
+\hline
+ & \lower1.5ex\hbox{\text{\huge{0}}}& & \lower1.5ex\hbox{\text{\huge{0}}}
+\end{array}
+\right)
+\]
+
+ただし\(\sigma_1 > \sigma_2 > \sigma_3 > \cdots > \sigma_r\)である。
+
+\[
+\underset{n \times n}{\mathbf V^T} = 
+\left(
+\begin{array}{ccc}
+ & & \\
+\multicolumn{3}{c}{ \underset{r \times n}{{\mathbf A} \mbox{の行空間の基底}}}\\
+ & & \\
+\hline
+\multicolumn{3}{c}{ \underset{(n-r)\times n}{{\mathbf A} \mbox{の零空間}}}\\
+%\hdotsfor{4}\\
+\end{array}
+\right)
+\]\\
+
+\(\underset{m \times m}{\mathbf U}\)、\(\underset{n \times n}{\mathbf V}\)はともに正規直交行列(\({\mathbf U^T}{\mathbf U}={\mathbf I}\)、\({\mathbf V^T}{\mathbf V}={\mathbf I}\))である。
+
+\paragraph{演習: 紙と鉛筆でできる特異値分解}
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+以下の手順に従って、行列
+
+\[
+{\mathbf A}
+=
+\left(
+\begin{array}{rr}
+ 1 &  2\\
+-1 & -2\\
+\end{array}
+\right)
+\]
+
+を\({\bf A}={\bf U}{\mathbf \Sigma}{\bf V}^T\)の形に特異値分解しなさい。
+
+\begin{enumerate}
+\item \(({\mathbf A}^T{\mathbf A}) {\mathbf V} = {\mathbf V} ({\mathbf \Sigma}^T {\mathbf \Sigma})\) を示しなさい。(ヒント: \(({\mathbf A}{\mathbf B})^T = {\mathbf B}^T{\mathbf A}^T\))
+\item (1)の結果より、\({\mathbf V}\)は\({\mathbf A}^T{\mathbf A}\)の固有ベクトルから構成されていることがわかる。この性質を利用して、\({\mathbf V}\)のうち「{\bf A}の行空間の基底」に相当する部分を求めなさい。ただし、\({\mathbf V}^T{\mathbf V}={\mathbf I}\)である。
+\item \({\mathbf V}\)のうち「{\bf A}の零空間」に相当する部分を求めなさい。\({\mathbf V}^T{\mathbf V}={\mathbf I}\)を満たすように正規化すること。(ヒント: {\bf A}の零空間は\({\mathbf A}{\mathbf K}={\mathbf 0}\)を満たすような行列\({\mathbf K}\)として求めることができる。)
+\item (1)の結果より、\({\mathbf \Sigma}\)の特異値成分\(\sigma_1, \dots , \sigma_r\)は\({\mathbf A}^T{\mathbf A}\)の固有値の平方根である。この性質を利用して\({\mathbf \Sigma}\)を求めなさい。
+\item (1)と同様にして、\(({\mathbf A}{\mathbf A}^T) {\mathbf U} = {\mathbf U} ({\mathbf \Sigma}{\mathbf \Sigma}^T)\) を示しなさい。
+\item (2)(3)を参考にして\({\mathbf U}\)を求めなさい。\({\mathbf U}^T{\mathbf U}={\mathbf I}\)に留意すること。
+\item \({\bf A}={\bf U}{\mathbf \Sigma}{\bf V}^T\)が成り立っていることを確認しなさい。
+\end{enumerate}
+
+\paragraph{解答}
+\begin{enumerate}
+\item \begin{eqnarray*}
+({\mathbf A}^T{\mathbf A}) {\mathbf V} & = & ({\mathbf V}{\mathbf \Sigma^{T}}{\mathbf U}^T)({\mathbf U}{\mathbf \Sigma}{\mathbf V}^t) {\mathbf V}\\ 
+ & = & {\mathbf V}{\mathbf \Sigma^{T}}{\mathbf \Sigma} \hspace{3em} (\therefore {\mathbf U^T}{\mathbf U}={\mathbf I}, {\mathbf V^T}{\mathbf V}={\mathbf I})\\ 
+\end{eqnarray*}
+\item \({\mathbf A}^T{\mathbf A}
+=
+\left(
+\begin{array}{rr}
+ 1 &  2\\
+-1 & -2\\
+\end{array}
+\right)^T
+\left(
+\begin{array}{rr}
+ 1 &  2\\
+-1 & -2\\
+\end{array}
+\right)\)
+の固有値・固有ベクトルを求める。
+
+\begin{eqnarray*}
+|{\mathbf A}^T{\mathbf A} - {\mathbf I}\lambda | & = & 0 \\
+\left| 
+\begin{array}{cc}
+ 2 - \lambda & 4 \\
+4           & 8 - \lambda \\
+\end{array}
+\right| & = &  0\\
+(2-\lambda)(8-\lambda) -16 & = & 0 \\
+\lambda (\lambda - 10 ) & = & 0 \\
+\therefore \lambda & = & 0, 10
+\end{eqnarray*}
+
+\[
+\left(
+\begin{array}{rr}
+ 2 &  4\\
+ 4 &  8\\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+x \\
+y \\
+\end{array}
+\right)
+=
+10
+\left(
+\begin{array}{c}
+x \\
+y \\
+\end{array}
+\right)
+\]
+
+この連立方程式を解くと \(y = 2x\) となるので、
+
+\[
+\left(
+\begin{array}{c}
+x \\
+y \\
+\end{array}
+\right)
+= k
+\left(
+\begin{array}{r}
+1 \\
+2 \\
+\end{array}
+\right)
+\]
+
+さらに正規化して
+
+\[
+\left(
+\begin{array}{c}
+x \\
+y \\
+\end{array}
+\right)
+= \frac{1}{\sqrt{5}}
+\left(
+\begin{array}{r}
+1 \\
+2 \\
+\end{array}
+\right)
+\]
+
+\item \({\mathbf A}{\mathbf K} = {\mathbf 0}\) となる行列\({\mathbf K}\)を求める。
+
+
+
+
+\end{enumerate}
+
+
+
+\section{準備2: 行列・ベクトルの微分}
+行列・ベクトルで書かれた関数にも微分公式がある。覚えておくと重宝する。
+
+\begin{eqnarray*}
+d ({\bf Ax}) & = & {\mathbf A}d{\mathbf x}\\
+d ({\bf Ax + b})^T {\mathbf C} ({\bf Dx + e}) & = & \{({\bf Ax + b})^T {\bf CD} +({\bf Dx + e})^T{\mathbf C}^T{\mathbf A}\}d{\mathbf x}\\
+\end{eqnarray*}
+
+\section{共分散最大化と特異値分解}
+\({\rm Cov}( {\mathbf X}{\mathbf d},{\mathbf Y}{\mathbf e}) = {\mathbf d}^T{\mathbf X}^T{\mathbf Y}{\mathbf e}\)を最大化するようなベクトル\({\mathbf d}\)、\({\mathbf e}\)はそれぞれ\({\mathbf X}^T{\mathbf Y}\)を特異値分解した際の第1左特異ベクトル、右特異ベクトルに等しい。ただし、\({\mathbf d}^T{\mathbf d}=1\)、\({\mathbf e}^T{\mathbf e}=1\)とする。
+
+
+\begin{eqnarray*}
+{\mathbf X}^T {\mathbf Y} & = & {\mathbf U}{\mathbf \Sigma}{\mathbf V}^T \\
+                          & = & {\mathbf u}_1 \sigma_1 {\mathbf v}_1^T + \cdots + {\mathbf u}_r \sigma_r {\mathbf v}_r^T \\
+\end{eqnarray*}
+
+\begin{eqnarray*}
+{\mathbf d} & = & a_1 {\mathbf u}_1 + \cdots + a_r {\mathbf u}_r \\
+{\mathbf e} & = & b_1 {\mathbf v}_1 + \cdots + b_r {\mathbf v}_r \\
+\end{eqnarray*}
+
+\begin{eqnarray*}
+{\mathbf d}^T{\mathbf X}^T{\mathbf Y}{\mathbf e} & = & {\mathbf d}^T ( {\mathbf u}_1 \sigma_1 {\mathbf v}_1^T + \cdots + {\mathbf u}_r\sigma_r{\mathbf v}_r^T){\mathbf e} \\
+ & = & ( a_1 {\mathbf u}_1 + \cdots + a_r {\mathbf u}_r )^T \cdot ( {\mathbf u}_1 \sigma_1 {\mathbf v}_1^T + \cdots + {\mathbf u}_r\sigma_r{\mathbf v}_r^T) \cdot ( b_1 {\mathbf v}_1 + \cdots + b_r {\mathbf v}_r ) \\
+ & = & a_1 \sigma_1 b_1 + \cdots + a_r \sigma_r b_r \\
+ & = & {\mathbf a}^T{\mathbf \Sigma}{\mathbf b}\\
+\end{eqnarray*}
+
+\({\mathbf d}^T{\mathbf d}=1\)、\({\mathbf e}^T{\mathbf e}=1\)より、
+
+\begin{eqnarray*}
+{\mathbf d}^T{\mathbf d} & = & ( a_1 {\mathbf u}_1 + \cdots + a_r {\mathbf u}_r )^T ( a_1 {\mathbf u}_1 + \cdots + a_r {\mathbf u}_r ) \\
+ & = & a_1^2 + \cdots + a_r^2\\
+ & = & {\mathbf a}^T{\mathbf a}
+\end{eqnarray*}
+
+\[\therefore {\mathbf d}^T{\mathbf d} = {\mathbf a}^T{\mathbf a} = 1\]
+
+同様にして \({\mathbf e}^T{\mathbf e} = {\mathbf b}^T{\mathbf b}= 1\) と求まる。
+
+よって、\({\mathbf d}^T{\mathbf d} = 1, {\mathbf e}^T{\mathbf e} = 1\)を条件とする \({\rm Cov}({\mathbf Xd},{\mathbf Ye}) = {\mathbf d}^T{\mathbf X}^T{\mathbf Y}{\mathbf e}\) の最大化問題は、\({\mathbf a}^T{\mathbf a} = 1, {\mathbf b}^T{\mathbf b} = 1\)を条件とする \({\rm Cov}({\mathbf Xd},{\mathbf Ye}) = {\mathbf a}^T{\mathbf \Sigma}{\mathbf b}\) の最大化問題に帰着できる。
+
+\[Q = {\mathbf a}^T{\mathbf \Sigma}{\mathbf b}-\lambda_1({\mathbf a}^T{\mathbf a}-1)-\lambda_2({\mathbf b}^T{\mathbf b}-1)\]
+
+ベクトル・行列の微分公式、
+
+\[\frac{ d }{d{\mathbf x}} ( {\mathbf x}^T {\mathbf x} ) = 2{\mathbf x}\]
+
+\[\frac{ d }{d{\mathbf x}} ( {\mathbf a}^T {\mathbf x} ) = {\mathbf a}\]
+
+を用いると、
+
+\[
+\left\{
+\begin{array}{lclcl}
+\frac{\partial Q}{\partial {\mathbf a}} & = & {\mathbf \Sigma}{\mathbf b} - 2\lambda_1 {\mathbf a} & = & 0 \\
+\frac{\partial Q}{\partial {\mathbf b}} & = & {\mathbf \Sigma}^T{\mathbf a} - 2\lambda_2 {\mathbf b} & = & 0 \\
+\end{array}
+\right.
+\]
+
+これを整理すると
+
+\[
+\left\{
+\begin{array}{lcl}
+{\mathbf \Sigma}{\mathbf b} & = & 2\lambda_1 {\mathbf a}\\
+{\mathbf a}^T{\mathbf \Sigma} & = & 2\lambda_2 {\mathbf b}^T\\
+\end{array}
+\right.
+\]
+
+上の式の両辺に左から\({\mathbf a}^T\)、下の式の両辺に右から\({\mathbf b}\)を掛ける。
+
+\[
+\left\{
+\begin{array}{lcl}
+{\mathbf a}^T{\mathbf \Sigma}{\mathbf b} & = & 2\lambda_1 \\
+{\mathbf a}^T{\mathbf \Sigma}{\mathbf b} & = & 2\lambda_2 \\
+\end{array}
+\right.
+\]
+
+よって\(\lambda_! = \lambda_2\)　とわかる。
+
+\[\lambda = 2\lambda_! = 2\lambda_2\]
+
+とおいて式を書き換えると\footnote{証明を一度完成させてみると、ここで係数2を掛けておくと以下の話がすっきりすることがわかる。}、
+
+\[
+\left\{
+\begin{array}{lcl}
+{\mathbf \Sigma}{\mathbf b} & = & \lambda {\mathbf a}\\
+{\mathbf \Sigma}^T {\mathbf a} & = & \lambda {\mathbf b}\\
+\end{array}
+\right.
+\]
+
+上式を下式に代入して
+
+\begin{eqnarray*}
+\frac{1}{\lambda} {\mathbf \Sigma}^T{\mathbf \Sigma}{\mathbf b} & = & \lambda {\mathbf b} \\
+\therefore {\mathbf \Sigma}^T{\mathbf \Sigma}{\mathbf b} & = & \lambda^2 {\mathbf b} \\
+\end{eqnarray*}
+
+この式が意味することは、ベクトル\({\mathbf b}\)の要素 \(b_1 , \cdots , b_r\) は
+
+\[
+\left(
+\begin{array}{c}
+\sigma_1^2 b_1 \\ 
+\vdots \\
+\sigma_r^2 b_r \\
+\end{array}
+\right)
+= 
+\left(
+\begin{array}{c}
+\lambda^2 b_1 \\
+\vdots \\
+\lambda^2 b_r \\
+\end{array}
+\right)
+\]
+
+が常に成立するように定まるということである。この条件を満たす\({\mathbf b}\)は、
+
+\[
+\left(
+\begin{array}{c}
+1 \\
+0 \\
+0 \\
+\vdots \\
+0\\
+\end{array}
+\right)
+,
+\left(
+\begin{array}{c}
+0\\
+1\\
+0 \\
+\vdots \\
+0\\
+\end{array}
+\right)
+,
+\left(
+\begin{array}{c}
+0\\
+0\\
+\vdots\\
+0\\
+1\\
+\end{array}
+\right)
+,
+\]
+
+のように、1を1つだけ含み、残りは0というベクトルである。ベクトル\({\mathbf a}\)についても同様である。したがって、
+
+\[
+{\mathbf d}^T{\mathbf X}^T{\mathbf Y}{\mathbf e}  = a_1 \sigma_1 b_1 + \cdots + a_r \sigma_r b_r 
+\]
+
+
+より、\({\mathbf d}^T{\mathbf X}^T{\mathbf Y}{\mathbf e}\)が取りうる値は、\(\sigma_1 , \cdots , \sigma_r\) である。このうち最大の値を持つものは、特異値の定義より\(\sigma_1\)であるから、\({\mathbf d}^T{\mathbf X}^T{\mathbf Y}{\mathbf e}\) を最大化する\({\mathbf a}, {\mathbf b}\)は、
+
+\[
+{\mathbf a}
+=
+\left(
+\begin{array}{c}
+1 \\
+0 \\
+0 \\
+\vdots \\
+0\\
+\end{array}
+\right)
+, 
+{\mathbf b}
+=
+\left(
+\begin{array}{c}
+1 \\
+0 \\
+0 \\
+\vdots \\
+0\\
+\end{array}
+\right)
+\]
+
+である。
+
+\begin{eqnarray*}
+{\mathbf d} & = & a_1 {\mathbf u}_1 + \cdots + a_r {\mathbf u}_r \\
+{\mathbf e} & = & b_1 {\mathbf v}_1 + \cdots + b_r {\mathbf v}_r \\
+\end{eqnarray*}
+
+より、共分散を最大化する\({\mathbf d}, {\mathbf e}\)の条件は、
+
+\begin{eqnarray*}
+{\mathbf d} & = & {\mathbf u}_1 \\
+{\mathbf e} & = & {\mathbf v}_1 \\
+\end{eqnarray*}
+
+すなわち、\({\mathbf d}, {\mathbf e}\)がそれぞれ、第1左特異ベクトル、第1右特異ベクトルである場合である。
+\indent よって、左右の第1特異ベクトルを用いると、潜在変数ベクトル同士の共分散が最大になる。
+
+\subsection{Moore-Penroseの一般逆行列}
+Moore-Penroseの一般逆行列(Moore-Penrose generalized inverse)は重回帰(MLR)と主成分回帰(PCR)を統一的視点から理解する上で欠かせない。
+
+\[\underset{n \times m}{\mathbf A^{\#}} = \underset{n \times n}{\mathbf V}\ \underset{n \times m}{\mathbf \Sigma^{\prime -1}} \underset{m \times m}{\mathbf U^T}\]
+
+ただし、
+
+\[
+{\mathbf \Sigma^{\prime -1}} 
+= 
+\left(
+\begin{array}{ccc|c}
+\frac{1}{\sigma_1} & & \lower1.5ex\hbox{\text{\huge{0}}}& \\
+ & \ddots & & \lower1.5ex\hbox{\text{\huge{0}}}\\
+\text{\huge{0}} & & \frac{1}{\sigma_r} & \\
+\hline
+ & \lower1.5ex\hbox{\text{\huge{0}}}& & \lower1.5ex\hbox{\text{\huge{0}}}
+\end{array}
+\right)
+\]
+
+連立1次方程式\({\mathbf A}{\mathbf x}={\mathbf b}\)において{\bf A}の行
+数が列数よりも大きいとき(縦長)、\(\hat{\mathbf x} = {\mathbf
+  A}^{\#}{\mathbf b}\) は二乗誤差\(||{\mathbf A}{\mathbf x} - {\mathbf
+  b}||^2\)を最小にするような解である。{\bf A}の行数が列数よりも少ないと
+き(横長)には、\(\hat{\mathbf x} = {\mathbf A}^{\#}{\mathbf b}\)は解とな
+り得る{\bf x}のうち、ノルム\(||{\mathbf x}||\)が最小のものを返す。
+\subsection{化学量論行列の特異値分解}
+
+\[{\mathbf N} = {\mathbf U}{\mathbf \Sigma}{\mathbf V^T}\]
+
+{\bf U}は列空間の基底ベクトルと、左零空間の基底ベクトル。\\
+{\bf V}は行空間の基底ベクトルと、左零空間の基底ベクトル。\\
+
+\paragraph{列空間の基底}
+\[
+\frac{d}{dt}
+\left(
+\begin{array}{c}
+x_1\\
+x_2\\
+\vdots\\
+x_m\\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{c}
+c_{11}\\
+c_{21}\\
+\vdots\\
+c_{m1}\\
+\end{array}
+\right)
+v_1
++
+\left(
+\begin{array}{c}
+c_{12}\\
+c_{22}\\
+\vdots\\
+c_{m2}\\
+\end{array}
+\right)
+v_2
++
+\cdots
++
+\left(
+\begin{array}{c}
+c_{1n}\\
+c_{2n}\\
+\vdots\\
+c_{mn}\\
+\end{array}
+\right)
+v_n
+\]
+
+において、このパスウェイで現れるすべての組み合わせの\((c_{1i} \ c_{2i} \ \cdots \ c_{mi})^T\)を生成する基底のこと。
+
+\paragraph{行空間の基底}
+\[
+\frac{dx_i}{dt} 
+= 
+\left(
+\begin{array}{cccc}
+r_1 & r_2 & \cdots & r_n \\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+v_1 \\
+v_2 \\
+\vdots \\
+v_m \\
+\end{array}
+\right)
+\]
+
+において、このパスウェイで現れるすべての組み合わせの\((r_1 \ r_2 \ \cdots \ c_n)\)を生成する基底のこと。
+
+\paragraph{(右)零空間}
+化学量論行列{\bf N}について、
+
+\[{\mathbf N}{\mathbf K} = {\mathbf 0}\]
+
+となるような行列{\bf K}のこと。{\bf K}の要素である列ベクトルの線形結合によって、あらゆる流束分布を記述できる。
+
+\paragraph{左零空間}
+化学量論行列{\bf N}について、
+
+\[{\mathbf G}{\mathbf N} = {\mathbf 0}\]
+
+を満たす行列{\bf G}のこと。物質の保存関係を表す。
+
+\section{重回帰(MLR)}
+\subsection{定義}
+被説明変数\(y\)、説明変数\(x_1,\cdots , x_n\)の組について、\(m\)回の測定を行ったとする。
+yとxの関係を線形で表すとき、
+
+\[{\mathbf y} = {\mathbf X}{\mathbf a} + {\mathbf \varepsilon}\]
+
+\[
+\left(
+\begin{array}{c}
+y_1\\
+y_2\\
+\vdots\\
+y_m\\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{cccc}
+1      & x_{11} & \cdots & x_{1n}\\ 
+1      & x_{21} & \cdots & x_{2n}\\
+\vdots & \vdots & \ddots & \vdots\\
+1      & x_{m1} & \cdots & x_{mn}\\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+a_0\\
+a_1\\
+\vdots\\
+a_n\\
+\end{array}
+\right)
++
+\left(
+\begin{array}{c}
+\varepsilon_1\\
+\varepsilon_2\\
+\vdots\\
+\varepsilon_m\\
+\end{array}
+\right)
+\]
+
+残差平方和Qを最小にするような係数{\bf a}を求めることが重回帰分析の核心である。
+
+\subsection{残差平方和を最小にする係数の導出}
+
+\begin{eqnarray*}
+Q  & = &  \sum^m_{i=1} \varepsilon^2_i \\
+   & = & \sum^{m}_{i=1} \{y_i - ( a_0 + a_1 x_{i1} + \cdots + a_n x_{in})\}^2\\
+ & = & ({\mathbf y} - {\mathbf X}{\mathbf a})^T({\mathbf y} - {\mathbf X}{\mathbf a})\\
+\end{eqnarray*}
+
+Qを最小にする\({\mathbf a}\)を求めればよい。すなわち、\({\displaystyle \frac{dQ}{d{\bf a}} = {\bf 0}}\)を満たす\({\mathbf a}\)を求める\footnote{本当は極値と最小値が一致することを示す必要があるが、省略する。}。ベクトル・行列の微分公式、
+
+\[
+d ({\bf Ax + b})^T {\mathbf C} ({\bf Dx + e}) = \{({\bf Ax + b})^T {\bf CD} +({\bf Dx + e})^T{\mathbf C}^T{\mathbf A}\}d{\mathbf x}
+\]
+
+より、\({\mathbf C}={\mathbf I}, {\mathbf D}={\mathbf A}, {\mathbf e}={\mathbf b}\)とおくと、以下の公式を得る。
+
+\begin{eqnarray*}
+d ({\bf Ax + b})^T ({\bf Ax + b}) & = & \{({\bf Ax + b})^T {\bf A} +({\bf Ax + b})^T{\bf A}\}d{\bf x}\\
+& = & 2({\bf Ax + b})^T {\bf A}d{\bf x}\\
+\end{eqnarray*}
+
+これを\(Q = ({\mathbf y} - {\mathbf X}{\mathbf a})^T({\mathbf y} - {\mathbf X}{\mathbf a})\)にあてはめて、
+
+\begin{eqnarray*}
+dQ & = & d \{ ({\bf y - Xa})^T ({\bf y - Xa}) \}\\
+   & = & -2 ( {\bf y - Xa} )^T{\bf X}d{\bf a} \hspace{5em} (\mbox{前記の微分公式を使って導出した})\\
+\end{eqnarray*}
+
+\({\displaystyle \frac{dQ}{d{\bf a}} = {\bf 0}}\)より、残差平方和を最小にする{\bf a}は、
+
+\[ -2 ( {\bf y - Xa} )^T{\bf X} = {\bf 0} \]
+
+を満たす。これをさらに変形すると、
+
+\begin{eqnarray*}
+-2 ( {\bf y - Xa} )^T{\bf X} & = & 0\\
+( {\bf y - Xa} )^T{\bf X} & = & 0 \\
+{\bf X}^T ( {\bf y - Xa} ) & = & 0 \hspace{5em}(\because ({\bf AB})^T = {\bf B}^T{\bf A}^T)\\
+{\bf X}^T {\bf y} & = & {\bf X}^T{\bf Xa} \\
+ & & \\
+\therefore {\bf a} & = & ({\bf X}^T{\bf X})^{-1}{\bf X}^T {\bf y}\\
+\end{eqnarray*}
+
+\subsection{Moore-Penroseの一般逆行列による表記}
+
+これにて\(y\)を予測する式\( y = a_0 + a_1 x_1 + \cdots + a_n x_n \)を得ることができた。Moore-Penroseの一般逆行列を用いて書くと、
+
+\[\hat{\mathbf a} = {\mathbf X}^{\#}{\mathbf y}\]
+
+となる。\\
+
+\({\mathbf X}^T{\mathbf X}\)に逆行列が存在する場合(＝{\bf X}の列が互いに線形独立である場合)、
+
+\[ {\mathbf X}^{\#} = ({\bf X}^T{\bf X})^{-1}{\bf X}^T \]
+
+である。
+
+\({\mathbf X}{\mathbf X}^T\)に逆行列が存在する場合(＝{\bf X}の行が互いに線形独立である場合)、
+
+\[ {\mathbf X}^{\#} = {\bf X}^T ({\bf X}{\bf X}^T)^{-1}\]
+
+である。
+
+
+
+
+\section{主成分分析(PCA)}
+\subsection{定義}
+相関の強い複数の変数を1変数にまとめる方法である。例えば以下のような身長・体重のデータがあったとする。\\
+\begin{minipage}{185pt}
+
+\begin{tabular}{l|rr}
+\hline
+ & 身長(cm) & 体重(kg) \\
+\hline
+川島さん & 185 & 80 \\
+中澤さん & 187 & 78 \\
+本田さん & 183 & 76 \\
+\hline
+\end{tabular}\\
+\end{minipage}
+\(\longrightarrow\)
+\begin{minipage}{200pt}
+%\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{../Multivariate/multivariate1.epsi}
+\end{center}
+%\end{figure}
+\end{minipage}\\
+
+身長と体重をそれぞれ横軸・縦軸に取った散布図上の位置で個々人の体格がわかる。しかし、身長と体重の間には一定の相関が見られるので、これらを体格を表す1つの指標\(t_{PC1}\)にまとめてしまうことを考える。身長、体重をそれぞれ\(x_1, x_2\)で表すと、
+
+\[t_{PC1} = w_1 x_1 + w_2 x_2\]
+
+で表すことを考える。\\
+
+\indent どのような指標にまとめるのが合理的だろうか？主成分分析では、座標変換を行う。この例で言うと、身長と体重の直交座標系を角度\(\theta\)だけ回転する。\(w_1, w_2\)の値は\(t_{PC1}\)の分散を最大化するように定める。\\
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{../Multivariate/multivariate2.epsi}
+\end{center}
+\end{figure}
+
+\indent 分散最大化が最小二乗法(回帰分析)と似ていると思った人も多いだろう。実際、データからあらかじめ平均値が差し引かれていれば(中心化)、分散最大化は最小二乗法(回帰分析)と一致する。すなわち、主成分軸と回帰直線が一致する。
+
+(利点)
+多次元のデータであっても2次元に縮約し、平面にプロットすることが可能になる。
+
+{\bf X}から各列ごとに列の平均値を差し引いたものを\(\hat{\mathbf X}\)とすると、{\bf X}の共分散行列は\(\hat{\mathbf X}^T\hat{\mathbf X}\)と表せる。\(\hat{\mathbf X}^T\hat{\mathbf X}\)の固有ベクトルを{\bf loading}と呼ぶ。\\
+
+残差を残す
+
+\[x_{ij} = x^*_{ij} - \bar{x}_{j}\]
+
+
+データ行列
+\[
+{\mathbf X}
+=
+\left(
+\begin{array}{cccc}
+x_{11} & x_{12} & \cdots & x_{1n} \\
+x_{21} & x_{22} & \cdots & x_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+x_{m1} & x_{m2} & \cdots & x_{mn} \\
+\end{array}
+\right)
+\]
+
+さきほどの例で言うと、\\
+\begin{tabular}{ccc}
+\begin{tabular}{l|rr}
+\hline
+ & 身長(cm) & 体重(kg) \\
+\hline
+川島さん & 185 & 80 \\
+中澤さん & 187 & 78 \\
+本田さん & 183 & 76 \\
+\hline
+\end{tabular}
+&
+\(\longrightarrow\)
+&
+\(
+{\mathbf X}
+=
+\left(
+\begin{array}{rr}
+185 & 80 \\
+187 & 78 \\
+183 & 76 \\
+\end{array}
+\right)
+\)
+\\
+\end{tabular}
+
+
+主成分
+
+\[t_{11} = w_{11} x_{11} + w_{21} x_{12} + \cdots + w_{n1} x_{1n}\]
+
+ただし\({\mathbf w}^T_1{\mathbf w}^{}_1 = 1\)
+
+\[t_{m1} = {\mathbf x}_m{\mathbf w}_1\]
+
+これの分散を最大化する\({\mathbf w}_1\)を求める．
+
+\subsection{結合係数は共分散行列の固有ベクトルであることの証明}
+結合係数\({\mathbf w}_1\)は、共分散行列の固有ベクトルとして求められる。以下はその証明である。
+
+\[
+{\mathbf x}_m
+=
+\left(
+\begin{array}{cccc}
+x_{m1} & x_{m2} & \cdots & x_{mn}
+\end{array}
+\right),
+{\mathbf w}_1
+=
+\left(
+\begin{array}{c}
+w_{11} \\
+\vdots \\
+w_{n1} \\
+\end{array}
+\right)
+\]
+
+\[
+{\mathbf t}_1
+=
+\left(
+\begin{array}{c}
+t_{11} \\
+t_{21} \\
+\vdots \\
+t_{n1} \\
+\end{array}
+\right),
+{\mathbf t}_1 = {\mathbf X}{\mathbf w}_1
+\]
+
+\begin{eqnarray*}
+\bar{t_1} & = & \frac{1}{m}\sum^{m}_{i=1}t_{i1}\\
+          & = & \frac{1}{m}\sum^{m}_{i=1}{\mathbf x}_i{\mathbf w}_1\\
+          & = & \frac{1}{m}\sum^{m}_{i=1}\sum^{n}_{j=1} x_{ij} w_{j1}\\
+          & = & \frac{1}{m}\sum^{n}_{j=1} w_{j1} \left( \sum^{m}_{i=1} x_{ij} \right)\\
+          & = & \frac{1}{m}\sum^{n}_{j=1} w_{j1} ( 0 )\\
+          & = & 0\\
+\end{eqnarray*}
+
+\begin{eqnarray*}
+\sigma^2_{\bf t_1} & = & \frac{1}{m - 1}{\mathbf t}^T_1{\mathbf t}_1\\
+          & = & \frac{1}{m - 1}({\mathbf X}{\mathbf w}_1)^T({\mathbf X}{\mathbf w}_1)\\
+          & = & {\mathbf w}_1^T \left(\frac{1}{m - 1}{\mathbf X}^T{\mathbf X}\right){\mathbf w}_1\\
+          & = & {\mathbf w}_1^T {\mathbf V} {\mathbf w}_1\\
+          & \geq & 0\\ 
+\end{eqnarray*}
+
+\paragraph{Lagrangeの未定乗数法}
+\({\mathbf w}^T_1{\mathbf w}_1=1\)のもとで\(\sigma^2_{\mathbf t_1}\)の極値を求める。
+
+\begin{eqnarray*}
+Q({\mathbf w}_1) & = & \sigma^2_{\mathbf t_1} - \lambda ({\mathbf w}^T_1{\mathbf w}_1 - 1)\\
+& = &  {\mathbf w}^T_1{\mathbf V}{\mathbf w}_1 - \lambda ({\mathbf w}^T_1{\mathbf w}_1 - 1)\\
+\end{eqnarray*}
+
+微分公式\(d ({\bf Ax + b})^T {\mathbf C} ({\bf Dx + e}) = \{({\bf Ax + b})^T {\bf CD} +({\bf Dx + e})^T{\mathbf C}^T{\mathbf A}\}d{\mathbf x}\)を用いると、
+
+\begin{eqnarray*}
+d({\mathbf w}^T_1{\mathbf V}{\mathbf w}_1) & = & 2 {\mathbf w}_1^T {\mathbf V} d{\mathbf w}_1\\
+d({\mathbf w}^T_1{\mathbf w}_1) & = & 2 {\mathbf w}_1^T d{\mathbf w}_1\\
+\end{eqnarray*}
+
+よって、極値条件は
+
+\begin{eqnarray*}
+dQ({\mathbf w}_1) & = & 2 {\mathbf w}_1^T {\mathbf V} d{\mathbf w}_1 - \lambda 2 {\mathbf w}_1^T d{\mathbf w}_1 \\
+                  & = & 0 \\
+\end{eqnarray*}
+より、
+
+\[{\mathbf w}_1^T {\mathbf V} = \lambda {\mathbf w}_1^T \]
+
+両辺を転置すると、
+
+\[ {\mathbf V}{\mathbf w}_1 = \lambda {\mathbf w}_1 \]
+
+となる({\bf V}は対称行列なので\({\mathbf V} = {\mathbf V}^T\))。よって\({\mathbf w}_1\)は　共分散行列\({\mathbf V}\)の固有ベクトルとして求められる。また、
+
+\begin{eqnarray*}
+\sigma^2_{\mathbf t_1} & = & {\mathbf w}_1^T {\mathbf V} {\mathbf w}_1\\
+ & = & \lambda \\
+\end{eqnarray*}
+
+より、第1主成分の分散\(\sigma^2_{\mathbf t_1}\)は共分散行列\({\mathbf V}\)の固有値、ラグランジュ乗数\(\lambda\)に等しい。
+
+\subsection{寄与率}
+ある主成分の説明能力を評価する尺度として、「寄与率」がある。第\(i\)主成分の寄与率は、次のように定義される。\\
+\begin{eqnarray*}
+\mbox{寄与率} & = &  \frac{\sigma^2_{\mathbf t_i}}{\sigma^2_{\mathbf t_1} + \sigma^2_{\mathbf t_2} + \cdots + \sigma^2_{\mathbf t_n}} \\
+             & = & \frac{\lambda_i}{\lambda_1 + \lambda_2 + \cdots + \lambda_n} \\
+\end{eqnarray*}
+\(\sigma^2_{\mathbf t_i}\)は第\(i\)主成分軸上でのデータの分散である。これを分散の総和で割ったものが第\(i\)主成分の寄与率である。別の言い方をすれば、データの全分散のうち、第\(i\)主成分で説明できる割合を表す量が寄与率である。\\
+\indent また、先に証明したように、\(\sigma^2_{\mathbf t_i}\)は共分散行列\({\mathbf V}\)の第\(i\)固有値に等しい。これを利用すると、第\(i\)主成分の寄与率は、第\(i\)固有値を全固有値の和で割ったものとして書ける。
+\subsection{行列で表記する}
+\[{\mathbf t}_i = {\mathbf X}{\mathbf w}_i\]
+
+\[
+{\mathbf T} 
+= 
+\left( 
+\begin{array}{cccc}
+{\mathbf t}_1 & {\mathbf t}_2 & \cdots & {\mathbf t}_k \\
+\end{array}
+\right)
+\]
+
+\[
+{\mathbf P} 
+= 
+\left( 
+\begin{array}{cccc}
+{\mathbf p}_1 & {\mathbf p}_2 & \cdots & {\mathbf p}_k \\
+\end{array}
+\right)
+\]
+
+\[ {\mathbf T} = {\mathbf X} {\mathbf P}  \]
+
+\[ {\mathbf X} = {\mathbf T} {\mathbf P}^T  \]
+
+\subsection{特異値分解との関係}
+
+\indent 主成分スコア、loadingともに特異値分解と比較すると、以下のようになる。
+
+\[
+\begin{array}{ccccl}
+{\mathbf X} & = & {\mathbf U} & {\mathbf \Sigma} & {\mathbf V}^T\\
+            & = & \multicolumn{2}{c}{\bf T} &{\mathbf P}^T \hspace{3em}({\mathbf U}{\mathbf \Sigma} = {\mathbf T}, \hspace{1em}{\mathbf V}={\mathbf P})\\
+\end{array}
+\]
+
+{\bf T}が主成分スコア行列、{\bf P}がloading行列(共分散行列の固有ベクトル)である。
+
+\subsection{演習}
+以下に示す3名分の身体測定データから、「身体の大きさ」を表す主成分を求めたい。\\
+
+\begin{tabular}{l|rr}
+\hline
+ & 身長(cm) & 体重(kg) \\
+\hline
+川島さん & 185 & 80 \\
+中澤さん & 187 & 78 \\
+本田さん & 183 & 76 \\
+\hline
+\end{tabular}\\
+
+次の設問に順に答え、「身体の大きさ」を表す主成分スコアを求めなさい。
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+
+\begin{enumerate}
+\item 上の身体測定データをデータ行列にまとめなさい。
+\item 各人の身長、体重から平均値をそれぞれ差し引きなさい。この行列を\({\mathbf X}\)とする。
+\item \({\mathbf X}^T{\mathbf X}\)を計算しなさい。
+\item \({\mathbf X}^T{\mathbf X}\)の固有値、固有ベクトルを計算しなさい。
+\item 第1主成分について、各人の主成分スコアを求めなさい。
+\item 第1主成分の寄与率を求めなさい。
+\end{enumerate}
+
+\section{主成分回帰(PCR)}
+\subsection{着想}
+{\bf X}の行数が列数よりも小さいとき(横長)、\({\mathbf X^\#}\)は解となり得る{\bf a}のうち、ノルム\(||{\mathbf a}||\)が最小のものを返す。これには生物学的意味は無いので、使えない。そこで、{\bf X}の行数が列数よりも小さいとき、主成分分析を用いて変数を減らし、{\bf X}の列数を減らす。
+
+\subsection{Moore-Penroseの一般逆行列で表す}
+
+\[
+\begin{array}{ccccl}
+{\mathbf Y} & = & \multicolumn{2}{c}{\bf X} &{\mathbf B} \\
+            & = & {\mathbf T} & {\mathbf P}^T &{\mathbf B} \hspace{3em}({\mathbf X} = {\mathbf T}{\mathbf P}^T)\\
+\end{array}
+\]
+
+のとき{\bf B}の
+
+\[\hat{\mathbf B}_{PCR} = {\mathbf P}{\mathbf T}^{\#}{\mathbf Y}\]
+
+\[{\mathbf Y} = {\mathbf X}\hat{\mathbf B}_{PCR}\]
+
+\section{PLS回帰}
+\paragraph{基本となるアイディア}
+PCRを改良したものがPLSである。PLSの基本アイディアは以下の通り。
+
+\begin{enumerate}
+\item 説明変数群に関するデータ行列{\bf X}と被説明変数に関するデータ行列{\bf Y}のそれぞれの主成分スコア(に近いもの){\bf T},{\bf U}を考え、{\bf T}と{\bf U}の間の共分散を最大化する。
+\item {\bf X},{\bf Y}それぞれの主成分スコア(に近いもの){\bf T},{\bf U}を導く際、{\bf X}の共分散行列(\({\bf X}^T\)と{\bf X}との積)ではなく、{\bf X}と{\bf Y}の共分散行列(\({\bf X}^T\)と{\bf Y}との積)を使う。これにより、{\bf X}と{\bf Y}の相関を加味した主成分スコア(に近いもの)になる。
+\end{enumerate}
+
+\paragraph{PLS回帰係数の導き方}
+
+それではPLS回帰の方法に従って回帰係数を導く手順を見てみよう。ここでの{\bf X}、{\bf Y}は中心化されているものとする(H\"{o}skuldsson 1988)。
+
+\begin{enumerate}
+\item  \({\mathbf X}^T{\mathbf Y}\)を特異値分解し、第1左特異ベクトル{\bf w}、第1右特異ベクトル{\bf c}を求める。特異値分解の性質より、{\bf w}と{\bf c}は{\bf Xw}と{\bf Yc}の共分散を最大化する(H\"{o}skuldsson 1988)。
+
+\item \({\mathbf w}^T{\mathbf w}=1\)、\({\mathbf c}^T{\mathbf c}=1\)となるよう{\bf w}、{\bf c}を正規化する。
+
+\item
+\(
+\left.
+\begin{array}{ccc}
+{\mathbf t} & = & {\mathbf X}{\mathbf w}\\
+{\mathbf u} & = & {\mathbf Y}{\mathbf c}\\
+\end{array}
+\right\}\mbox{より、スコア{\bf t}、{\bf u}を求める。}
+\)\\
+
+\item \({\mathbf t}^T{\mathbf t}=1\)、\({\mathbf u}^T{\mathbf u}=1\)となるよう{\bf t}、{\bf u}を正規化する。
+
+\item \({\bf u} = b {\bf t}\)の線形関係を仮定して、回帰係数\(b\)を式\(b={\mathbf u}^T{\mathbf t}\)より推定する。\\
+\begin{eqnarray*}
+{\mathbf u}^T & = & b{\mathbf t}^T\\  
+{\mathbf u}^T{\mathbf t} & = & b{\mathbf t}^T{\mathbf t}\\
+\therefore {\mathbf u}^T{\mathbf t} & = & b\\
+\end{eqnarray*}
+\item  
+\(
+\left.
+\begin{array}{ccc}
+{\mathbf p} & = & {\mathbf X}^T{\mathbf t}\\
+{\mathbf q} & = & {\mathbf Y}^T{\mathbf u}\\
+\end{array}
+\right\}\mbox{より、{\bf p},{\bf q}を求める。}
+\)
+{\bf p},{\bf q}はPCAのloadingに相当するが、PCAのloadingとは異なり、直交行列ではない。
+
+%\item \({\mathbf p}^T{\mathbf p}=1\)、\({\mathbf q}^T{\mathbf q}=1\)となるよう{\bf p}、{\bf q}を正規化する。
+
+\item {\bf X}から\({\mathbf t}{\mathbf p}^T\)を、{\bf Y}から\({\mathbf u}{\mathbf q}^T\)を、それぞれ差し引き、(1)に戻る。PLS成分の数だけこれを繰り返す。
+
+\item 最終的に、{\bf X}と{\bf Y}のPLS回帰係数行列は、{\bf X}、{\bf Y}それぞれのloadingsに相当する{\bf P}、{\bf Q}およびその間をつなぐ回帰係数{\bf B}によって決まる。{\bf P}、{\bf Q}はベクトル{\bf p}、{\bf q}をそれぞれ並べて作った行列である。また、{\bf B}は、\(b\)を対角要素に並べた行列である。
+\begin{eqnarray*}
+{\mathbf Y} & = & {\mathbf U}{\mathbf Q}^T\\
+            & = & {\mathbf T}{\mathbf B}{\mathbf Q}^T\\
+            & = & {\mathbf X}({\mathbf P}^T)^{\#}{\mathbf B}{\mathbf Q}^T \ \ \ (\because \hat{\mathbf T} = {\mathbf X}({\mathbf P}^T)^{\#})\\
+            & = & {\mathbf X}{\mathbf B}_{\rm PLS} \ \ \ (\mbox{ただし} {\mathbf B}_{\rm PLS} = ({\mathbf P}^T)^{\#}{\mathbf B}{\mathbf Q}^T)\\
+\end{eqnarray*}
+
+\(\hat{\mathbf T} = {\mathbf X}({\mathbf P}^T)^{\#}\)は以下のように示すことができる。
+
+\begin{eqnarray*}
+{\mathbf P} & = & {\mathbf X}^T{\mathbf T} \\
+{\mathbf P}^T  & = & {\mathbf T}^T{\mathbf X} \\
+{\mathbf T}{\mathbf P}^T  & = & {\mathbf T}{\mathbf T}^T{\mathbf X} \\
+\hat{\mathbf T}  & = & {\mathbf X}({\mathbf P}^T)^\# \\
+\end{eqnarray*}
+
+\end{enumerate}
+
+\subsection{演習}
+EGF、NGFでそれぞれ細胞を刺激した際の ERK の時系列および30分経過時点におけるc-Fos、c-Jun の発現量を測定し、以下のような結果を得た。\\
+
+\begin{center}
+\begin{minipage}{200pt}
+\begin{tabular}{l|rrr}
+\hline
+    & \({\rm ERK}_{t1}\) & \({\rm ERK}_{t2}\) & \({\rm ERK}_{t3}\)\\
+\hline
+EGF &      0 &      4 &     2\\
+NGF &      2 &      4 &     4\\
+\hline
+\end{tabular}
+\end{minipage}
+\begin{minipage}{180pt}
+\begin{tabular}{l|rr}
+\hline
+      & {\rm c}-\({\rm Fos}_{\rm 30min}\) & {\rm c}-\({\rm Jun}_{\rm 30min}\)\\
+\hline
+EGF & 0 & 1 \\
+NGF & 1 & 2 \\
+\hline
+\end{tabular}
+\end{minipage}
+\end{center}
+
+\indent 以下の問いに答えて、ERK の時系列から c-Fos、c-Jun の発現量を予測するPLS回帰式を求めなさい。PLS成分についての計算は、第1成分まででよい。
+
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{enumerate}
+\item 上のMAPK、IEGの測定結果をそれぞれデータ行列にまとめなさい。これらの行列をそれぞれ　\({\mathbf X}_0\)、\({\mathbf Y}_0\)とする。
+\item \({\mathbf X}_0\)、\({\mathbf Y}_0\)の各列の平均値を列方向に並べた行列をそれぞれ\(\bar{\mathbf X}\)、\(\bar{\mathbf Y}\)とする。\({\mathbf X}_0\)、\({\mathbf Y}_0\)から\(\bar{\mathbf X}\)、\(\bar{\mathbf Y}\)を差し引きなさい。得られた行列を\({\mathbf X}\)、\({\mathbf Y}\)とする。
+\item \({\mathbf X}^T{\mathbf Y}\)を計算しなさい。
+\item \({\mathbf X}^T{\mathbf Y}\)を特異値分解し、第1左特異ベクトル{\bf w}、第1右特異ベクトル{\bf c}をそれぞれ求めなさい。ただし、\({\mathbf w}^T{\mathbf w}=1\)、\({\mathbf c}^T{\mathbf c}=1\)となるよう{\bf w}、{\bf c}を正規化すること。
+\item \({\mathbf t}={\mathbf X}{\mathbf w}\)、 \({\mathbf u}={\mathbf Y}{\mathbf c}\)より、PLSスコアを表すベクトル{\bf t}、{\bf u}をそれぞれ求めなさい。\({\mathbf t}^T{\mathbf t}=1\)、\({\mathbf u}^T{\mathbf u}=1\)となるよう{\bf t}、{\bf u}を正規化すること。
+\item PLSスコア同士の線形関係\({\mathbf u} = b{\mathbf t}\)の係数\(b\)を求めなさい。\(b={\mathbf u}^T{\mathbf t}\)より求める。
+\item \({\mathbf p}={\mathbf X}^T{\mathbf t}\)、 \({\mathbf q}={\mathbf Y}^T{\mathbf u}\)より、PLS loadings を表すベクトル{\bf p}、{\bf q}をそれぞれ求めなさい。
+\item PLS成分を第\(n\)成分まで計算する場合は、\({\mathbf X} - {\mathbf t}{\mathbf p}^T\)を{\bf X}に、\({\mathbf Y}- {\mathbf u}{\mathbf q}^T\) を{\bf Y}にそれぞれ代入して(3)に戻る。\({\mathbf X} - {\mathbf t}{\mathbf p}^T\)および\({\mathbf Y}- {\mathbf u}{\mathbf q}^T\)を計算しなさい。
+\item 以下の誘導に従って、PLS回帰式 \({\mathbf Y} = {\mathbf X}{\mathbf B}_{\rm PLS}\) の回帰係数行列 \({\mathbf B}_{\rm PLS}\)を求めなさい。
+\begin{enumerate}
+\item \({\mathbf P}^T\)を\({\mathbf P}^T={\mathbf U}{\mathbf \Sigma}{\mathbf V}^T\) の形に特異値分解しなさい。
+\item \(({\mathbf P}^T)^\#={\mathbf V}{\mathbf \Sigma^{\prime -1}}{\mathbf U}^T\) より、\(({\mathbf P}^T)^\#\)を求めなさい。
+\item \({\mathbf B}_{\rm PLS} = ({\mathbf P}^T)^{\#}{\mathbf B}{\mathbf Q}^T\) より、回帰係数行列\({\mathbf B}_{\rm PLS}\)を求めなさい。
+\end{enumerate}
+\item \({\mathbf Y}_0 - \bar{\mathbf Y} = ( {\mathbf X}_0 - \bar{\mathbf X} ){\mathbf B}_{\rm PLS}\)より、もともとの変数であるc-JunやERKを用いた回帰式を書き出しなさい。
+\item ERKの時系列データのうち、c-Fos、c-Junの発現量に強く寄与する時点はどこか。PLS loadings を表すベクトル{\bf p}、{\bf q}の値を吟味して答えなさい。
+\end{enumerate}
+
+\subsection{解答}
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{enumerate}
+\item 
+\[
+{\mathbf X}_0 = \left( 
+\begin{array}{rrr}
+0 & 4 & 2 \\
+2 & 4 & 4 \\
+\end{array}
+\right)\ , \hspace{3em}
+{\mathbf Y}_0 = \left( 
+\begin{array}{rrr}
+0 & 1\\
+1 & 2\\
+\end{array}
+\right)
+\]
+\item 
+\[
+{\mathbf X} = \left( 
+\begin{array}{rrr}
+-1 & 0 & -1 \\
+ 1 & 0 &  1\\
+\end{array}
+\right)\ , \hspace{3em}
+{\mathbf Y} = \left( 
+\begin{array}{rrr}
+-\frac{1}{2} & -\frac{1}{2}\\
+\frac{1}{2} & \frac{1}{2}\\
+\end{array}
+\right)
+\]
+\item
+\begin{eqnarray*}
+{\mathbf X}^T{\mathbf Y} 
+& = & 
+\left(
+\begin{array}{rr}
+-1 & 1\\
+ 0 & 0\\
+-1 & 1\\
+\end{array}
+\right)
+\left( 
+\begin{array}{rrr}
+-\frac{1}{2} & -\frac{1}{2}\\
+\frac{1}{2} & \frac{1}{2}\\
+\end{array}
+\right) \\
+& = & 
+\left(
+\begin{array}{rr}
+1 & 1\\
+0 & 0\\
+1 & 1\\
+\end{array}
+\right)
+\end{eqnarray*}
+\item \({\mathbf X}^T{\mathbf Y} = {\mathbf U}{\mathbf \Sigma}{\mathbf V}^T\) と特異値分解し、\({\mathbf U} = ( {\mathbf w}_1 {\mathbf w}_2 ...), {\mathbf V} = ( {\mathbf c}_1 {\mathbf c}_2 ...)\) とおくと、\({\mathbf V}\)について\(\{({\mathbf X}^T{\mathbf Y})^T{\mathbf X}^T{\mathbf Y}\}{\mathbf V} = {\mathbf V}({\mathbf \Sigma}^T{\mathbf \Sigma})\)となることから、
+\[
+\left(
+\begin{array}{rrr}
+1 & 0 & 1\\
+1 & 0 & 1\\
+\end{array}
+\right)
+\left(
+\begin{array}{rr}
+1 & 1\\
+0 & 0\\
+1 & 1\\
+\end{array}
+\right)
+= 
+\left(
+\begin{array}{rr}
+2 & 2\\
+2 & 2\\
+\end{array}
+\right)
+\]
+\[
+\left|
+\begin{array}{cc}
+2 - \lambda & 2 \\
+2           & 2 - \lambda \\
+\end{array}
+\right|
+= 0
+\]
+より、
+\begin{eqnarray*}
+(2-\lambda)^2 - 4 & = & 0 \\
+\lambda^2 - 4 \lambda & = & 0 \\
+\lambda & = & 4, 0 \\
+\end{eqnarray*}
+\[
+\left(
+\begin{array}{cc}
+2 & 2 \\
+2 & 2 \\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+x\\
+y\\
+\end{array}
+\right)
+= 4
+\left(
+\begin{array}{c}
+x\\
+y\\
+\end{array}
+\right)
+\]
+\[x = y\]
+\[\therefore \left(
+\begin{array}{c}
+x\\
+y\\
+\end{array}
+\right)
+= k
+\left(
+\begin{array}{c}
+1\\
+1\\
+\end{array}
+\right)
+\]
+これを正規化する。
+\begin{eqnarray*}
+\sqrt{2k^2} & = & 1 \\
+k & = & \frac{1}{\sqrt{2}}\\
+\therefore {\mathbf c}_1 & = & \frac{1}{\sqrt{2}}\left(
+\begin{array}{c}
+1\\
+1\\
+\end{array}
+\right)\\ 
+\end{eqnarray*}
+
+同様にして、\({\mathbf U}\)について\(\{{\mathbf X}^T{\mathbf Y}({\mathbf X}^T{\mathbf Y})^T\}{\mathbf U} = {\mathbf U}({\mathbf \Sigma}{\mathbf \Sigma}^T)\)となることから、
+
+\[
+\left(
+\begin{array}{rr}
+1 & 1\\
+0 & 0\\
+1 & 1\\
+\end{array}
+\right)
+\left(
+\begin{array}{rrr}
+1 & 0 & 1\\
+1 & 0 & 1\\
+\end{array}
+\right)
+= 
+\left(
+\begin{array}{rrr}
+2 & 0 & 2\\
+0 & 0 & 0\\
+2 & 0 & 2\\
+\end{array}
+\right)
+\]
+\[
+\left|
+\begin{array}{ccc}
+2 - \lambda &         0 & 2 \\
+0           & - \lambda & 0 \\
+2           &         0 & 2 - \lambda \\
+\end{array}
+\right|
+= 0
+\]
+より、
+\begin{eqnarray*}
+- \lambda (2-\lambda)^2 + 4 \lambda & = & 0 \\
+- \lambda (\lambda^2 -4 \lambda + 4) + 4 \lambda & = & 0 \\
+- \lambda (\lambda^2 -4 \lambda ) & = & 0 \\
+\lambda & = & 4, 0, 0 \\
+\end{eqnarray*}
+\[
+\left(
+\begin{array}{ccc}
+2 & 0 & 2 \\
+0 & 0 & 0 \\
+2 & 0 & 2 \\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+x\\
+y\\
+z\\
+\end{array}
+\right)
+= 4
+\left(
+\begin{array}{c}
+x\\
+y\\
+z\\
+\end{array}
+\right)
+\]
+\[x = z , y = 0\]
+
+\[\therefore \left(
+\begin{array}{c}
+x\\
+y\\
+z\\
+\end{array}
+\right)
+= k
+\left(
+\begin{array}{c}
+1\\
+0\\
+1\\
+\end{array}
+\right)
+\]
+これを正規化する。
+\begin{eqnarray*}
+\sqrt{2k^2} & = & 1 \\
+k & = & \frac{1}{\sqrt{2}}\\
+\therefore {\mathbf w}_1 & = & \frac{1}{\sqrt{2}}\left(
+\begin{array}{c}
+1\\
+0\\
+1\\
+\end{array}
+\right)\\ 
+\end{eqnarray*}
+
+\item \({\mathbf t} = {\mathbf X}{\mathbf w}\)より、
+\begin{eqnarray*}
+{\mathbf t} 
+& = &  
+\left(
+\begin{array}{rrr}
+-1 & 0 & -1 \\
+ 1 & 0 &  1 \\
+\end{array}
+\right)
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{r}
+1 \\
+0 \\
+1 \\
+\end{array}
+\right)\\
+& = &
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{r}
+-2 \\
+ 2 \\
+\end{array}
+\right)
+\end{eqnarray*}
+これを正規化して
+\[
+{\mathbf t} =  
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{r}
+-1 \\
+ 1 \\
+\end{array}
+\right)
+\]
+同様にして\({\mathbf u} = {\mathbf Y}{\mathbf c}\)より、
+\begin{eqnarray*}
+{\mathbf u} 
+& = &  
+\left(
+\begin{array}{rr}
+-\frac{1}{2} & -\frac{1}{2} \\
+\frac{1}{2} & \frac{1}{2} \\
+\end{array}
+\right)
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{r}
+1 \\
+1 \\
+\end{array}
+\right)\\
+& = &
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{rrr}
+-1 \\
+ 1 \\
+\end{array}
+\right)
+\end{eqnarray*}
+
+\item \({\mathbf b} = {\mathbf u}^T{\mathbf t}\)より、
+\begin{eqnarray*}
+{\mathbf b} & = & 
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{rr}
+-1 & 1 \\
+\end{array}
+\right)
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{r}
+-1 \\
+ 1 \\
+\end{array}
+\right) \\
+& = & 1\\
+\end{eqnarray*}
+（このような計算をしなくても気付くが、念のため計算した。）
+
+\item \({\mathbf p}= {\mathbf X}^T{\mathbf t}\)より、
+\begin{eqnarray*}
+{\mathbf p} & = & 
+\left(
+\begin{array}{rr}
+-1 & 1\\
+ 0 & 0\\
+-1 & 1\\
+\end{array}
+\right)
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{r}
+-1 \\
+ 1 \\
+\end{array}
+\right)\\
+& = & 
+\left(
+\begin{array}{rr}
+\sqrt{2} \\
+ 0 \\
+\sqrt{2} \\
+\end{array}
+\right)\\
+\end{eqnarray*}
+
+同様にして \({\mathbf q}= {\mathbf Y}^T{\mathbf u}\) より、
+
+\begin{eqnarray*}
+{\mathbf q} & = & 
+\left(
+\begin{array}{rr}
+-\frac{1}{2} & \frac{1}{2}\\
+-\frac{1}{2} & \frac{1}{2}\\
+\end{array}
+\right)
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{r}
+-1 \\
+ 1 \\
+\end{array}
+\right)\\
+& = & 
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{rr}
+1 \\
+1 \\
+\end{array}
+\right)\\
+\end{eqnarray*}
+
+\item \({\mathbf X} - {\mathbf t}{\mathbf p}^T = 0\)
+
+\item 回帰係数行列\({\mathbf B}_{\rm PLS}\)を求める。
+\begin{enumerate}
+\item \({\mathbf p}^T\)を特異値分解する。
+\({\mathbf p}^T = \left(\begin{array}{rrr} \sqrt{2} & 0 & \sqrt{2}\end{array}\right)\)より、
+
+\begin{eqnarray*}
+({\mathbf p}^T {\mathbf p}) {\mathbf U}& = & {\mathbf U}( {\mathbf \Sigma}{\mathbf \Sigma}^T) \\
+4{\mathbf U}& = & {\mathbf U}( {\mathbf \Sigma}{\mathbf \Sigma}^T) \\          
+\end{eqnarray*}
+
+\begin{eqnarray*}
+| 4 - \lambda | & = & 0 \\
+\therefore \lambda & = & 4, \hspace{2em}{\mathbf u}_1 = 1 \\
+\end{eqnarray*}
+
+また、
+
+\[
+{\mathbf p}{\mathbf p}^T =  
+\left(
+\begin{array}{rrr}
+2 & 0 & 2 \\
+0 & 0 & 0 \\
+2 & 0 & 2 \\
+\end{array}
+\right) \\
+\]
+
+\[
+\left|
+\begin{array}{ccc}
+2-\lambda & 0        & 2 \\
+0         & -\lambda & 0 \\
+2         & 0        & 2-\lambda \\
+\end{array}
+\right|
+= 0
+\]
+
+\begin{eqnarray*}
+- \lambda ( 2 - \lambda )^2 + 4 \lambda & = & 0 \\
+- \lambda ( \lambda^2 - 4 \lambda + 4 ) + 4 \lambda & = & 0 \\ 
+- \lambda ( \lambda^2 - 4 \lambda ) & = & 0 \\ 
+\therefore \lambda & = & 4, 0, 0 \\
+\end{eqnarray*}
+
+\[
+\left(
+\begin{array}{ccc}
+2 & 0 & 2 \\
+0 & 0 & 0 \\
+2 & 0 & 2 \\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+x \\
+y \\
+z \\
+\end{array}
+\right)
+= 
+4
+\left(
+\begin{array}{c}
+x \\
+y \\
+z \\
+\end{array}
+\right)
+\]
+より、\(x=z, y=0\)であるから、
+
+\[
+\mathbf{v_1}
+=
+k
+\left(
+\begin{array}{c}
+1 \\
+0 \\
+1 \\
+\end{array}
+\right)
+\]
+
+正規化して、
+
+\[
+\mathbf{v_1}
+=
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{c}
+1 \\
+0 \\
+1 \\
+\end{array}
+\right)
+\]
+
+よって、\({\mathbf p}^T\)の特異値分解は次のようになる。
+
+\[\therefore {\mathbf p}^T = 1 \cdot
+\left(
+\begin{array}{ccc}
+2 & 0 & 0 \\
+\end{array}
+\right)
+\left(
+\begin{array}{ccc}
+\frac{1}{\sqrt{2}} & 0 & \frac{1}{\sqrt{2}} \\
+0 & 0 & 0 \\
+0 & 0 & 0 \\
+\end{array}
+\right)
+\]
+
+\item \({\mathbf p}^T\) の一般逆行列 \(({\mathbf p}^T)^\#\)を求める。\({\mathbf A}^\# = {\mathbf V}{\mathbf \Sigma}^{\prime -1}{\mathbf U}^T\)より、
+
+\begin{eqnarray*}
+({\mathbf p}^T)^\# & = & 
+\left(
+\begin{array}{ccc}
+\frac{1}{\sqrt{2}} & 0 & 0 \\
+0 & 0 & 0 \\
+\frac{1}{\sqrt{2}} & 0 & 0 \\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+\frac{1}{2} \\
+0 \\ 
+0 \\
+\end{array}
+\right) \cdot 1\\
+ & = & 
+\frac{1}{2\sqrt{2}} 
+\left(
+\begin{array}{c}
+1 \\
+0 \\
+1 \\
+\end{array}
+\right) \\
+\end{eqnarray*}
+
+\item 回帰係数行列\({\mathbf B}_{\rm PLS}\)を求める。\({\mathbf B}_{\rm PLS} = ({\mathbf P}^T)^\# {\mathbf B}{\mathbf Q}^T\) より
+
+\begin{eqnarray*}
+{\mathbf B}_{\rm PLS} & = & \frac{1}{2\sqrt{2}}
+\left(
+\begin{array}{c}
+1 \\
+0 \\
+1 \\
+\end{array}
+\right) 
+\cdot 1 \cdot 
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{cc}
+1 & 1\\
+\end{array}
+\right) \\
+& = & \frac{1}{4}
+\left(
+\begin{array}{cc}
+1 & 1\\
+0 & 0\\
+1 & 1\\
+\end{array}
+\right) 
+\end{eqnarray*}
+\end{enumerate}
+
+\item \begin{eqnarray*}
+{\mathbf Y}_0 - \bar{\mathbf Y} & = & ( {\mathbf X}_0 - \bar{\mathbf X} ) {\mathbf B}_{\rm PLS} \\
+{\mathbf Y}_0 & = & {\mathbf X}_0 {\mathbf B}_{\rm PLS} - \bar{\mathbf X}{\mathbf B}_{\rm PLS} + \bar{\mathbf Y}\\
+\left(
+\begin{array}{cc}
+{\rm Fos}_{\rm EGF} & {\rm Jun}_{\rm EGF} \\
+{\rm Fos}_{\rm NGF} & {\rm Jun}_{\rm NGF} \\
+\end{array}
+\right)
+& = & 
+\left(
+\begin{array}{ccc}
+{\rm ERK}^{t1}_{\rm EGF} & {\rm ERK}^{t2}_{\rm EGF} & {\rm ERK}^{t3}_{\rm EGF} \\
+{\rm ERK}^{t1}_{\rm NGF} & {\rm ERK}^{t2}_{\rm NGF} & {\rm ERK}^{t3}_{\rm NGF} \\
+\end{array}
+\right)
+\frac{1}{4}
+\left(
+\begin{array}{rr}
+1 & 1 \\
+0 & 0 \\
+1 & 1 \\
+\end{array}
+\right)
+\\
+ & & 
+- \left(
+\begin{array}{ccc}
+1 & 4 & 3 \\
+1 & 4 & 3 \\
+\end{array}
+\right)
+\frac{1}{4}
+\left(
+\begin{array}{rr}
+1 & 1 \\
+0 & 0 \\
+1 & 1 \\
+\end{array}
+\right) 
++
+\left(
+\begin{array}{rr}
+\frac{1}{2} & \frac{3}{2} \\
+\frac{1}{2} & \frac{3}{2} \\
+\end{array}
+\right) 
+\\
+\end{eqnarray*}
+
+\[ \therefore
+\left\{
+\begin{array}{lll}
+{\rm Fos}_{\rm EGF} & = & \frac{1}{4}( {\rm ERK}^{t1}_{\rm EGF} + {\rm ERK}^{t3}_{\rm EGF} ) - \frac{1}{2} \\
+{\rm Jun}_{\rm EGF} & = & \frac{1}{4}( {\rm ERK}^{t1}_{\rm EGF} + {\rm ERK}^{t3}_{\rm EGF} ) + \frac{1}{2} \\
+{\rm Fos}_{\rm NGF} & = & \frac{1}{4}( {\rm ERK}^{t1}_{\rm NGF} + {\rm ERK}^{t3}_{\rm NGF} ) - \frac{1}{2} \\
+{\rm Jun}_{\rm NGF} & = & \frac{1}{4}( {\rm ERK}^{t1}_{\rm NGF} + {\rm ERK}^{t3}_{\rm NGF} ) + \frac{1}{2} \\
+\end{array}
+\right.
+\]
+\item \(
+{\mathbf p} =  
+\left(
+\begin{array}{r}
+\sqrt{2} \\
+ 0 \\
+\sqrt{2} \\
+\end{array}
+\right) 
+\) より、\({\mathbf X}\) の第1列、第3列の値が\({\mathbf t}\), \({\mathbf u}\)に寄与する。\\
+
+\(
+{\mathbf q} = 
+\frac{1}{\sqrt{2}}
+\left(
+\begin{array}{r}
+1 \\
+1 \\
+\end{array}
+\right)
+\) より、\({\mathbf Y}\)の第1列、第2列に対して\({\mathbf u}\)は均等に寄与する。\\
+よって、ERK時系列データ(\({\mathbf X}\))のうち、c-Fos、c-Jun の発現量 (\({\mathbf Y}\)) に最も寄与している時点はt1とt3（第1列と第3列）である。
+\end{enumerate}
+
+\subsection{まとめ}
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{../Multivariate/multivariate5.epsi}
+\end{center}
+\end{figure}
+
+
+\section{シグナル伝達系の多変量解析}
+\subsection{Janes and Yaffeのデータ}
+\paragraph{Metrics}
+\paragraph{ダウンロード}
+stimuliはCell、responsesはScience。
+
+\subsection{Rを使う}
+Mevik and Wehrens "The pls Package: Principal Component and Parital Least Squares Regression in R", J. Stat. Soft. 18(2): , 2007.
+
+\subsection{Janes and YaffeのデータにPLS回帰を適用}
+\section{Further reading}
+Abdi, H. (2007) Partial least square regression (PLS regression). In N.J. Salkind (ed.): Encyclopedia of Measurement and Statistics. Thousand Oaks, CA, pp. 740-744.
+(本書におけるPLS回帰の解説はこの論文に基づいている。当該論文PDFファイルは著者であるAbdi教授のホームページから入手できる http://utdallas.edu/~herve/)
+
+Jane and Yaffe
+%http://www.ee.ic.ac.uk/hp/staff/dmb/matrix/calculus.html
+京都大学大学院工学研究科化学工学専攻プロセスシステム工学研究室・加納学氏のテキスト
