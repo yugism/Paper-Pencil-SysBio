@@ -1,0 +1,359 @@
+\chapter{確率論的シミュレーション}
+\section{目標}
+Chapman-Kolmogorov equation + Markov process = master equation
+master equation は Fokker-Planck equation (連続近似)に帰着させて解く。
+Langevin equation も Fokker-Planck equation に帰着させて解く。
+
+Gillespieがわかる
+Rosenfeldの粒子数推定法がわかる
+
+分子数が少なくなると、常微分方程式で予測した値からの乖離が大きくなる（FIXME なぜ？）。平均的な時間発展とともに、平均からのずれ（ゆらぎ）を予測することが必要になる。これは反応確率の微分方程式で予測できる(FIXME ほんと？)。マスター方程式と呼ばれる。しかしマスター方程式は分子数が多くなると解析的に説くことが困難になる(FIXME ほんと？)。その際には確率論的方法をに基づいてシミュレーションを行う。ここではマスター方程式を手で解くとともに、もっとも有名な確率論的方法である Gillespie 法を追体験することで確率論的シミュレーションの実際を学ぶ。
+
+
+\section{マスター方程式}
+マスター方程式は時間で変化する確率分布についての微分方程式である。たとえば、反応確率は基質分子の個数に依存するので、時間ごとに変化する。システム生物学におけるマスター方程式は、反応確率の時間変化を表す。
+
+\subsection{立式}
+\begin{eqnarray*}
+P(1, t+\Delta t) & = & P(1,t) + P(2,t)k\Delta t \cdot 2 - P(1,t)k\Delta t \cdot 1\\
+P(1, t+\Delta t) - P(1,t) & = & \{ 2k P(2,t) - k P(1,t)\}\Delta t\\
+\frac{P(1, t+\Delta t) - P(1,t)}{\Delta t} & = & 2k P(2,t) - k P(1,t)\\
+\end{eqnarray*}
+
+\[
+\frac{d}{dt}
+\left(
+\begin{array}{r}
+P_2\\
+P_1\\
+P_0\\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{rrr}
+-2k & 0 & 0\\
+2k & -k & 0\\
+0 & k & 0\\
+\end{array}
+\right)
+\left(
+\begin{array}{r}
+P_2\\
+P_1\\
+P_0\\
+\end{array}
+\right)
+\]
+
+\begin{eqnarray*}
+\frac{d}{dt}({\mathbf P}^{-1}{\mathbf x}) & = & k{\mathbf \Lambda}({\mathbf P}^{-1}{\mathbf x})\\
+& = & 
+k
+\left(
+\begin{array}{rrr}
+0 & 0 & 0 \\
+0 & -1 & 0 \\
+0 & 0 & -2 \\
+\end{array}
+\right)
+{\mathbf P}^{-1}{\mathbf x}
+\end{eqnarray*}
+
+\subsection{解析解}
+A --> B 不可逆反応の解析解を求める。
+
+\[A \overset{k}\rightarrow B\]
+
+マスター方程式を書き下ろすと以下のようになる。
+\[
+\left\{
+\begin{array}{lcl}
+P(2 ; t+\Delta t) & = & ( 1 - k \Delta t \cdot 2 ) P( 2 ; t )\\ 
+P(1 ; t+\Delta t) & = & P( 2 ; t ) k \Delta t \cdot 2 + ( 1 - k \Delta t \cdot 1) P( 1 ; t )\\
+P(0 ; t+\Delta t) & = & P( 1 ; t ) k \Delta t \cdot 1 + ( 1 - k \Delta t \cdot 0 ) P( 0 ; t)\\
+\end{array}
+\right.
+\]
+
+\[
+\left\{
+\begin{array}{lcl}
+\frac{d}{dt} P( 2 ; t ) & = & -2k P( 2 ; t )\\ 
+\frac{d}{dt} P( 1 ; t ) & = & 2k P( 2 ; t ) - k P( 1 ; t )\\
+\frac{d}{dt} P( 0 ; t ) & = & k P( 1 ; t )\\
+\end{array}
+\right.
+\]
+
+以後、\(P(n;t)\)を\(P_n\)と表記する。
+
+\[
+\begin{array}{cccc}
+\frac{d}{dt}
+\left(
+\begin{array}{l}
+P_2\\
+P_1\\
+P_0\\
+\end{array}
+\right)
+& = &
+k
+\left(
+\begin{array}{rrr}
+-2 & 0 & 0\\
+2 & -1 & 0\\
+0 & 1 & 0 \\
+\end{array}
+\right)
+&
+\left(
+\begin{array}{l}
+P_2\\
+P_1\\
+P_0\\
+\end{array}
+\right)\\
+\dot{\bf x} & = & k \ {\bf A} & {\bf x}\\
+\end{array}
+\]
+
+これを初期条件
+
+\[
+\left(
+\begin{array}{l}
+P(2;t=0)\\
+P(1;t=0)\\
+P(0;t=0)\\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{l}
+1\\
+0\\
+0\\
+\end{array}
+\right)
+\]
+のもとで解く。\\
+\indent \({\bf A}\)の固有値・固有ベクトルを求め、対角化する。
+
+\begin{figure}[ht]
+\centering
+%\includegraphics[clip, width=5cm,bb=0 0 311 91]{../Stochastic/stochastic.jpg}\\
+\includegraphics[scale=0.5]{../Stochastic/master_eqn_error_irreversible.epsi}
+\caption{FIXME}
+\label{fig:stochastic2}
+\end{figure}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics[scale=0.5]{../Stochastic/master_eqn_error_reversible.epsi}
+\caption{FIXME}
+\label{fig:stochastic3}
+\end{figure}
+
+
+\subsection{演習: 萩谷・山本の教科書の例を自力で解く。}
+
+\[A \overset{k_1}{\underset{k_2}\leftrightarrows} B\]
+
+\section{Gillespie法}
+\subsection{アルゴリズム}
+\[A \overset{k_1}{\underset{k_2}\leftrightarrows} B\]
+
+Aの分子数を$C_1$、Bの分子数を$C_2$とすると、
+
+\[\left\{
+\begin{array}{lcl}
+v_1 & = & k_1 C_1 \\ 
+v_2 & = & k_2 C_2 \\ 
+    & \vdots & \\
+v_{\rm total} & = & \sum v_i\\ 
+\end{array}
+\right.\]
+
+\begin{enumerate}
+\item 0〜1の範囲の値をとる2つの乱数、$r_1, r_2$生成する。$r_1$は次の反応が起こるまでの時間を決める。$r_2$はどの反応が起こるのかを決める。
+\item 次の反応が起こるまでの時間の長さ$\tau$と、その際に起こる反応番号$i$を下式に従って計算する。
+\begin{eqnarray*}
+\tau & = & \frac{1}{v_{\rm total}}\ln\frac{1}{r_1}\\
+& &\\
+i & = & \left\{
+\begin{array}{lll}
+1 & & \left(r_2 < \frac{v_1}{v_{\rm total}}\right)\\
+2 & & \left(r_2 > \frac{v_1}{v_{\rm total}}\right)\\
+\end{array}
+\right.
+\end{eqnarray*}
+$\tau$についての式は、「求める分布を一様分布からつくるには、求める分布の逆関数に一様乱数を代入する」という知見を利用している。
+\item 時間を$\tau$だけ進める。
+\item $i$の値で指定された化学反応を起こす。$i=1$ならば反応1が起きるので、$C_1$を1分子減らし、$C_2$を1分子増やす。
+\end{enumerate}
+
+\subsection{Gillespie法の実行例}
+生化学反応系を
+\[\left\{
+\begin{array}{lcl}
+v_1 & = & 1 C_1 \\ 
+v_2 & = & 2 C_2 \\ 
+\end{array}
+\right.\]
+とし、\(C_!\)、\(C_2\)の平均的な時系列および平均からの標準偏差を求める手順を例解します。
+ただし、\(C_!\)、\(C_2\) (分子数)の初期値をそれぞれ2個、0個とします。計算中に現れる対数の近似値として、
+
+\begin{eqnarray*}
+\ln 2 & = & 0.7 \\
+\ln 3 & = & 1.1 \\
+\ln 5 & = & 1.6 \\
+\ln 7 & = & 1.9 \\
+\end{eqnarray*}
+
+を用います。
+
+\paragraph{1回目}
+サイコロで乱数を生成した結果、
+
+\begin{eqnarray*}
+r_1 & = & 0.9\\
+r_2 & = & 0.3\\
+\end{eqnarray*}
+
+を得た。\(r_1\)より\(\tau\)を求めると、
+
+\begin{eqnarray*}
+\tau & = & \frac{1}{2 C_1 + 1 C_2} \ln \frac{1}{r_1}\\
+     & = & \frac{1}{2 \times 2 + 1 \times 0} \ln \frac{1}{0.9}\\
+     & = & \frac{1}{4} \ln \frac{10}{9}\\
+     & = & \frac{1}{4} ( \ln 2 + \ln 5 - 2 \ln 3 ) \\
+     & = & \frac{1}{4} ( 0.7 + 1.6 - 2 \times 1.1 )\\
+     & = & 0.025\\
+\end{eqnarray*}
+
+次に、\(r_2\)より\(\tau = 0.025\)秒後に起きる反応を求める。
+
+\begin{eqnarray*}
+\frac{v_1}{v_{\rm total}} & = & \frac{2 C_1}{2 C_1 + 1 C_2} \\
+                        & = & \frac{2 \times 2}{2 \times 2 + 1 \times 0} \\
+                        & = & 1\\
+                        & = & 1\\
+                        & > & r_2
+\end{eqnarray*}
+
+よって、起きるのは\(v_1\)の反応( \(A \longrightarrow B\) )。時系列は次のようになる。\\
+
+\begin{tabular}{r||r|r}
+\hline
+t & 0 & 0.025\\
+\hline
+A & 2 & 1 \\
+B & 0 & 1 \\
+\hline
+\end{tabular}
+
+
+\subsection{演習}
+\begin{enumerate}
+\item 「例解」に示した反応系に基づいて、時系列をあと2つ求めなさい。\(r_!\)、\(r_2\)はサイコロを振って求めること。
+\item 求まった合計3つの時系列を用いて、整数時間における\(C_1\)、\(C_2\)の平均値と標準偏差を求めなさい。データポイント間を線形補間した値とします。
+\end{enumerate}
+
+
+生化学反応系を
+\[\left\{
+\begin{array}{lcl}
+v_1 & = & 1 C_1 \\ 
+v_2 & = & 2 C_2 \\ 
+\end{array}
+\right.\]
+とするとき、以下の手順(Gillespie 法)に従って平均的な時系列および平均からの標準偏差を求めなさい。ただし、\(C_!\)、\(C_2\) (分子数)の初期値をそれぞれ2個、0個とします。計算中に現れる対数の値を求める手段(関数電卓等)がないときは、近似値として
+
+\begin{eqnarray*}
+\ln 2 & = & 0.7 \\
+\ln 3 & = & 1.1 \\
+\ln 5 & = & 1.6 \\
+\ln 7 & = & 1.9 \\
+\end{eqnarray*}
+
+を用いること。
+
+\begin{enumerate}
+\item サイコロを振って 0.1 \(\sim\) 1.0 の値をとる 2 つの乱数 \(r_1\)、\(r_2\)を生成しなさい。
+\item \(r_1\) の値を用いて、次の反応が起きるまでの時間\(\tau\)を求めなさい。
+\item \(r_2\) の値を用いて、\(\tau\)秒後に起きる反応が\(v_1\)、\(v_2\)のどちらか求めなさい。
+\item \(\tau\)秒後の\(C_1\)、\(C_2\)の値を更新しなさい。
+\item 「1」\(\sim\) 「4」をn回繰り返し、\(C_1\)、\(C_2\)の時系列を求めなさい。
+
+\end{enumerate}
+
+
+\subsection{導出}
+\begin{figure}[ht]
+\centering
+%\includegraphics[clip, width=5cm,bb=0 0 311 91]{../Stochastic/stochastic.jpg}\\
+\includegraphics[scale=0.5]{../Stochastic/stochastic.epsi}
+\caption{FIXME}
+\label{fig:stochastic1}
+\end{figure}
+
+$ \tau = n \varepsilon $ とする。\\
+
+$\mu$ 番目の反応が $ \tau $ 秒後に起きる確率密度を $ P(\tau,\mu) $ とおく。このとき、反応$\mu$が時刻$\tau$から$\tau+d\tau$の間に起こる確率は $ P(\tau,\mu) d\tau $ と書ける。
+
+\begin{eqnarray*}
+P(\tau , \mu) & = & P_0 (\tau) v_{\mu} d\tau \\
+& = & P_0 (\tau) k_\mu C_1 d\tau \\
+\end{eqnarray*}
+
+$P_0 (\tau)$は$\tau$秒間反応が起き{\bf ない}確率、$v_{\mu} d\tau$は微小時間$d\tau$のうちに反応$\mu$が起きる確率。\\
+
+\begin{eqnarray*}
+\varepsilon \mbox{秒間、全ての反応が起きない確率} & = & \prod^{M}_{\nu} ( 1 - v_{\nu} \varepsilon )\\
+& = & 1 - \sum^{M}_{\nu} v_{\nu} \varepsilon + O(\varepsilon^2)\\
+\end{eqnarray*}
+
+2次以上の項を無視すると、
+
+\begin{eqnarray*}
+P_0(\tau) & = & \left( 1 - \sum^{M}_{\nu} v_{\nu} \varepsilon \right)^n \\
+& = & \left( 1 - \sum^{M}_{\nu} v_{\nu} \frac{\tau}{n} \right)^n \\
+\end{eqnarray*}
+$n \rightarrow \infty$のとき
+
+\[P_0(\tau) = \exp \left( - \sum^{M}_{\nu} v_{\nu} \tau \right)\]
+\[\therefore P(\tau,\mu)d\tau = v_\mu \exp \left( - \sum^{M}_{\nu} v_{\nu} \tau \right)d\tau\]
+
+\begin{eqnarray*}
+P(\tau,\mu) & = & v_\mu \exp \left( - \sum^{M}_{\nu} v_{\nu} \tau \right)\\
+& = & v_\mu \exp \left( - v_{\rm total} \tau \right)\\
+& = & \left\{ v_{\rm total} \exp \left( - v_{\rm total} \tau \right)\right\}\left(\frac{v_\mu}{v_{\rm total}}\right)\\
+& = & P(\tau) P(\mu|\tau)\\
+\end{eqnarray*}
+
+\subsection{サイコロで乱数をつくる}
+1〜10、または0〜9までの数字をサイコロでランダムに生成するには、以下のようにサイコロを2回振ります。\\
+
+\begin{tabular}{lll}
+サイコロ1回目 & : & 1〜5が出たら、その値を \(x\) とする。6が出たら振り直し。\\
+サイコロ2回目 & : & 奇数が出たら\(x\) を、偶数ならば\(x+5\)を最終出力値にする。\\
+\end{tabular}
+
+\subsection{補間}
+
+
+\subsection{演習: 紙と鉛筆とサイコロでGillespieアルゴリズムを体験}
+
+\section{確率過程}
+\subsection{Bernoulli過程}
+\subsection{Poisson過程}
+\subsection{指数分布}
+\subsection{ガンマ分布}
+
+\section{Further reading}
+Wilkinson, 松原望
+\verb+http://www.cs.princeton.edu/picasso/seminarsS05/Karig_slides.pdf+
+
