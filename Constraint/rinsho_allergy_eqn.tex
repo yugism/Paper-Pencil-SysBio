@@ -1,0 +1,182 @@
+% Eqn 1
+
+\begin{array}{cccc}
+\frac{d}{dt}
+\left(
+\begin{array}{l}
+{\rm F1,6BP} \\
+{\rm DHAP} \\
+{\rm GA3P} \\ 
+\end{array}
+\right)
+& = &
+\left(
+\begin{array}{rrrr}
+  1  &  -1 & 0 & 0 \\
+  0  &  1 & -1 & 0 \\
+  0  &  1 & 1 & -1 \\ 
+\end{array}
+\right)
+&
+\left(
+\begin{array}{l}
+v_1 \\
+v_2 \\
+v_3 \\ 
+v_{\rm out}
+\end{array}
+\right)\\
+\frac{d}{dt}{\bf x} & = & {\bf S} & {\bf v} \\
+\end{array}
+
+% Eqn 2
+
+\begin{array}{cccc}
+{\bf S} & {\bf v} & = & 0\\
+\left(
+\begin{array}{rrrr}
+  1  &  -1 & 0 & 0 \\
+  0  &  1 & -1 & 0 \\
+  0  &  1 & 1 & -1 \\ 
+\end{array}
+\right)
+&
+\left(
+\begin{array}{l}
+v_1 \\
+v_2 \\
+v_3 \\ 
+v_{\rm out}
+\end{array}
+\right)
+& = & 0
+\end{array}
+
+
+% Eqn 3
+
+\begin{array}{lccccc}
+\left(
+\begin{array}{rrrr}
+1 & -1 & 0 & 0 \\ 
+0 & 1 & -1 & 0 \\ 
+0 & 1 & 1 & -1 \\
+\end{array}
+\right) 
+&
+\left(
+\begin{array}{l}
+v_1 \\ 
+v_2 \\ 
+v_3 \\ 
+v_{\rm out}
+\end{array}
+\right)
+& &
+ & = & 0 \\ 
+\left(
+\begin{array}{rrr}
+  1 & -1 & 0 \\ 
+0 & 1 & -1 \\
+ 0 & 1 & 1 \\
+\end{array}
+\right) 
+&
+\left(
+\begin{array}{l}
+v_1 \\ v_2 \\ v_3 \\
+\end{array}
+\right) 
+&
++ 
+&
+\left(
+\begin{array}{r}
+  0 \\ 0 \\ -1\\
+\end{array}
+\right) v_{\rm out} & = & 0 \\
+\end{array}
+
+% Eqn 4
+
+\begin{array}{ccclc}
+\left(
+\begin{array}{rrr}
+  1  &  -1 & 0 \\
+  0  &  1 & -1 \\
+  0  &  1 & 1 \\ 
+\end{array}
+\right)
+&
+\left(
+\begin{array}{l}
+v_1 \\
+v_2 \\
+v_3 \\ 
+\end{array}
+\right)
+& = &  & -
+\left(
+\begin{array}{r}
+  0 \\
+  0 \\
+  -1\\
+\end{array}
+\right)
+v_{\rm out}\\
+&
+\left(
+\begin{array}{l}
+v_1 \\
+v_2 \\
+v_3 \\ 
+\end{array}
+\right)
+& = & -
+\left(
+\begin{array}{rrr}
+  1  &  -1 & 0 \\
+  0  &  1 & -1 \\
+  0  &  1 & 1 \\ 
+\end{array}
+\right)^{-1}
+&
+\left(
+\begin{array}{r}
+  0 \\
+  0 \\
+  1\\
+\end{array}
+\right)
+v_{\rm out}\\
+&
+& = & 
+\frac{1}{2}
+\left(
+\begin{array}{rrr}
+  2  & 1 & 1 \\
+  0  & 1 & 1 \\
+  0  & -1 & 1 \\ 
+\end{array}
+\right)
+&
+\left(
+\begin{array}{r}
+  0 \\
+  0 \\
+  1\\
+\end{array}
+\right)
+v_{\rm out}\\
+&
+& = &
+  \frac{1}{2} 
+\left(
+\begin{array}{r}
+ 1 \\
+ 1 \\
+ 1 \\
+\end{array}
+\right)
+v_{\rm out}\\
+\end{array}
