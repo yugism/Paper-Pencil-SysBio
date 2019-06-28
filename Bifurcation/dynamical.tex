@@ -21,7 +21,7 @@
 デル化しました(ただし、\(x\)はタンパク質、\(y\)はmRNAの存在量)。
 
 \begin{figure}[ht]
-        \centering \includegraphics[height=2cm]{../Dynamical/img/griffith_model.eps}
+        \centering \includegraphics[height=2cm]{../Bifurcation/img/griffith_model.eps}
         \caption{Griffithモデル。翻訳されたタンパク質は自身をコードする遺伝子の転写を活性化する。}
         \label{fig:04sysbio} \end{figure}
 
@@ -77,7 +77,7 @@ Griffith モデルのヌルクラインを相平面上に描きなさい。
 \indent ヌルクラインの定義より、\(x\)のヌルクライン上ではベクトルは垂直(\(\dot x = 0\))になります(図\ref{fig:05sysbio})。。
 
 \begin{figure}[ht]
-        \centering \includegraphics[height=6cm]{../Dynamical/img/vectorfield.eps}
+        \centering \includegraphics[height=6cm]{../Bifurcation/img/vectorfield.eps}
         \caption{相平面上に描いたヌルクラインとベクトル場}
         \label{fig:05sysbio} \end{figure}
 
@@ -235,7 +235,7 @@ Griffith モデルを線形化し、ヤコビ行列を求めなさい。
 幾何学的な描像を図\ref{fig:06sysbio}に示しました。
 
 \begin{figure}[ht]
-        \centering \includegraphics[height=6cm]{../Dynamical/img/decomposition.eps}
+        \centering \includegraphics[height=6cm]{../Bifurcation/img/decomposition.eps}
         \caption{摂動(定常状態\(x_{ss}\)からのずれ)は固有ベクトルの線形結合として表せる。}
         \label{fig:06sysbio} \end{figure}
 
@@ -251,7 +251,7 @@ Griffith モデルを線形化し、ヤコビ行列を求めなさい。
 となり、固有値が正の時には\(\Delta {\bf x}\)が発散し、負の時には収束する(すなわち固定点に戻る)ことがわかります(図\ref{fig:07sysbio})。
 
 \begin{figure}[ht]
-        \centering \includegraphics[height=5cm]{../Dynamical/img/eigenvector.eps}
+        \centering \includegraphics[height=5cm]{../Bifurcation/img/eigenvector.eps}
         \caption{(左)固有値がすべて負なら解軌跡は固定点に収束する。(右)正の固有値を含む固定点では解軌跡が発散する。}
         \label{fig:07sysbio} \end{figure}
 
@@ -276,12 +276,12 @@ Griffith モデルを線形化し、ヤコビ行列を求めなさい。
 \end{center}
 
 \begin{figure}[ht]
-        \centering \includegraphics[height=6cm]{../Dynamical/img/node_stability.eps}
+        \centering \includegraphics[height=6cm]{../Bifurcation/img/node_stability.eps}
                 \caption{実数固有値のみの場合の固定点の分類。(左)それぞれの固定点近傍におけるベクトル場の特徴。正の固有値を1つでも含むと不安定な定常状態となる。(右)時系列の特徴。}
         \label{fig:08asysbio} \end{figure}
         
 \begin{figure}[ht]
-        \centering \includegraphics[height=6cm]{../Dynamical/img/spiral_stability.eps}
+        \centering \includegraphics[height=6cm]{../Bifurcation/img/spiral_stability.eps}
         \caption{複素固有値を含む場合の固定点の分類。(左)それぞれの固定点近傍におけるベクトル場の特徴。実部の符号によって安定性を判別する。(右)時系列の特徴。}
         \label{fig:08bsysbio} \end{figure}
 
@@ -339,7 +339,7 @@ c& d\\
 はSel'kovモデルを通じて振動現象を説明する数理を学びます。
 
 \begin{figure}[ht]
-        \centering \includegraphics[height=1.5cm]{../Dynamical/img/selkov_model.eps}
+        \centering \includegraphics[height=1.5cm]{../Bifurcation/img/selkov_model.eps}
         \caption{Sel'kovモデル。ADPがPFKを活性化することによる正のフィードバック・ループを持つ。}
         \label{fig:09sysbio} \end{figure}
 
@@ -364,7 +364,7 @@ Center周囲には同心円状に閉軌道が存在する(図\ref{fig:08bsysbio}
 細胞内における分子濃度の振動現象のほとんどは Hopf 分岐で説明できます。
 
 \begin{figure}[ht]
-        \centering \includegraphics[height=6cm]{../Dynamical/img/hopf_limitcycle.eps}
+        \centering \includegraphics[height=6cm]{../Bifurcation/img/hopf_limitcycle.eps}
         \caption{(左)共役な複素固有値対が虚軸を左から右に横切るとき、Stable spiralがUnstable spiralに変化する。(右)これに伴い、Unstable spiral を取り巻くようにリミットサイクル(赤で描いた閉軌道)が生じる。}
         \label{fig:10sysbio} \end{figure}
 
@@ -386,7 +386,7 @@ Center周囲には同心円状に閉軌道が存在する(図\ref{fig:08bsysbio}
 ボストン大学Collins lab.のGardnerらは、互いに抑制し合う遺伝子から成る人工遺伝子回路(図\ref{fig:11sysbio})を構築し、大腸菌細胞内で双安定スイッチ(toggle switch)として動作させることに成功しました。同じように双安定性を示す Griffith モデルが Saddle-Node 分岐を内包していたのとは異なり、Toggle switch は1個もしくは3個の固定点を持つ Pitchfork 分岐を起こします。
 
 \begin{figure}[ht]
-        \centering \includegraphics[height=3cm]{../Dynamical/img/toggleswitch.epsi}
+        \centering \includegraphics[height=3cm]{../Bifurcation/img/toggleswitch.epsi}
         \caption{GardnerらのToggle switch型遺伝子回路。2つのリプレッサーが、互いを抑制し合う。}
         \label{fig:11sysbio} \end{figure}
 
@@ -404,7 +404,7 @@ Center周囲には同心円状に閉軌道が存在する(図\ref{fig:08bsysbio}
 式の形を見ると、\(x\)と\(y\)を置換しても同じ式になることがわかります。Pitchfork分岐はこのように対称性をもつ系に生じる分岐です(図\ref{fig:12sysbio})。
 
 \begin{figure}[ht]
-        \centering \includegraphics[height=3cm]{../Dynamical/img/pitchfork.epsi}
+        \centering \includegraphics[height=3cm]{../Bifurcation/img/pitchfork.epsi}
         \caption{Pitchfork分岐の際の固定点のy座標の変化。分岐点を境に、固定点が1個から3個に増える。全体の形状が熊手(pitchfork)に似ているのが命名の由来。}
         \label{fig:12sysbio} \end{figure}
 

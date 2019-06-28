@@ -1,0 +1,30 @@
+\makeatletter
+\def\@AppendixFirst{TRUE}
+\def\appendix#1#2{%
+  \def\true{TRUE}
+  \ifx\@AppendixFirst\true
+  \clearpage\pagenumbering{arabic}\setcounter{page}{1}%
+  \setcounter{chapter}{0}%
+  \def\@AppendixFirst{FALSE}
+  \fi
+  \addtocounter{chapter}{1}%
+  \setcounter{figure}{0}%
+  \renewcommand{\thefigure}{\Alph{chapter}.\@arabic\c@figure}%
+  \renewcommand{\thetable}{\Alph{chapter}.\@arabic\c@table}%
+  \def\addcontentsline##1##2##3{%
+    \protected@write\@auxout
+    {\let\label\@gobble \let\index\@gobble \let\glossary\@gobble\@temptokena{#1-\thepage}}%
+    {\string\@writefile{##1}%
+      {\protect\contentsline{##2}{##3}{\the\@temptokena}}}%
+    }%
+  \setcounter{section}{0}%
+  \chapter*{…’œø #1 #2}%
+  \def\ps@jpl@in{%
+    \def\@oddhead{\@empty}\def\@evenhead{\@empty}%
+    \def\@oddfoot{\hfil{#1-\thepage}\hfil}%
+    \def\@evenfoot{\hfil{#1-\thepage}\hfil}}%
+  \pagestyle{jpl@in}%
+  \setcounter{page}{1}%
+  \addcontentsline{toc}{chapter}{…’œø #1 #2}%
+  \renewcommand{\thesection}{#1-\arabic{section}}}
+\makeatother

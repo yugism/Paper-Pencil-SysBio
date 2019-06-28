@@ -1,0 +1,33 @@
+%
+%
+%
+%\usepackage{epsf}
+\usepackage{graphicx}
+%
+\def\maketitle{
+\begin{titlepage}
+{\Huge \begin{center}
+%\leavevmode\epsfxsize=6mm\epsffile{pen.ps}\\
+%\includegraphics[width=6mm]{pen.ps}\\
+\vfill
+%{\large \@ronbun}\\
+\vfill
+\@title\\
+\vfill \vfill \vfill
+\vfill \vfill \vfill
+%{\LARGE \@shozoku}\\
+\vskip 8mm
+%{\LARGE \@studentID}\\
+\vskip 8mm
+\@author
+\vskip 10mm
+\end{center}}
+\end{titlepage}
+}
+\def\ronbun#1{\def\@ronbun{#1}}
+\def\shozoku#1{\def\@shozoku{#1}}
+\def\studentID#1{\def\@studentID{#1}}
+\def\professor#1{\def\@professor{#1}}
+%
+%
+%
