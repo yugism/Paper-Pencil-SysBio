@@ -1,0 +1,57 @@
+\chapter{反応速度{\it k}の物理学}
+\section{目標}
+「活性化エネルギー」を読める
+1分子同士の衝突頻度＝衝突「確率」、といってよいか？
+
+\section{自由エネルギーとは何か}
+\section{熱力学関数}
+\subsection{示量・示強}
+\subsection{記憶図とLegendre変換}
+\section{Boltzmann分布}
+\section{Maxwell分布}
+\section{前頻度因子の導出}
+\subsection{古典衝突理論}
+\subsubsection{剛体球衝突モデル}
+\section{親和力と反応速度}
+
+\begin{eqnarray*}
+Z_t & = & \sigma (v_r) v_r dc_A dc_B\\
+\end{eqnarray*}
+
+\(v_r\)分子AとBの相対速度、\(\sigma(v_r)\)分子AとBの衝突断面積。分子Aの半径を\(r_A\)、分子Bの半径を\(r_B\)とすると\(\sigma = 4 \pi (r_A + r_B)^2\)。
+
+ここでMaxwell-Boltzmannの速度分布を用いて、
+
+\subsubsection{反応性衝突モデル}
+ただぶつかっただけでは反応しない。2分子反応\(A+B \longrightarrow C+D\)の速度\(v\)は\(v=k[A][B]\)と表される。反応速度は単位体積あたりの反応性衝突に等しい。
+
+\begin{eqnarray*}
+v & = & k[A][B]\\
+  & = & Z_r\\
+  & = & \left\{ \sigma_{AB} \left(\frac{8k_B T}{\pi \mu}\right)^{\frac{1}{2}}{\rm exp}\left(-\frac{\varepsilon_t^{0}}{k_B T}\right) \right\} [A][B]\\
+\end{eqnarray*}
+
+
+
+\subsection{絶対反応論}
+
+\section{演習: 遷移状態理論と速度定数}
+分子動力学(MD)シミュレーションにより、ある反応が起こる前と後での内部エネルギー変化は\(\Delta U = 1.23\)J/molであることが示された。系の温度を310K、エンタルピー変化\(\Delta H \simeq \Delta U\)として次の問いに答えなさい。
+
+\begin{enumerate}
+\item エントロピー変化\(\Delta S\)はどのくらいか。\({\displaystyle \Delta S = \frac{\Delta U}{T}}\)である。
+\item Eylingの遷移状態理論によれば、速度定数\(k\)は以下の式で表される。MDから求まった\(\Delta H\)、\(\Delta S\)が使えるよう、熱力学の第1法則\(\Delta G = \Delta H - T \Delta S\)を用いて書き直しなさい。
+\[k = \frac{k_B T}{h}\kappa e^{-\frac{\Delta G^0}{RT}}\]
+\item MDから求まった\(\Delta H\)、\(\Delta S\)を代入して、速度定数\(k\)を求めなさい。
+\end{enumerate}
+
+
+\section{Further reading} 
+活性化エネルギー
+反応の自由エネルギー変化についてはアイゼンバーグ＆クロサーズ
+熱力学　キャレン(記憶図)、田崎(ルジャンドル変換)、清水、原島と小出(束縛エネルギー)
+統計力学　高校数学で分かるボルツマンの原理、名古屋大の上羽先生のPDF
+
+量子化学計算
+吉澤先生の論文
+平尾　量子化学計算ビギナーズマニュアル
