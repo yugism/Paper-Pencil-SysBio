@@ -1,0 +1,532 @@
+\chapter{代謝制御解析}
+代謝経路の各酵素が流束を「律速」する度合いを評価するための理論。エジン
+バラ大学のKacserとBurns、ベルリン・フンボルト大学のHeinrichとRapoportに
+よって1973年から74年にかけて独立に発表された。Metabolic Control
+Analysisの頭文字を取ってMCAと略記される。
+
+\section{流束制御係数(Flux Control Coefficient)}
+流束制御係数とは、反応速度\(v_1\)が1\%増えたとき、流束Jは何\%増えるかを示す指標である。
+
+\[C^J_{v_1} = \frac{v_1}{J}\frac{\partial J}{\partial v_!}\]
+
+MCAの理論体系では、\(C^J_{v_i}=1\)である酵素を律速酵素(rate-limiting
+enzyme)と定義する。同理論体系には、代謝経路内の基質や反応に関する指標が
+複数種類あるが(後述)、流束制御係数は理論創案当初から最も重視されてい
+る。
+
+\section{流束制御係数の加法定理(summation theorem)}
+\paragraph{定理}
+
+\[\sum_{i=1}^n C^J_{v_i}=1\]
+
+流束Jに影響するすべての\(C^J_{v_i}\)の総和は1(=100\%)。 
+限られた\(C^J_{v_i}\)を複数の酵素で分け合っている。
+
+\paragraph{証明}
+流束の全微分を考える。
+\[dJ = \frac{\partial J}{\partial v_1}dv_1 + \frac{\partial J}{\partial v_2}dv_2 + \cdots + \frac{\partial J}{\partial v_n}dv_n  \]
+
+両辺Jで割り、右辺の各項に \( v_i / v_i (i = 1, \cdots , n)\)をかける。
+
+\begin{eqnarray*}
+\frac{dJ} {J} & = & \frac{v_1}{J}\frac{\partial J}{\partial v_1}\frac{dv_1}{v_1} + \frac{v_2}{J}\frac{\partial J}{\partial v_2}\frac{dv_2}{v_2}  + \cdots + \frac{v_n}{J}\frac{\partial J}{\partial v_n}\frac{dv_n}{v_n} \\
+ & = & C^J_{v_1}\frac{dv_1}{v_1} + C^J_{v_2}\frac{dv_2}{v_2} + \cdots + C^J_{v_n}\frac{dv_n}{v_n}
+\end{eqnarray*}
+
+\(v_1\)～\(v_n\) が同じ割合\(\alpha\)だけ増えると、 Jも\(\alpha\)だけ増加する。
+\[
+\alpha = \frac{dJ} {J} = \frac{dv_1}{v_1} = \frac{dv_2}{v_2} = \cdots = \frac{dv_n}{v_n}
+\]
+
+よって、
+
+\begin{eqnarray*}
+\frac{dJ} {J}  & = & C^J_{v_1}\frac{dv_1}{v_1} + C^J_{v_2}\frac{dv_2}{v_2} + \cdots + C^J_{v_n}\frac{dv_n}{v_n}\\
+\alpha & = & \alpha  C^J_{v_1} + \alpha C^J_{v_2} + \cdots + \alpha C^J_{v_n}
+\end{eqnarray*}
+
+両辺\(\alpha\)で割ると
+
+\[1  =  C^J_{v_1} + C^J_{v_2} + \cdots + C^J_{v_n}\]
+
+となり、加法定理が証明できた。
+
+\section{3つの主要係数}
+流束制御係数の他に、以下の2つの係数が重要である。
+
+\paragraph{濃度制御係数(Concentration Control Coefficient)}
+\[C^S_{v_1} = \frac{v_1}{[S]}\frac{\partial [S]}{\partial v_1}\]
+
+反応速度\(v_1\)が1\%増えたとき基質\(S\)の定常状態濃度が何\%増えるかを示す指標。
+
+\paragraph{弾力性係数(Elasticity)}
+
+\[\varepsilon^{v_1}_{S} = \frac{[S]}{v_1}\frac{\partial v_1}{\partial [S]}\]
+基質\(S\)が1\%増えたとき、反応速度\(v_1\)が何\%増えるかを示す指標。反応の次数を示す。
+
+
+\section{結合定理(connectivity theorem)}
+\paragraph{定義}
+\[\sum_{i=1}^n C^J_{v_i}\varepsilon^{v_i}_{S}=0\]
+
+酵素固有の性質で決まる弾力性係数は、代謝経路全体の中では局所的な要素と
+言える。一方、流束は複数の酵素にまたがるので、代謝経路の大域的な性質で
+ある。結合定理は、局所的指標である弾力性係数と、大域的指標である流束制
+御係数を1本につなぐ指揮として重要である。
+
+\paragraph{証明}
+反応速度の全微分を考える。
+
+\[dv_i = \frac{\partial v_i}{\partial E} dE + \frac{\partial v_i}{\partial S_j} dS_j\]
+
+\(v_i \propto E\) より \(v_i = k E\) とおいて、上式を変形する。
+
+\begin{eqnarray*}
+\frac{dv_i}{v_i} & = &\frac{E}{v_i}\frac{\partial v_i}{\partial E}\frac{dE}{E} + \frac{S_j}{v_i}\frac{\partial v_i}{\partial S_j} \frac{dS_j}{S_j}\\
+& = & \frac{1}{k} k \frac{dE}{E} + \varepsilon^{v_i}_{S_j} \frac{dS_j}{S_j}\\
+& = & \frac{dE}{E} + \varepsilon^{v_i}_{S_j}\frac{dS_j}{S_j}
+\end{eqnarray*}
+
+酵素濃度増、基質濃度減による効果が打ち消しあって\(dv_i=0\)になる組み合
+わせが存在する。
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{../MCA/mca4.epsi}
+\end{center}
+\end{figure}
+
+すなわち、先ほど導いた
+
+\[\frac{dv_i}{v_i} = \frac{dE}{E} + \varepsilon^{v_i}_{S_j}\frac{dS_j}{S_j}\]
+
+に\(dv_i=0\)を代入して
+
+\[0  = \frac{dE}{E} + \varepsilon^{v_i}_{S_j}\frac{dS_j}{S_j}\]
+
+次いで、
+
+\[\frac{dJ} {J}   =  C^J_{v_1}\frac{dv_1}{v_1} + C^J_{v_2}\frac{dv_2}{v_2} + \cdots + C^J_{v_n}\frac{dv_n}{v_n}\]
+
+に\(0  = \frac{dE}{E} + \varepsilon^{v_i}_{S_j}\frac{dS_j}{S_j}\)および\(dJ = dv_1 = ¥cdots = dv_n = 0\)を代入して
+
+\[0 = C^J_{v_1} \left( -\varepsilon^{v_1}_{S_j} \frac{dS_j}{S_j}\right)+\cdots+C^J_{v_n} \left( -\varepsilon^{v_n}_{S_j} \frac{dS_j}{S_j}\right) \]
+
+\[0 = C^J_{v_1} \varepsilon^{v_1}_{S_j} +\cdots+C^J_{v_n} \varepsilon^{v_n}_{S_j}\]
+
+\section{基質濃度制御係数に関する定理}
+証明は省略する。
+\paragraph{加法定理}
+\[\sum^{n}_{i=1} C^{S}_{v_i} = 0\]
+\paragraph{結合定理}
+\[\sum^{n}_{i=1} C^{S_j}_{v_i} \varepsilon^{v_i}_{S_k} = - \delta_{jk}\]
+
+\subsection{係数の測定法}
+ダブルモジュレーション法
+
+\[dJ = \frac{\partial v_{\rm GPI}}{\partial \rm [G6P]} d{\rm [G6P]} + \frac{\partial v_{\rm GPI}}{\partial \rm [F6P]} d{\rm [F6P]}\]
+
+\paragraph{演習}
+ある細胞の解糖系についてダブルモジュレーション実験を行い、下記のようなデータを得た。 \(\varepsilon\)を求めなさい。
+
+\begin{itemize}
+\item コントロール
+\begin{itemize}
+\item [G6P]=80\(\mu\)M、[F6P]=12\(\mu\)M、\(v_{GPI}\)=2400\(\mu\)M/min 
+\end{itemize}
+
+\item \(\Delta\)[Glucose]=1.0mMのとき
+\begin{itemize}
+\item [G6P]=88\(\mu\)M、[F6P]=15\(\mu\)M、\(v_{GPI}\)=2440\(\mu\)M/min
+\end{itemize}
+
+\item \(\Delta\)[Glucose]=2.0mMのとき
+\begin{itemize}
+\item [G6P]=90\(\mu\)M、[F6P]=14\(\mu\)M、\(v_{GPI}\)=2520\(\mu\)M/min
+\end{itemize}
+\end{itemize}
+
+\section{行列形式への拡張と基本方程式}
+今までの議論は一直線の代謝経路のみを前提としていた。実際の代謝系にはいたるところに分岐点がある。分岐点のある経路でもMCAを使いたい。
+
+\subsection{MCAの基本方程式}
+\[
+\left(
+\begin{array}{c}
+{\bf {}^{non}C^J}\\
+{\bf {}^{non}C^S}
+\end{array}
+\right)
+\left(
+\begin{array}{cc}
+{\bf K} & {\bf {}^{non}\varepsilon L}\\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{rr}
+{\bf K} & {\bf 0}\\
+{\bf 0} & {\bf -L}\\
+\end{array}
+\right)
+\]
+
+\({\bf C^J}\)、 \({\bf C^S}\) 、\({\varepsilon}\)はそれぞれの係数からなる行列。``non''は正規化されていないことを表す。
+{\bf K}は零空間。{\bf L}はこれから紹介。
+
+\paragraph{\({\bf C^J}\)、 \({\bf C^S}\) 、\({\varepsilon}\)の中身}
+\[
+{\bf C^J}
+=
+\left(
+\begin{array}{cccc}
+C^{J_1}_{v_1} & C^{J_1}_{v_2} & \cdots & C^{J_1}_{v_n} \\
+C^{J_2}_{v_1} & C^{J_2}_{v_2} &        & C^{J_2}_{v_n} \\
+\vdots       &              & \ddots & \vdots \\
+C^{J_m}_{v_1} & C^{J_m}_{v_2} & \cdots & C^{J_m}_{v_n} \\
+\end{array}
+\right)
+\begin{array}{c}
+ \\
+ \\
+ \\
+,\\
+\end{array}
+{\bf C^S}
+=
+\left(
+\begin{array}{cccc}
+C^{S_1}_{v_1} & C^{S_1}_{v_2} & \cdots & C^{S_1}_{v_n} \\
+C^{S_2}_{v_1} & C^{S_2}_{v_2} &        & C^{S_2}_{v_n} \\
+\vdots       &              & \ddots & \vdots \\
+C^{S_k}_{v_1} & C^{S_k}_{v_2} & \cdots & C^{S_k}_{v_n} \\
+\end{array}
+\right)
+\]
+\[
+{\boldsymbol \varepsilon}
+=
+\left(
+\begin{array}{cccc}
+\varepsilon^{v_1}_{S_1} & \varepsilon^{v_1}_{S_2} & \cdots & \varepsilon^{v_1}_{S_k} \\
+\varepsilon^{v_2}_{S_1} & \varepsilon^{v_2}_{S_2} &        & \varepsilon^{v_2}_{S_k} \\
+\vdots       &              & \ddots & \vdots \\
+\varepsilon^{v_n}_{S_1} & \varepsilon^{v_n}_{S_2} & \cdots & \varepsilon^{v_n}_{S_k} \\
+\end{array}
+\right)
+\]
+
+\subsection{分岐のある経路の流束}
+以下のように考える。
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{../MCA/mca6.epsi}
+\end{center}
+\end{figure}
+
+
+\subsection{Link matrix}
+化学量論行列{\bf N}の線形独立な行を上側に寄せる
+
+\[
+{\bf N}
+=
+\left(
+\begin{array}{l}
+{\bf N^0} \\
+{\bf N^{\prime}}
+\end{array}
+\right)
+=
+{\bf LN^0}
+=
+\left(
+\begin{array}{l}
+{\bf I_{rank({\bf N})}} \\
+{\bf L^{\prime}}
+\end{array}
+\right)
+{\bf N^0}
+\]
+上式の{\bf L}をLink matrixと呼ぶ。{\bf L}の行数は{\bf N}の行数と等しい。列数は rank({\bf N})である。
+\paragraph{Link matrixの例}
+\[
+{\bf N}
+=
+\left(
+\begin{array}{rrrr}
+1 & -1 & 0 & 0\\
+0 & 1  & -1 & 0\\
+0 & -1 & 0 & 1\\
+0 & 1 & 0 & -1 \\
+\end{array}
+\right)
+\longrightarrow
+{\bf N^0}
+=
+\left(
+\begin{array}{rrrr}
+1 & -1 & 0 & 0\\
+0 & 1  & -1 & 0\\
+0 & -1 & 0 & 1\\
+\end{array}
+\right)
+\]
+
+\({\bf N = LN^0}\)より
+
+\[
+{\bf L}
+=
+\left(
+\begin{array}{rrrr}
+1 & 0 & 0\\
+0 & 1 & 0\\
+0 & 0 & 1\\
+0 & 0 & -1\\
+\end{array}
+\right)
+\]
+
+\subsection{基本方程式における加法・結合定理}
+\[
+\begin{array}{ccc}
+\left(
+\begin{array}{c}
+{\bf {}^{non}C^J}\\
+{\bf {}^{non}C^S}
+\end{array}
+\right)
+\left(
+\begin{array}{cc}
+{\bf K} & {\bf {}^{non}\varepsilon L}\\
+\end{array}
+\right)
+&
+=
+&
+\left(
+\begin{array}{rr}
+{\bf K} & {\bf 0}\\
+{\bf 0} & {\bf -L}\\
+\end{array}
+\right)\\
+ & \downarrow & \\
+\begin{array}{l}
+\mbox{\bf 加法定理}\\
+{\bf {}^{non}C^J K = K} \\
+{\bf {}^{non}C^S K = 0} \\
+\end{array}
+&
+
+&
+\begin{array}{l}
+\mbox{\bf 結合定理}\\
+{\bf {}^{non}C^J}{\bf {}^{non}\varepsilon L = 0}\\
+{\bf {}^{non}C^S}{\bf {}^{non}\varepsilon L = - L}\\
+\end{array}
+\end{array}
+\]
+
+\section{基本方程式の証明}
+\subsection{準備1: 2変数の合成関数の微分公式}
+\(z=f(x,y)\) において \(x=g(u,v)\)、\(y=h(u,v)\)で表されるとき、
+
+\begin{eqnarray*}
+\frac{\partial z}{\partial u} & = &  \frac{\partial z}{\partial x}\frac{\partial x}{\partial u} + \frac{\partial z}{\partial y}\frac{\partial y}{\partial u}   \\
+\frac{\partial z}{\partial v} & = &  \frac{\partial z}{\partial x}\frac{\partial x}{\partial v} + \frac{\partial z}{\partial y}\frac{\partial y}{\partial v}   
+\end{eqnarray*}
+
+\subsection{準備2: \({\bf C^S}\)の行列表記}
+Nv(S(E),E)=0をEで偏微分。「準備1」の微分公式より
+
+\[
+{\bf N}\left(\frac{\partial \bf v}{\partial \bf S}\frac{\partial \bf S}{\partial \bf E}+\frac{\partial \bf v}{\partial \bf E}\frac{\partial \bf E}{\partial \bf E}\right)=0
+\]
+
+移項して
+
+\[
+{\bf N}\frac{\partial \bf v}{\partial \bf S}\frac{\partial \bf S}{\partial \bf E}=-{\bf N}\frac{\partial \bf v}{\partial \bf E}
+\]
+
+\[
+\frac{\partial \bf S}{\partial \bf E}=-\left({\bf N}\frac{\partial \bf v}{\partial \bf S}\right)^{-1}{\bf N}\frac{\partial \bf v}{\partial \bf E}
+\]
+
+両辺に\(\frac{\partial \bf E}{\partial \bf v}\)をかけて、
+
+\[
+{\bf {}^{non}C^S}=\frac{\partial \bf S}{\partial \bf v}=-({\bf N {}^{non}{\boldsymbol \varepsilon}})^{-1}{\bf N}
+\]
+
+\subsection{準備3: \({\bf C^J}\)の行列表記}
+J=v(S(E),E)をEで偏微分
+
+\[\frac{\partial \bf J}{\partial \bf E}=\frac{\partial \bf v}{\partial \bf S}\frac{\partial \bf S}{\partial \bf E}+\frac{\partial \bf v}{\partial \bf E}\frac{\partial \bf E}{\partial \bf E}\]
+
+両辺に \(\frac{\partial \bf E}{\partial \bf v}\) をかけて
+
+%\begin{eqnarray*}
+\[
+\frac{\partial \bf J}{\partial \bf v} = {\bf {}^{non}{\boldsymbol \varepsilon}}\frac{\partial \bf S}{\partial \bf v}+{\bf I} \]
+\[{\bf {}^{non}C^J =  {}^{non}{\boldsymbol \varepsilon}{}^{non}C^S+I}
+\]%\end{eqnarray*}
+
+\subsection{結合定理の証明}
+\({\bf {}^{non}C^S}=-({\bf N {}^{non}{\boldsymbol \varepsilon}})^{-1}{\bf N}\)の両辺に\({}^{\bf non}{\boldsymbol \varepsilon}{\bf L}\)をかけて
+
+\begin{eqnarray*}
+{\bf {}^{non}C^S{}^{non}{\boldsymbol \varepsilon} L}&=&-({\bf N {}^{non}{\boldsymbol \varepsilon}})^{-1}{\bf N{}^{non}{\boldsymbol \varepsilon} L}\\
+&=& {\bf -L}
+\end{eqnarray*}
+
+\({\bf {}^{non}C^J={}^{non}{\boldsymbol \varepsilon}{}^{non}C^S+I}\)の両辺に\({}^{\bf non}{\boldsymbol \varepsilon}{\bf L}\)をかけて
+
+\begin{eqnarray*}
+{\bf {}^{non}C^J{}^{non}{\boldsymbol \varepsilon} L } & = & {\bf {}^{non}{\boldsymbol \varepsilon}{}^{non}C^S{}^{non}{\boldsymbol \varepsilon} L+{}^{non}{\boldsymbol\varepsilon} L}\\
+& = & {\bf {}^{non}{\boldsymbol \varepsilon}(-L)+{}^{non}{\boldsymbol \varepsilon} L}\\
+& = & 0
+\end{eqnarray*}
+
+これで結合定理の証明が完了した。残るは加法定理。
+
+\subsection{加法定理の証明}
+\({\bf {}^{non}C^S}=-({\bf N {}^{non}{\boldsymbol \varepsilon}})^{-1}{\bf N}\)の両辺に\({\bf K}\)をかけて
+
+\begin{eqnarray*}
+{\bf {}^{non}C^SK} & = &-({\bf N {}^{non}{\boldsymbol \varepsilon}})^{-1}{\bf NK}\\
+& = & {\bf 0}
+\end{eqnarray*}
+
+\({\bf {}^{non}C^J={}^{non}{\boldsymbol \varepsilon}{}^{non}C^S+I}\)の両辺に\({\bf K}\)をかけて
+
+\begin{eqnarray*}
+{\bf {}^{non}C^JK} & = & {\bf {}^{non}{\boldsymbol \varepsilon}{}^{non}C^S K+K}\\
+& = & {\bf K}
+\end{eqnarray*}
+
+以上で加法定理を証明できた。
+
+\subsection{基本方程式の使い方}
+\[
+\left(
+\begin{array}{c}
+{\bf {}^{non}C^J}\\
+{\bf {}^{non}C^S}
+\end{array}
+\right)
+\left(
+\begin{array}{cc}
+{\bf K} & {\bf {}^{non}\varepsilon L}\\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{rr}
+{\bf K} & {\bf 0}\\
+{\bf 0} & {\bf -L}\\
+\end{array}
+\right)
+\]
+
+K、LはNから求められる。\({\bf {}^{non}\varepsilon}\)、\({\bf {}^{non}C^J}\)、\({\bf {}^{non}C^S}\) はどれか1つがわかっていればあとは基本方程式から求まる。最後に\({\bf {}^{non}\varepsilon}\)、\({\bf {}^{non}C^J}\)、\({\bf {}^{non}C^S}\) を正規化する。これで、分岐のある代謝経路でもMCAが可能になる。
+
+\subsection{正規化の方法}
+対角行列を左右からかける。
+
+\begin{eqnarray*}
+{\bf C^J} & = & ({\rm diag}\ {\bf J})^{-1}({\bf {}^{non}C^J})({\rm diag}\ \bf J)\\
+{\bf C^S} & = & ({\rm diag}\ {\bf S})^{-1}({\bf {}^{non}C^S})({\rm diag}\ \bf J)\\
+{\boldsymbol \varepsilon} & = & ({\rm diag}\ {\bf J})^{-1}({\bf {}^{non}\boldsymbol \varepsilon})({\rm diag}\ \bf S)
+\end{eqnarray*}
+
+以下に対角行列の例を示す。
+
+\[
+{\bf J}=\left(
+\begin{array}{r}
+J_1\\
+J_2\\
+J_3
+\end{array}
+\right)
+\longrightarrow
+{\rm diag}\ {\bf J}=\left(
+\begin{array}{ccc}
+J_1 & 0 & 0 \\
+0   & J_2 & 0\\
+0   & 0   & J_3
+\end{array}
+\right)
+,
+({\rm diag}\ {\bf J})^{-1}=\left(
+\begin{array}{ccc}
+\frac{1}{J_1} & 0 & 0 \\
+0   & \frac{1}{J_2} & 0\\
+0   & 0   & \frac{1}{J_3}
+\end{array}
+\right)
+\]
+\subsection{演習}
+下のような代謝経路について、下記の問いに答えなさい
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.5]{../MCA/mca5.epsi}
+\end{center}
+\end{figure}
+
+\begin{enumerate}
+\item Link matrix が1(スカラー)であることを示しなさい。
+\item {\bf K}行列を求めなさい。
+\item 以下の条件のもとで\({\bf C^J}\)行列を求めなさい。正規化すること。\\
+\[
+{}^{\bf non}{\boldsymbol \varepsilon}=\left(
+\begin{array}{r}
+-0.4\\
+0.4\\
+0.2\\
+\end{array}
+\right)
+{\rm min}^{-1}
+\begin{array}{c}
+ \\
+ \\
+,\\
+\end{array}
+\left(
+\begin{array}{c}
+v_1\\
+v_2\\
+v_3
+\end{array}
+\right)
+=
+\left(
+\begin{array}{r}
+1.0\\
+0.6\\
+0.4\\
+\end{array}
+\right)
+{\rm mM/min}
+\]
+\item 加法定理が成り立っていることを確認しなさい。
+\end{enumerate}
+
+
+\section{Further Reading}
+清水先生の本
+
+ステファノポーラス、アリスティド、ニールセン 
+「代謝工学　原理と方法論」　東京電機大学出版局
+
+Reinhart Heinrich and Stefan Schuster 
+“The regulation of cellular systems”, Chapman and Hall
+
+Edda Klipp et al. 
+“Systems biology in practice”, Wiley VCH
+
+David Fell
+“Understanding the control of metabolism”, Portland press
+
