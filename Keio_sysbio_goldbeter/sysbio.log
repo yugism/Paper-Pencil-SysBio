@@ -1,0 +1,32 @@
+This is pTeX, Version 3.141592-p3.1.2 (sjis) (Web2C 7.5.2) (format=platex 2003.2.20)  9 FEB 2008 15:20
+**sysbio.tex
+(./sysbio.tex
+pLaTeX2e <2001/09/04>+0 (based on LaTeX2e <2001/06/01> patch level 0)
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.10 細
+       胞内には転写制御、シグナル伝達、代謝といった分子間相互作用ネットワー
+? 
+! Emergency stop.
+ ...                                              
+                                                  
+l.10 細
+       胞内には転写制御、シグナル伝達、代謝といった分子間相互作用ネットワー
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+ 
+Here is how much of TeX's memory you used:
+ 5 strings out of 95597
+ 171 string characters out of 1191919
+ 46504 words of memory out of 1500001
+ 3201 multiletter control sequences out of 10000+50000
+ 7519 words of font info for 31 fonts, out of 600000 for 2000
+ 14 hyphenation exceptions out of 2000
+ 5i,0n,4p,83b,14s stack positions out of 1500i,500n,5000p,200000b,5000s
+No pages of output.

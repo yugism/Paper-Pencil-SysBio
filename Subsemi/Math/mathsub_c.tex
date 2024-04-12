@@ -1,0 +1,106 @@
+\documentclass{jarticle}
+\headheight = 0pt
+\headsep = 0pt
+\textheight = 730pt
+\textwidth = 460pt
+\topmargin = 5pt
+\leftmargin = 5pt
+\oddsidemargin = 5pt
+%\footheight = 0pt
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{document}
+\begin{center}
+{\Large \bf 数学サブゼミc 修了認定試験}\\
+\end{center}
+\pagestyle{empty}
+\section{エラーバー}
+\begin{flushleft}
+\begin{minipage}{300pt}
+\ \ \ ある遺伝子の転写量を2時間ごとに測定した。測定開始時の転写量を1と
+して、各時点における転写量の平均、分散、測定したサンプル数をまとめたも
+のが右の表である。
+\end{minipage}
+\hfill
+\begin{minipage}{140pt}
+\begin{small}
+\begin{tabular}{l|ccc}
+    & 転写量平均 & 分散 & サンプル数 \\
+\hline
+2hr & 1.7        & 0.04  & 25         \\
+4hr & 0.5        & 0.09  & 25         \\
+6hr & 1.2        & 0.04  & 16         \\
+\end{tabular}
+\end{small}
+\end{minipage}
+\end{flushleft}
+\ \ \ いま、母平均が正規分布に従うと仮定してこの遺伝子の転写量の経時変
+化をエラーバーつきのグラフにまとめなさい。計算過程も明記すること。エラー
+バーには95\%信頼区間を用いるものとする。c\%信頼区間は以下の式で計算さ
+れる。ただし、\(t_{N-1}(a)\)は自由度\(N-1\)の\(t\)分布の\(100a\%\)点で
+ある。
+\[
+X_{mean} - t_{N-1}\left( \frac{1-\frac{c}{100}}{2} \right) \sqrt{\frac{s^2}{N}} \leq \mu \leq X_{mean} + t_{N-1}\left( \frac{1-\frac{c}{100}}{2} \right) \sqrt{\frac{s^2}{N}} 
+\]
+\section{線形代数III: 零空間(Kernel)と定常解}
+行列{\bf S}によって0に写像されるベクトル全体から成る集合、すなわち連立1次方程式\({\bf S} \cdot v = 0\)の解集合を{\bf S}の零空間(Kernel)と呼び、Ker\ {\bf S}で表す。化学量論係数行列を\({\bf S}\)、全流束からなるベクトルを\(v\)とすると、定常状態は\({\bf S} \cdot v = {\bf 0}\)と書けるから、定常状態を満たすベクトル全体の集合はKer\ {\bf S}と等価である。{\bf S}を下のように定義するとき、以下の問いに答えなさい。
+\begin{flushleft}
+\begin{minipage}{300pt}
+\begin{enumerate}
+\item ガウスの消去法を用いてrank\ {\bf S}を求めなさい。 
+\item (未知数の個数 - rank\ {\bf S})個の変数を用いてKer\ {\bf S}、すなわち定常状態となるすべての\(v\)を表しなさい。ここで言う未知数とは流束の本数に相当する。流束の本数は化学量論行列の列の数に対応する。
+\end{enumerate}
+\end{minipage}
+\hfill
+\begin{minipage}{140pt}
+\begin{small}
+\[
+{\bf S} = 
+\left(
+\begin{array}{rrrrrr}
+-1 &  0 &  0 &  1 & -1 &  0\\
+ 1 & -1 &  0 &  0 &  0 &  1\\
+ 0 &  1 & -1 &  0 &  1 &  0\\
+ 0 &  0 &  1 & -1 &  0 & -1\\
+\end{array}
+\right)
+\]
+\end{small}
+\end{minipage}
+\end{flushleft}
+\section{ベイズの定理}
+ある研究室ではバクテリアにファージを感染させる実験を行っている。このバ
+クテリアの野生株は4時間以内に95\%の確率で溶菌する。しかし、1000 サンプ
+ルに1回の割合で生じる突然変異株の4時間以内溶菌確率は40\%しかない。
+\begin{enumerate}
+%\item 実験者が変異株に遭遇する確率\(P(\mbox{変異株})\)を求めなさい。
+\item 変異株が与えられた場合に4時間経っても溶菌\underline{\bf しない}確率\(P(\mbox{溶菌しない}|\mbox{変異株})\)を求めなさい。
+\item 実験者が4時間経っても溶菌\underline{\bf しない}サンプルに遭遇する確率\(P(\mbox{溶菌しない})\)を求めなさい。
+\item いま、観察しているサンプルが8時間経っても溶菌せず生存している。このサ
+ンプルが突然変異株である確率\(P(\mbox{変異株}|\mbox{溶菌しない})\)をベイズの定理\(P(X|Y) = {\displaystyle \frac{P(Y|X)P(X)}{P(Y)}}\)から計算しなさい。
+\end{enumerate}
+\section{フーリエ変換と\({\rm Ca}^{2+}\)振動}
+ある細胞では\({\rm Ca}^{2+}\)の濃度が時間軸上で振動する。この\({\rm Ca}^{2+}\)振動の周波数によって異なった転写因子が活性化されることがわかっている。周波数が0.5Hzの場合は転写因子\(\kappa\)が、8.25Hzの場合には転写因子\(\varepsilon\)が活性化される。また、複数の周波数成分が含まれていた場合には、よりパワー(後述)の大きい周波数成分のみが転写因子を活性化する。いま、細胞内\({\rm Ca}^{2+}\)濃度を下右に示した関数のように変動させた。\\
+\begin{minipage}{260pt}
+\ 
+\begin{enumerate}
+\item \([{\rm Ca}^{2+}](t)\)をフーリエ変換しなさい。
+\item (1)で求めたフーリエ変換の値を「パワー」と言い、横軸に周波数、縦軸にパワーをとったグラフをパワースペクトルと呼ぶ。パワースペクトルを描きなさい。
+\item パワースペクトルによれば、転写因子\(\kappa\)、\(\varepsilon\)のどちらが活性化されると思われるか。
+\end{enumerate}
+\end{minipage}
+\hfill
+\begin{minipage}{180pt}
+\[
+{\rm [Ca}^{2+}](t) =
+\left\{
+\begin{array}{rl}
+0 \ \mu {\rm M} & ( - \infty {\rm \ sec} < t < - \pi {\rm \ sec})\\
+1.0 \ \mu {\rm M} & ( - \pi {\rm \ sec} \leq t \leq \pi {\rm \ sec})\\ 
+0 \ \mu {\rm M} & ( \pi {\rm \ sec} < t < \infty {\rm \ sec})
+\end{array}
+\right.
+\]
+
+([\({\rm Ca}^{2+}\)]濃度を0\(\mu\)Mから1.0\(\mu\)Mに変化させた時間を\(-\pi\)secとする。)
+\end{minipage}
+\end{document}

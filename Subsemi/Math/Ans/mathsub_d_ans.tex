@@ -1,0 +1,268 @@
+\documentstyle{jarticle}
+\headheight = 0pt
+\headsep = 0pt
+\textheight = 730pt
+\textwidth = 460pt
+\topmargin = 5pt
+\leftmargin = 5pt
+\oddsidemargin = 5pt
+\footheight = 0pt
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{document}
+\section{マルコフ}
+(1)
+Fgenome(1) * Mgenome(2,1) * Mgenome(3,2) ,,
+（ただし、行列におけるi行、j列にある要素を(i,j)として示している）
+
+***** 解説 *****
+（解説不要）
+
+-----
+(2)
+Fnoncode ≡ { Fgenome * 100 - Fcode * (n + shita) } / (100 - shita - n) ,
+Mnoncode ≡ { Mgenome * Fgenome * 100 - Mcode * Fcode * (n + shita) } / {
+Fnoncode * (100 - shita - n) } ,
+Fnoncode(1) * Mnoncode(2,1) * Mnoncode(3,2) ,,
+
+***** 解説 *****
+noncode領域を考えて、Fnoncode、Mnoncodeを考えると
+1塩基頻度の保存より
+Fgenome * 100 = Fcode * (n + shita) + Fnoncode * (100 - shita -n)
+となる。したがって
+Fnoncode = { Fgenome * 100 - Fcode * (n + shita) } / (100 - shita - n)
+
+また2塩基頻度の保存より、以下が成り立つ
+Mgenome * Fgenome * 100 = Mcode * Fcode * (n + shita) + Mnoncode * Fnoncode
+* (100 - shita - n)
+となる。したがって
+Mnoncode = { Mgenome * Fgenome * 100 - Mcode * Fcode * (n + shita) } / {
+Fnoncode * (100 - shita - n) }
+
+\section{ラプラス変換}
+\def\diff{\mathrm d} %微分記号 d を定義
+
+\subsection{}
+問題文の定義より、
+\begin{math}
+v(t) = - a \frac{\diff v}{\diff t} + b \int_{0}^{t} v(u) {\diff u} 
+\end{math}
+。\\
+また、ラプラス変換の線形性より、
+\begin{math}
+{\cal L}[v(t)]=V(s)=-a{\cal L}[\frac{\diff v}{\diff t}]+b{\cal L}[\int_{0}^{t}v(u){\diff u}]
+\end{math}
+が成り立つ。\\
+\begin{math}
+V(s)=
+-a{\cal L}[\frac{\diff v}{\diff t}]+b{\cal L}[\int_{0}^{t}v(u){\diff u}]=
+-a(s V(s)-v(0))+\frac{b}{s}V(s)=
+(\frac{b}{s}-as)V(s)+av(0)
+\end{math}
+.\\
+ここで、a=1(sec),b=2(/sec),v(0)=1nM/sec を代入すると、\\
+\begin{math}
+V(s)=\frac{1}{1+s-\frac{2}{s}}=\frac{s}{s+s^2-2}
+\end{math}
+
+
+\subsection{}
+1 で求めた$V(s)$は、\\
+\begin{math}
+V(s)=\frac{s}{s+s^2-2}=\frac{1}{3}(\frac{1}{s-1}+\frac{2}{s+2})
+\end{math}
+のように分解できる。\\
+そこで、\\
+\begin{math}
+{\cal L}^{-1}[V(s)]=
+\frac{1}{3}{\cal L}^{-1}[\frac{1}{s-1}+\frac{2}{s+2}]=
+\frac{1}{3}({\cal L}^{-1}[\frac{1}{s-1}]+{\cal L}^{-1}[\frac{2}{s+2}])=
+\frac{1}{3}(e^t+2e^{-2t})\\
+\end{math}
+よって、\\
+\begin{math}
+v(t)=\frac{1}{3}(e^t+2e^{-2t})
+\end{math}
+
+\subsection*{KeyPointラプラス変換}
+\begin{math}
+{\cal L}[ \int_{0}^{t} f(\tau) {\diff \tau}]= \frac{1}{s}F(s)\\
+{\cal L}[f^{\prime}(t)]=sF(s)-f(0)\\
+{\cal L}[f^{(n)}(t)]=s^nF(s)-(s^{n-1}f(0)+s^{n-2}f(0)+ \ldots +sf^{(n-2)}(0)+f^{(n-1)}(0))\\
+{\cal L}[t^nf(t)]=(-1)^n \frac{\diff^n}{\diff s^n}F(s)\\
+\end{math}
+
+\subsection*{KeyPointラプラス逆変換}
+有理関数 F(s)が既約分数
+\begin{math}
+F(s)=\frac{P(s)}{Q(s)}
+\end{math}
+で表される時(order P$<$order Q)、\\
+Q(s)=0 が重根をもたないとすれば、\\
+\begin{math}
+Q(s)=(s-\alpha_1)(s-\alpha_2)\ldots(s-\alpha_n)
+\end{math}
+とすると\\
+\begin{math}
+{\cal L}^{-1}[\frac{P(s)}{Q(s)}]=\sum_{j=1}^{n}c_je^{a_jt} (t \geq 0)\\
+c_j=[(s-\alpha_j)F(s)]_{s=\alpha_j}=\frac{P(\alpha_j)}{Q^{\prime}(\alpha_j)}(j=1,2,\ldots,n).\\
+\end{math}
+Q(s)=0 が重根をもつならば(s=$\alpha$のみp重根をもつとすると)、\\
+\begin{math}
+Q(s)=(s-\alpha)^p(s-\alpha_{p+1})\ldots(s-\alpha_n).\\
+{\cal L}^{-1}[\frac{P(s)}{Q(s)}]=
+(c_{11}\frac{t^{p-1}}{(p-1)!}+c_{12}\frac{t^{p-2}}{(p-2)!}+\ldots+c_{1p})e^{at}+
+\sum_{j=p+1}^{n}c_j e^{a_jt}(t \geq 0).\\
+c_{1k}=\frac{1}{(k-1)!}[\frac{\diff^{k-1}}{\diff s^{k-1}}((s-\alpha)^pF(s))]_{s=\alpha}(k=1,2,\ldots,p)\\
+c_j=[(s-^alpha_j)F(s)]_{s=\alpha_j}=\frac{P(\alpha_j)}{Q^{\prime}(\alpha_j)} (j=p+1,p+2,\ldots,n)
+\end{math}
+
+\section{偏微分方程式 I: 拡散方程式を解く}
+\pagestyle{empty}
+
+\begin{enumerate}
+\item 
+\begin{eqnarray*}
+\frac{\partial}{\partial t}V(x)W(t) & = & V_t \cdot W + V \cdot W_t \\ 
+                                     & = & V \cdot W_t \\ 
+\frac{\partial^2}{\partial x^2}V(x)W(t) & = & \frac{\partial}{\partial x}(V_x \cdot W + V \cdot W_x) \\
+                                        & = & \frac{\partial}{\partial x}(V_x \cdot W) \\
+                                        & = & V_{xx} \cdot W + V_x \cdot W_x \\
+                                        & = & V_{xx} \cdot W \\
+\end{eqnarray*}
+
+\item 
+\begin{eqnarray*}
+V \cdot W_t & = & D \cdot V_{xx} \cdot W \\
+\frac{1}{D}\frac{W_t}{W} & = & \frac{V_{xx}}{V}\\
+\end{eqnarray*}
+
+\item
+\begin{eqnarray*}
+\frac{1}{D}\frac{W_t}{W} & = & \frac{V_{xx}}{V} = \lambda\\
+\frac{1}{D}\frac{W_t}{W} & = & \lambda\\
+\frac{1}{D}\frac{1}{W}\frac{dW}{dt} & = & \lambda\\
+\frac{1}{V}\frac{d^2 V}{dx^2} & = & \lambda\\
+\frac{dW}{dt} & = & \lambda D W\\
+\frac{d^2 V}{dx^2} & = & \lambda V\\
+\end{eqnarray*}
+
+\item
+\begin{eqnarray*}
+\int \frac{dW}{dt} & = & \lambda D W\\
+\int \frac{1}{W} dW & = & \int \lambda D dt\\
+\ln W & = & D\lambda t + C\\
+W(t)  & = & C e^{D\lambda t}
+\end{eqnarray*}
+
+\item 
+\(\lambda < 0\)の場合のみ解があるのでそれについて示す。\(y^{\prime \prime} + a y^{\prime} + b y = 0\)の特性方程式\(s^2 + a s + b = 0\)の解が\(s_1 = \alpha + \beta i\)、\(s_2 = \alpha - \beta i\)であるとき、\(y\)の一般解は\(y=C_1 e^{\alpha x} \cos \beta x + C_2 e^{\alpha x} \sin \beta x\) である。いま、\({\displaystyle \frac{d^2 V}{dx^2} =  \lambda V}\)の特性方程式は\(s^2 - \lambda = 0\)だから、\(s_1 = \sqrt{-\lambda}i\)、\(s_2 = -\sqrt{-\lambda}i\)。よって、
+
+\begin{eqnarray*}
+V(x) & = & C_1 e^{0 \cdot x} \cos (\sqrt{-\lambda} x) + C_2 e^{0 \cdot x} \sin (\sqrt{-\lambda} x)\\
+     & = & C_1 \cos (\sqrt{-\lambda} x) + C_2 \sin (\sqrt{-\lambda} x)\\
+\end{eqnarray*}
+
+\item
+\begin{eqnarray*}
+\frac{\partial}{\partial x} y(0,t) & = & V_x(0)W(t) = 0\\ 
+\frac{\partial}{\partial x} y(1,t) & = & V_x(1)W(t) = 1\\
+\end{eqnarray*}
+
+\(W(t) \neq 0\)なので
+
+\[V_x(0) = V_x(1) = 0\]
+
+である。ここで、
+
+\[V_x(x) = - C_1 \sqrt{-\lambda} \sin (\sqrt{-\lambda} x) + C_2 \sqrt{-\lambda} \cos (\sqrt{-\lambda} x)\]
+
+であるから、
+
+\begin{eqnarray*} 
+V_x(0) & = & C_2 \sqrt{-\lambda} = 0 \\
+V_x(1) & = & - C_1 \sqrt{-\lambda} \sin \sqrt{-\lambda} + C_2 \sqrt{-\lambda} \cos \sqrt{-\lambda} = 0\\
+\end{eqnarray*}
+
+\(\lambda < 0\)だから\(C_2 \sqrt{-\lambda} = 0\)より\(C_2=0\)である。\(C_2=0\)より
+
+\[V_x(1) = - C_1 \sqrt{-\lambda} \sin \sqrt{-\lambda} = 0\]
+
+\(C_1,C_2\)がともに0だと\(V=0\)となってしまうので、\(C_1 \neq 0\)である。よって、
+
+\begin{eqnarray*}
+\sin \sqrt{-\lambda} & = & 0\\
+\sqrt{-\lambda} & = & n \pi\\
+\end{eqnarray*}
+
+解は
+
+\[V=C_1 \cos (n \pi x)\]
+
+
+\item
+\(y(x,t)=V(x)W(t)\)より、
+
+\[y(x,t)=C_1 \cos (n \pi x) \cdot C_2 e^{D\lambda t}\]
+
+(6)で求めた結果より\(\sqrt{-\lambda} = n \pi\)だから、
+
+\[y(x,t)=C_1 \cos (n \pi x) \cdot C_2 e^{-D n^2 \pi^2 t}\]
+
+任意定数をひとくくりにして
+
+\[y(x,t)=C \cos (n \pi x) \cdot e^{-D n^2 \pi^2 t}\]
+
+これをすべての\(n\)について重ねあわせて
+
+\[y(x,t)=\sum_{n=0}^{\infty} C(n) \cos (n \pi x) \cdot e^{-D n^2 \pi^2 t}\]
+
+\item
+\begin{eqnarray*}
+y(x,0) & = & \sum_{n=0}^{\infty} C(n) \cos (n \pi x) \cdot e^{-D n^2 \pi^2 \cdot 0}\\
+       & = & \sum_{n=0}^{\infty} C(n) \cos (n \pi x) \\
+       & = & 0.5 \cos 2\pi x\\
+\end{eqnarray*}
+
+初期条件の関数\(g(x) = 0.5 \cos 2\pi x\)がフーリエ級数\({\displaystyle \sum_{n=0}^{\infty} C(n) \cos (n \pi x)}\)で表現されていると解釈できるので、係数\(C(n)\)はフーリエ級数展開で求まる。
+
+\[C(n) = 2 \int_0^1 g(x)\cdot \cos (n \pi x) dx\]
+
+なので、
+
+\begin{eqnarray*}
+C(n) & = & 2 \int_0^1 \frac{1}{2} \cos (2 \pi x) \cdot \cos (n \pi x) dx\\
+     & = & \int_0^1 \cos (2 \pi x) \cdot \cos (n \pi x) dx\\
+\end{eqnarray*}
+
+\(C(n)\)は\(n=2\)の場合を除いて0となる。
+
+よって
+
+\begin{eqnarray*}
+C(2) & = & \int_0^1 \cos (2 \pi x) \cdot \cos (2 \pi x) dx\\
+     & = & \frac{1}{2}\\ 
+\end{eqnarray*}
+
+
+\begin{eqnarray*}
+y(x,t) & = & \sum_{n=0}^{\infty} C(n) \cos (n \pi x) \cdot e^{-D n^2 \pi^2 t}\\
+       & = & C(2) \cos (2 \pi x) \cdot e^{-4 D \pi^2 t}\\
+       & = & \frac{1}{2} \cos (2 \pi x) \cdot e^{-4 D \pi^2 t}\\
+\end{eqnarray*}
+
+\item
+\[y(x,t) = \frac{1}{2} \cos (2 \pi x) \cdot e^{-4 D \pi^2 t}\]
+
+x=0.5、t=0.001、D=25を代入して
+
+\begin{eqnarray*}
+y(0.5,30) & = & \frac{1}{2} \cos (2 \pi \cdot 0.5) \cdot e^{-4 \cdot 25 \cdot  \pi^2 \cdot 0.001}\\
+          & = & \frac{1}{2} \cos ( \pi ) \cdot e^{-3 \pi^2}\\
+          & = & - \frac{1}{2} e^{-3 \pi^2}\\
+\end{eqnarray*}
+
+グルコース濃度は\(y(x,t)+0.5\)mMだから
+
+\[ [{\rm Glucose}] = 0.5 (1 - e^{-3 \pi^2}){\rm mM}\]
+\end{enumerate}
+\end{document}

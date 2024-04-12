@@ -1,0 +1,114 @@
+\documentclass{jarticle}
+\usepackage{amsmath,amssymb}
+\headheight = 0pt
+\headsep = 0pt
+\textheight = 730pt
+\textwidth = 460pt
+\topmargin = 5pt
+\leftmargin = 5pt
+\oddsidemargin = 5pt
+%\footheight = 0pt
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{document}
+\begin{center}
+{\Large \bf 数学サブゼミf 修了認定試験}\\
+\end{center}
+\section{複素関数論I: 複素積分で揚力を求める}
+(1) 「一般に、複素関数が正則であるとはどういう意味か簡潔に説明しなさい。」
+
+  すべての点で微分可能であること。
+
+(2) 「一般の複素速度ポテンシャル\(f(z) = \Phi + i \Psi\)が正則かどうかコーシー=リーマン条件で判定しなさい。」
+
+\begin{eqnarray*}
+\frac{\partial \Psi}{\partial x} & = & v_y \\
+\frac{\partial \Psi}{\partial y} & = & - v_x \\
+\end{eqnarray*}
+
+\({\bf v} = {\rm grad\ } \Phi\)より
+
+\begin{eqnarray*}
+\frac{\partial \Phi}{\partial x} & = & v_x \\
+\frac{\partial \Phi}{\partial y} & = & v_y \\
+\end{eqnarray*}
+
+よって
+
+\begin{eqnarray*}
+\frac{\partial \Phi}{\partial x} & = & - \frac{\partial \Psi}{\partial y} \\
+\frac{\partial \Phi}{\partial y} & = & \frac{\partial \Psi}{\partial x} \\
+\end{eqnarray*}
+
+
+
+(3) 「複素速度\({\displaystyle w = \frac{df}{dz}}\)を求めなさい。」
+
+\begin{eqnarray*}
+\frac{df}{dz} & = & \frac{d}{dz}\left\{U\left(z+\frac{a^2}{z}\right) + i \kappa \ln z\right\}\\
+              & = & U \left(1 - \frac{a^2}{z^2}\right) + i \kappa \frac{1}{z}\\
+\end{eqnarray*}
+
+
+(4) 「流れの中に置かれた物体にかかる力を\(F(X,Y)\)とすると、\({\displaystyle X - i Y = \frac{i}{2}\rho \int_C w^2 dz}\)である(ブラウジウスの第1公式)。これを利用して円柱が流れから受ける抵抗、揚力を求めたい。」\\
+
+  (a) \(w^2\)を計算し、ローラン級数の形に整理しなさい。\\
+
+\begin{eqnarray*}
+w^2 & = & \left\{U \left(1 - \frac{a^2}{z^2}\right) + i \kappa \frac{1}{z}\right\}^2\\
+    & = & U^2 \left(1 - \frac{a^2}{z^2}\right)^2 + \frac{2U\kappa i}{z} \left(1 - \frac{a^2}{z^2}\right) - \frac{\kappa^2}{z^2}\\
+    & = & U^2 \left(1 - 2 \frac{a^2}{z^2} + \frac{a^4}{z^4}\right) + \frac{2U\kappa i}{z} \left(1 - \frac{a^2}{z^2}\right) - \frac{\kappa^2}{z^2}\\
+    & = & U^2 - \frac{2U^2a^2}{z^2} + \frac{U^2a^4}{z^4} + \frac{2U\kappa i}{z} - \frac{2Ua^2 \kappa i}{z^3}- \frac{\kappa^2}{z^2}\\
+    & = & U^2 + \frac{2U\kappa i}{z} - \frac{2U^2a^2 + \kappa^2}{z^2} - \frac{2Ua^2 \kappa i}{z^3} + \frac{U^2a^4}{z^4}  \\
+\end{eqnarray*}
+
+
+  (b) (a)の級数のうち特異点のない項について積分しなさい。コーシーの積分\underline{\bf 定理}を適用すること。
+
+\begin{eqnarray*}
+\int_C w^2 dz & = & \int_C U^2 dz + \int_C \left(\frac{2U\kappa i}{z} - \frac{2U^2a^2 + \kappa^2}{z^2} - \frac{2Ua^2 \kappa i}{z^3} + \frac{U^2a^4}{z^4}\right)dz  \\
+\end{eqnarray*}
+
+のうちの特異点のない項だから、\({\displaystyle \int_C U^2 dz}\)を計算すれば良い。コーシーの積分定理によれば、正則関数\(f(z)\)の1周積分は0になる\(\left({\displaystyle \int_C f(z) dz}=0\right)\)ので、
+
+\begin{eqnarray*}
+\int_C U^2 dz & = & 0\\
+\end{eqnarray*}
+
+  (c) (a)の級数のうち特異点のある項について積分しなさい。留数定理を適用すること。
+
+\begin{eqnarray*}
+\int_C w^2 dz & = & \int_C U^2 dz + \int_C \left(\frac{2U\kappa i}{z} - \frac{2U^2a^2 + \kappa^2}{z^2} - \frac{2Ua^2 \kappa i}{z^3} + \frac{U^2a^4}{z^4}\right)dz  \\
+\end{eqnarray*}
+
+のうちの特異点のある項だから、\({\displaystyle \int_C \left(\frac{2U\kappa i}{z} - \frac{2U^2a^2 + \kappa^2}{z^2} - \frac{2Ua^2 \kappa i}{z^3} + \frac{U^2a^4}{z^4}\right)dz}\)を計算すれば良い。留数定理によれば、\(z^-1\)の項の係数に\(2\pi i\)を掛けたものが関数全体の積分値となるので、
+
+\begin{eqnarray*}
+\int_C \left(\frac{2U\kappa i}{z} - \frac{2U^2a^2 + \kappa^2}{z^2} - \frac{2Ua^2 \kappa i}{z^3} + \frac{U^2a^4}{z^4}\right)dz & = & 2U\kappa i \times 2 \pi i\\
+& = & -4\pi U \kappa\\
+\end{eqnarray*}
+
+  (d) \({\displaystyle \int_C w^2 dz}\)を求めなさい。
+
+\begin{eqnarray*}
+\int_C w^2 dz & = & \int_C U^2 dz + \int_C \left(\frac{2U\kappa i}{z} - \frac{2U^2a^2 + \kappa^2}{z^2} - \frac{2Ua^2 \kappa i}{z^3} + \frac{U^2a^4}{z^4}\right)dz  \\
+ & = & 0 + (-4\pi U \kappa)\\
+ & = & -4\pi U \kappa\\
+\end{eqnarray*}
+
+  (e) 円柱が流れから受ける抵抗、揚力はそれぞれいくらか。
+
+ブラウジウスの第1公式\({\displaystyle X - i Y = \frac{i}{2}\rho \int_C w^2 dz}\)より、
+
+\begin{eqnarray*}
+X - i Y & = & \frac{i}{2}\rho \int_C w^2 dz\\
+        & = & \frac{i}{2}\rho \times (-4\pi U \kappa)\\
+        & = & -2\pi U \kappa \rho i\\
+\end{eqnarray*}
+
+よって\(X=0, Y = -2\pi U \kappa \rho\)である。
+
+\section{多変量解析II}
+\subsection{主成分分析}
+\subsection{因子分析}
+\subsection{正準相関分析}
+\end{document}

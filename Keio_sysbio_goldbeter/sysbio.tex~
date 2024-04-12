@@ -1,0 +1,805 @@
+%\documentclass[a4paper,11pt]{jsarticle}
+%\usepackage{graphicx}
+%\usepackage{ascmac}
+%\usepackage{url}
+
+%\def\演習問題#1{{\flushleft\underline{\bf 演習問題~#1}}}
+
+%\begin{document}
+
+細胞内には転写制御、シグナル伝達、代謝といった分子間相互作用ネットワー
+クが存在します。こうしたネットワークの動態を理論的に追究するための手段
+として、数理生物学やシステム生物学の分野では連立微分方程式が用いられて
+います。ここでは慶應義塾大学先端生命科学研究所で開発された汎用細胞シミ
+ュレーション・ソフト「E-Cell」を使って連立微分方程式を解くための基本的
+な作法を習得するほか、紙と鉛筆で連立微分方程式系の性質を調べる方法を学びます。\\
+\indent E-Cellは公式ウェブサイト(\verb+http://www.e-cell.org+)から無料でダウンロードできますので、自宅にPCがある人は予習・復習に活用してください。
+
+
+\subsection{ショウジョウバエ概日時計モデル}
+今回の実習では、E-Cellパッケージに同梱されているショウジョウバエ概日時
+計モデルの操作を通して、細胞内反応経路シミュレーションを体験します。
+E-Cellのマニュアルは下記のパスに格納されていますので、予習復習に活用し
+てください。
+
+\begin{verbatim}
+     C:\Program Files\E-Cell3\share\doc\users-manual.pdf
+\end{verbatim}
+
+概日時計モデルなどのサンプルモデルは下記のフォルダに格納されています。
+
+\begin{verbatim}
+     C:\Program Files\E-Cell3\share\doc\sample
+\end{verbatim}
+
+概日時計モデル関連ファイル一式は"Drosophila"フォルダに入っています。
+これを個人用ディスクスペースにコピーして、以下の作業に使って下さい。\\
+
+\indent 今回用いるショウジョウバエ概日時計モデルはブリュッセル自由大学のAlfred
+Goldbeterによって1995年に提案されました(A.Goldbeter, "A model for circadian oscillations in the Drosophila period protein(PER)" {\it Proc. Biol. Sci.}, 261:319-324, 1995.)。PERと呼ばれるタンパク質が自身
+をコードする遺伝子\(per\)の転写を抑制するというネガティヴ・フィードバッ
+クが最大の特徴です(図\ref{fig:01sysbio})。\\
+
+\begin{figure}[ht]
+        \centering
+        \includegraphics[height=6cm]{sysbio/img/goldbeter_pathway.epsi}
+        \caption{ショウジョウバエ概日時計モデルの反応経路([Goldbeter 1995]より転載)} \label{fig:01sysbio}
+        \end{figure}
+
+各反応の挙動は反応速度論に基く常微分方程式によって記述されます。連立常
+微分方程式を数値的に積分し、系の時間発展を予測することがシミュレーショ
+ンの本質です。\\
+
+\begin{eqnarray*}
+\frac{dM}{dt} & = & v_s \frac{K_I^n}{K_I^n + P_N^n} -  v_m \frac{M}{K_m + M}\\
+\frac{dP_0}{dt} & = & k_s M - V_1 \frac{P_0}{K_1 + P_0} + V_2 \frac{P_1}{K_2 + P_1}\\
+\frac{dP_1}{dt} & = & V_1 \frac{P_0}{K_1 + P_0} - V_2 \frac{P_1}{K_2 + P_1} - V_3 \frac{P_1}{K_3 + P_1} + V_4 \frac{P_2}{K_4 + P_2}\\
+\frac{dP_2}{dt} & = & V_3 \frac{P_1}{K_3 + P_1} - V_4 \frac{P_2}{K_4 + P_2} - k_1 P_2 + k_2 P_n - v_d \frac{P_2}{k_d + P_2}\\
+\frac{dP_N}{dt} & = & k_1 P_2 - k_2 P_N\\  	 
+\end{eqnarray*}
+
+フィードバック以外のこのモデルの特徴を要約すると、下記のようになります。
+
+\begin{enumerate} 
+\item \(per\) mRNA(M) は核内で合成された後、細胞質に移動して最大速度\(v_s\)で蓄積し、最大速度\(v_m\)、Michaelis定数\(K_m\)の条件で分解される。
+\item PERタンパク(\(P_0\))の合成量は、mRNA量(M)に比例し、速度定数\(k_s\)に規定される。
+\item \(P_0\)、\(P_1\)、\(P_2\)の順にリン酸化が進み、逆方向に脱リン酸化が起こる。(\(V_1\)-\(V_4\))
+\item 十分にリン酸化されたタンパク(PER2)は最大速度\(v_d\)、Michaelis定数\(K_d\)で酵素によって分解される。
+\item また、\(P_2\)は速度定数\(k_1\)によって規定された量が核内に移行する。核内のPERタンパクは\(P_N\)と呼ぶ。
+\item \(P_N\)は、\(P_N\)の量と、速度定数\(k_2\)に比例して細胞質に再移行する。
+\item 核内PERタンパクが\(per\)転写に及ぼすフィードバックはHill式で記述される(nはHill係数、 \(K_I\)は抑制の閾値を規定する定数である)。
+\end{enumerate}
+
+ 
+\subsection{E-Cell操作法入門}
+それでは概日時計モデルを動かしながらE-Cellの基本的な操作法を学んでいき
+ましょう。下記の手続きを順に実行してみましょう。
+
+\begin{enumerate}
+\item デスクトップ上の"E-Cell Console"をダブルクリックします。
+\item \verb+C:\Program Files\E-Cell3\share\doc\sample\Drosophila+の内容一式をコピーした作業用フォルダに移動します。
+\item 別途配付するファイル \verb+Pn.py+ を作業用フォルダにコピーします。
+\item \verb+ecell3-session Pn.py+ とコマンドを打ち込んでみましょう。
+\item 作業用フォルダに"Data"というフォルダが作成されています。その中に保存されているファイルがシミュレーション結果です。これを表計算ソフトで開きます(図\ref{fig:02sysbio})。
+\begin{figure}[ht]
+        \centering \includegraphics[height=6cm]{sysbio/img/excel.epsi}
+        \caption{表計算ソフトで開いたシミュレーション結果}
+        \label{fig:02sysbio} \end{figure}
+\item グラフ化してみましょう(図\ref{fig:03sysbio})。
+\begin{figure}[ht]
+        \centering
+        \includegraphics[height=6cm]{sysbio/img/graph.epsi}
+        \caption{グラフ化したシミュレーション結果} \label{fig:03sysbio}
+        \end{figure}
+\end{enumerate}
+\subsection{E-Cell Session Scriptの解読}
+最初に実行したPn.pyというファイルはシミュレーションの手順を記述したプ
+ログラムです。オブジェクト指向スクリプト言語Pythonで記述されています。
+公式マニュアルでは"E-Cell Session Script"としてpp.41-62 で説明されてい
+ます。Pn.pyには一体どのようなシミュレーション手続きが書かれているのか、
+実際にソースコードを読みながら理解していきましょう。コマンドラインで\\
+\begin{center}
+  \begin{shadebox}
+    \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+     notepad Pn.py     
+\end{verbatim}
+  \end{shadebox}
+\end{center}
+と入力するとメモ帳でPn.pyを開けます。\\
+
+\begin{itembox}[l]{{\tt Pn.py}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+loadModel( 'Drosophila.eml' )	
+# 「E-Cellに概日時計モデルを読み込め」という命令。
+# モデルはDrosophila.emlに記述されています(詳細後述)。
+
+Pn_logger = createLoggerStub( 'Variable:/CELL/CYTOPLASM:Pn:Value' )
+Pn_logger.create()
+# 「Pnの分子数を記録するオブジェクト(Loggerと呼ばれる)を用意せよ」という命令。
+
+run( 72 )
+# 「72秒間シミュレーションせよ」という命令。
+
+stop()
+# 「計算を停止せよ」という命令。
+
+saveLoggerData()
+# 「Loggerに記録されたデータをファイルに保存せよ」という命令。
+\end{verbatim}
+\end{itembox}
+
+
+
+\subsection{E-Cell Model (EM) ファイルの解読}
+Pn.pyの手続きに従って数値積分された連立常微分方程式モデルは
+Drosophila.emに記述されています。Pn.pyでE-Cellが読み込んでいる
+Drosophila.emlはDrosophila.emをXML形式に変換したものです。Session
+Script同様、ソースコードを読みつつモデルの記述法を習得していきましょう。
+公式マニュアルではpp.5-29 に詳しい説明が出ています。\\
+
+\begin{itembox}[l]{{\tt Drosophila.em (1)}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+# E-Cellの数値積分アルゴリズムを決めるオブジェクトのことをStepperと呼びます。
+# ここではODE45という積分アルゴリズムを実装したStepperを選択し、
+# ''DE''という名前をつけています。
+
+Stepper ODE45Stepper( DE )  
+{
+        # no property
+}
+\end{verbatim}
+\end{itembox}
+
+\begin{itembox}[l]{{\tt Drosophila.em (2)}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+
+# Systemは細胞内区画に相当するオブジェクトです。
+
+System System( / )
+{
+        StepperID	DE;
+        # このSystemにおける積分では''DE''をステッパに使う
+
+        Variable Variable( SIZE ) { Value 0.000000000000001; }
+        # SIZEはSystemの体積パラメータ
+}
+\end{verbatim}
+\end{itembox}
+
+\begin{itembox}[l]{{\tt Drosophila.em (3)}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+        # Variable文では分子の名前と初期状態での濃度を記述します。
+        
+        Variable Variable( M )  # Mという名前の分子を定義
+        {
+                Value	3.61328202E-01;
+                # 初期値は3.61328202-E01(個)
+        }
+\end{verbatim}
+\end{itembox}
+
+\begin{itembox}[l]{{\tt Drosophila.em (4)}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+        # Process文では化学反応の名前と速度式を定義します。
+
+        Process ExpressionFluxProcess( R_toy1 )	 
+        # R_toy1という名前の反応を定義。
+        {
+              vs	0.76;    # vsというパラメータとその値を定義
+              KI	1;       # KIというパラメータとその値の定義
+
+              Expression "( (vs*KI) / (KI + (C0.MolarConc * C0.MolarConc 
+                * C0.MolarConc) ) * self.getSuperSystem().SizeN_A )";
+
+              # Expressionとは速度式の定義です。
+              # ここでC0.MolarConcはPnの濃度のこと。
+              # なぜC0がPnなのかについては次の行の説明を参照。
+
+              VariableReferenceList [ P0 Variable:.:M 1 ][ C0 Variable:.:Pn ];
+              # R_toy1の反応に関わる分子を記述。
+              # [ ]は、[速度式中での変数名  モデルにおける分子名  化学量論係数]
+              # 1ステップ当たりの物質の増減は化学量論係数×速度式。
+        }
+\end{verbatim}
+\end{itembox}
+\ \\
+\indent emファイルをemlファイルに変換するにはコマンドラインで下記のような命令を実行します。\\
+
+\begin{center}
+  \begin{shadebox}
+    \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+     ecell3-em2eml Drosophila.em
+\end{verbatim}
+  \end{shadebox}
+\end{center}
+\ \\
+実行すると、Drosophila.emlというファイルが生成されます。
+
+
+\subsection{実習課題(1): 簡単な微分方程式モデルの実装}
+ここまでに紹介したトピックだけで、簡単なモデルを書くことができます。下記の実習課題に取り組みなさい。
+
+\begin{enumerate}
+\item Systemの体積とStepperを定義しなさい。体積とStepperはDrosophila.emと同じもので構いません。
+\item 物質Sが\(1.0 \times 10^6\)分子だけ存在することをVariable文で定義しなさい。\item 物質Sが微分方程式\(\displaystyle\frac{dS}{dt}=-kS\)に従って増減することをProcess文で定義しなさい。\(k = 0.2\ {\rm sec}^{-1}\)とします。
+\item emファイルをemlファイルに変換しなさい。
+\item このモデルを30秒間シミュレーションするSession Scriptを書きなさい。Sの時系列データを保存すること。
+\item Sの時系列データをグラフ化しなさい。
+\item 発展課題: 解析解との時系列平均誤差\(\displaystyle\varepsilon=\frac{1}{n}\sum_{i=1}^n\frac{|X^{\rm analytical}_i - X^{\rm numerical}_i|}{ X^{\rm analytical}_i}\)を評価しなさい。
+\end{enumerate}
+
+\subsection{E-Cellのモデルは改造しやすい}
+常微分方程式を解くだけなら、Euler法やRunge-Kutta法などをプログラムすればでることですし、MathematicaやMATLABのような数値解析ソフトも使えます。では一体E-Cellを使うメリットは何でしょうか？メリットがわかる一例として、下のような代謝系(解糖系の一部)を考えます。
+\[{\rm G6P}\stackrel{v_{\rm in}}{\longrightarrow} {\rm F6P} \stackrel{v_{\rm PFK}}{\longrightarrow} {\rm ADP} \stackrel{v_{\rm out}}{\longrightarrow} \]
+
+G6P、F6P、ADPはそれぞれグルコース6リン酸、フルクトース6リン酸、アデノシン二リン酸を指します。\(v_{in}\)、\(v_{out}\)はそれぞれF6Pの生成速度とADPの分解速度を表します。\(v_{PFK}\)はF6Pを基質とし、
+ADPを産物とする酵素であるホスホフルクトキナーゼ(PFK)の反応速度を表します。F6PとADPの物質収支についての微分方程式は下のように書き下ろせます。
+
+\[
+\left\{
+\begin{array}{lclclcl}
+\displaystyle\frac{d[{\rm F6P}]}{dt} & = & v_{in}  & - & v_{PFK} & \cdots & (1)\\
+\displaystyle\frac{d[{\rm ADP}]}{dt} & = & v_{PFK} & - & v_{out} & \cdots & (2)\\
+\end{array}
+\right.\]
+
+さて、今、PFKの酵素活性が全く無い状態をモデル化したいとします。この場合、式(1)、(2)における\(v_{PFK}\)項がゼロとなりますので、微分方程式は下の式(3)、(4)のように書き換えられます。
+
+\[
+\left\{
+\begin{array}{lclclcl}
+\displaystyle\frac{d[{\rm F6P}]}{dt} & = & v_{in}  &  &  & \cdots & (3)\\
+\displaystyle\frac{d[{\rm ADP}]}{dt} & = &  & - & v_{out} & \cdots & (4)\\
+\end{array}
+\right.\]
+
+\(v_{PFK}\)は1基質1産物反応として扱っているので、この書き換えでは2つの項を消去しました。この程度ならばモデルの改造は簡単です。しかし、もっとスケールの大きなモデルではどうなるでしょうか。系が複雑になってくると、モデルを構築する過程において、複数の酵素からなる反応経路を一度に削除したり、あるいはその逆に、ひとまとまりの反応経路をモデルに追加したりといった操作が頻繁に行われます。これを微分方程式をそのまま書き下したMathematicaやMATLABなどのコードで行おうとすると、追加または削除した反応の基質・産物となる物質すべてについて微分方程式を書き直さなければなりません。この書き直しは、微分方程式から項を一つ一つ追加または削除するという、ミスを犯しやすい作業と言えます。\\
+
+\indent 一方、E-Cellのモデルはこのような改造を容易に行うことができます。{\bf Processを書いておけば、物質収支の微分方程式はE-Cell内部に自動的に構築されるからです}。よって、PFKの酵素活性が全く無いモデルを作りたいときには、\(v_{PFK}\)を定義しているProcessをモデルから外すだけで済みます。複数の酵素をひとまとめにして追加・削除するような試行錯誤を繰り返す必要があるときには、対応するProcess群をファイル内の１ヶ所にまとめておき、1度のカット\&ペーストでモデルを改造するといった方法をとります。
+
+\subsection{実習課題(2): やや進んだ微分方程式モデルの実装}
+下記の実習課題に取り組みなさい。
+
+\begin{enumerate}
+\item Systemの体積とStepperを定義しなさい。体積とStepperは実習課題(1)と同じもので構いません。
+\item G6P、F6P、ADPがそれぞれ\(1.0 \times 10^6\)分子だけ存在することをVariable文で定義しなさい。
+\item \(v_{in}\)、\(v_{PFK}\)、\(v_{out}\)をそれぞれProcess文で定義しなさい。\(k = 0.2\ {\rm sec}^{-1}\)とします。
+\item 上で示した微分方程式(1)(2)は、ここまでに「1」「2」「3」で書いた文で表現できている。では、微分方程式(3)(4)を表現するには、どこをどのように変更すれば良いか答えなさい。
+\item emファイルをemlファイルに変換しなさい。
+\item このモデルを30秒間シミュレーションするSession Scriptを書きなさい。F6PおよびADPの時系列データを保存すること。
+\item F6PおよびADPの時系列データをグラフ化しなさい。
+\end{enumerate}
+
+\subsection{Stub(スタブ): Variable、Processを操作する}
+この節ではSession Scriptの使い勝手を飛躍的に高めるStubというオブジェク
+トの使い方を紹介します。Stubを使うとシミュレーション中のモデルから物質
+濃度や反応活性のデータを取り出すことができるほか、物質濃度や反応パラメー
+タを任意の値に変えることができます。公式マニュアルではpp.45-49にStubに
+ついての解説が掲載されています。まずはStubの活用例として、相平面(phase plane)を
+描くためのデータを出力するスクリプトphaseplane.pyのソースコードを読んで
+いきましょう。相平面とは、縦軸・横軸の両方に時間依存の変数(ここでは物質濃度と酵素反応活性)をとるプロットのことです。\\
+
+\begin{itembox}[l]{{\tt phaseplane.py (1)}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+loadModel( 'Drosophila.eml' )
+# 前述
+
+Pn_Stub = createEntityStub( 'Variable:/CELL/CYTOPLASM:Pn' )
+# Pn(核移行したPER)を操作するためのStubを用意。
+
+M_Stub = createEntityStub( 'Variable:/CELL/CYTOPLASM:M' )
+# M(per mRNA)を操作するためのStubを用意。
+
+R_toy14_Stub = createEntityStub( 'Process:/CELL/CYTOPLASM:R_toy14' )
+# 化学反応R_toy14(二リン酸化されたPERの分解速度)のStubを用意。
+\end{verbatim}
+\end{itembox}
+
+\begin{itembox}[l]{{\tt phaseplane.py (2)}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+Pn_Stub.setProperty( 'Value' , 6.21367E-01 )
+# 「Pnの分子数を6.21367E-01にセットせよ」という命令。
+# 6.21367E-01はPnの初期値なので計算結果は変わらない。
+# ここではsetPropertyの使用例として示した。
+
+R_toy14_Stub.setProperty( 'vd' , 0.95 )
+# 「化学反応R_toy14のパラメータvdを0.95にセットせよ」という命令。
+# 0.95はvdの初期値なので計算結果は変わらない。
+# 上と同様にsetPropertyの使用例として示した。
+
+while getCurrentTime() < 72.0:
+# 時刻(シミュレーション開始がt=0)が72秒を越えるまで
+# 以下の字下げした部分の操作を繰り返す
+
+        Pn = Pn_Stub.getProperty('Value')
+        # その時刻におけるPnの分子数(Value)
+
+        M  = M_Stub.getProperty('Value')
+        # その時刻におけるMの分子数(Value)
+
+        R_toy14 = R_toy14_Stub.getProperty('Activity')
+        # その時刻におけるR_toy14の活性(Activity, 単位[reaction/sec])
+
+        print Pn, '\t', M, '\t', R_toy14
+        # タブ区切り(\t)で出力する
+
+        step()
+        # 時計をΔt(初期設定では1ミリ秒)だけ進める
+
+stop()
+# 前述
+\end{verbatim}
+\end{itembox}
+\ \\
+
+このスクリプトで重要なのは、\verb+createEntityStub+、\verb+setProperty+、\verb+getProperty+が出てくる行です。機能を整理すると、下記のようになります。
+
+\begin{enumerate}
+\item \verb+createEntityStub+ → 指定したVariable(物質)またはProcess(反応)のStubを生成
+\item \verb+[Stub Object].setProperty+ → VariableまたはProcessの属性(例えば濃度やパラメータ)を設定 
+\item \verb+[Stub Object].getProperty+ → VariableまたはProcessの属性(例えば濃度やパラメータ)を取得 
+\end{enumerate}
+
+ではphaseplane.pyを実行してみましょう。\\
+
+\begin{shadebox}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+     ecell3-session phaseplane.py
+\end{verbatim}
+\end{shadebox}
+
+\ \\
+と入力するとデータが標準出力に出力されます。この出力結果をファイルに保
+存するには、\\
+
+\begin{shadebox}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+     ecell3-session phaseplane.py > data.txt
+\end{verbatim}
+\end{shadebox}
+\ \\
+のようにします。data.txtをグラフ化してみましょう。
+
+\subsection{実習課題(3): Goldbeterの追試 (1)}
+\begin{enumerate}
+\item "[Pt][タブ区切り][M]"を毎行出力するようにphaseplane.pyを改造しなさい。ただしPtはPt=P0+P1+P2+Pnで定義されます。
+\item 改造したphaseplane.pyが出力したデータから、[Goldbeter 1995]のFigure 3の相平面を描きなさい。
+\end{enumerate}
+
+\subsection{Sel'kov モデル: 非線形力学系理論と振動現象}
+相平面の話題が出てきたところで、これと関係の深い非線形力学系の理論を取り上げます。
+非線形力学系の知識体系はシステム生物学において重要度を増していますので、生命情報学科の
+諸君にはしっかり習得してもらいたいと思います。\\
+
+\indent さて、比較的早くから見つかっていた生物リズムとして、出芽酵母解
+糖系における物質濃度の振動があります。Sel'kovは1968年に
+図\ref{fig:09sysbio} に示すモデルを提案し、PFK周辺のフィードバック・ルー
+プが振動子の核心であると主張しました。以降、このSel'kovモデルは概日時計
+を含む生物リズムを説明する最もシンプルな模型として多くの論文や教科書で
+取り上げられています。ここではSel'kovモデルを通じて振動現象の数理を学び、
+概日時計との共通点を探ります。
+
+\begin{figure}[ht]
+        \centering \includegraphics[height=3cm]{sysbio/img/selkov_model.eps}
+        \caption{Sel'kovモデル。ADPがPFKを活性化することによる正のフィードバック・ループを持つ。}
+        \label{fig:09sysbio} \end{figure}
+
+連立微分方程式で図\ref{fig:09sysbio} を表現したものを次に示します。
+
+\[
+\left\{
+\begin{array}{lclclll}
+\dot x & = & -x+ay+x^2 y\\
+\dot y & = & b-ay-x^2y\\
+\end{array}
+\right.\]
+
+ただし、\(x\)はADP、\(y\)はF6Pの存在量です。
+
+\subsection{実習課題(4): Sel'kov モデルの解析}
+指定がある問題以外は紙と鉛筆で解きなさい。課題の下に付した用語集を随時読むこと。
+\begin{enumerate}
+\item Sel'kov モデルのヌルクラインを相平面上に描きなさい。
+\item 「1」の結果にベクトル場の概略を描き加え、固定点がSpiralになると予想できることを確かめなさい。
+\item Sel'kov モデルを線形化し、ヤコビ行列を求めなさい。
+\item 2つの固有値の実部が同符号であることを確認しなさい(ヒント: \(\Delta\)の正負を調べる)。
+\item Sel'kov モデルの固定点が Stable Spiral から Unstable Spiral へと変化するときに パラメータ\(a\)、\(b\)の間に成り立つ関係式を求めなさい(ヒント: \(\tau\)=0となる条件を調べる。理由はなぜか?)。
+\item 実習課題(2)を参考にして、Sel'kov モデルの em ファイルを作りなさい。\verb+MolarConc+ではなく\verb+Value+を使うこと。a = 0.06、b = 0.6 とする。em ファイルが出来上がったらパラメータ\(a\)、\(b\)を変更し、Hopf 分岐点(「5」で求めた式)を境に振動が生成・消滅することを確認しなさい。
+\item (発展)「5」で求めた式に相当する曲線の概形を描きなさい。\(a\)、\(b\)をそれぞれ横軸、縦軸とすること。曲線を境に、どちら側がStableもしくはUnstableなのかも記入しなさい。この項目「7」は必須の課題ではありません。
+\end{enumerate}
+
+\paragraph{ヌルクライン(nullcline)} 一般に、時間変化する量についての微分方程式が0と等しくなるような点の集合をヌルクライン(nullcline)と呼びます。
+相平面上に描いたヌルクラインは図\ref{fig:05sysbio}のようになります。2変数系の場合、2つのヌルクラインの交点に
+おいては系が定常状態になります。非線形力学系の分野では固定点(fixed point)と呼ばれます。
+
+\paragraph{ベクトル場(vector field)}
+化学反応系が相平面上の一点で表される状態にあるとき、微小時間後にその点がどの方向に動くかをベクトルで示したもの。
+描き方は次の通りです。
+
+\[
+\left\{
+\begin{array}{lclclll}
+\dot x & = & f(x,y)\\
+\dot y & = & g(x,y)\\
+\end{array}
+\right.\]
+
+という2変数の系があるとき、点\((x,y)\)に大きさ\((\dot x , \dot y)\)のベクトルを描きます。
+下記のような具体例を考えましょう。
+
+\[
+\left\{
+\begin{array}{lclclll}
+\dot x & = & -x + 2y + x^2y\\
+\dot y & = & 8 -2y -x^2y\\
+\end{array}
+\right.\]
+
+この系において、点\((x,y)=(1,2)\)におけるベクトルを求めてみましょう。\((x,y)=(1,2)\)を
+この微分方程式に代入すると、\((\dot x, \dot y)=(5,2)\)となります。これより、\(x\)方向に5、\(y\)方向
+に2の大きさを持つベクトルを点(1,2)を原点として描けばよいことになります。\\
+
+\indent ヌルクラインの定義より、\(x\)のヌルクライン上ではベクトルは垂直(\(\dot x = 0\))になります(図\ref{fig:05sysbio})。。
+
+\begin{figure}[ht]
+        \centering \includegraphics[height=6cm]{sysbio/img/vectorfield.eps}
+        \caption{相平面上に描いたヌルクラインとベクトル場}
+        \label{fig:05sysbio} \end{figure}
+
+
+\paragraph{線形化(linearization)}
+非線形の微分方程式を固定点の近傍でテイラー展開し、1次の項のみ残して2次以降の項を消去すること。
+
+
+\paragraph{ヤコビ行列(Jacobian matrix)}
+線形化を行った結果得られた1次項からなる正方行列のこと。線形化の手順は次の通りです。
+\[
+\left\{
+\begin{array}{lclclll}
+\displaystyle\frac{d}{dt}x_1 & = & F_1(x_1, \cdots , x_n)\\
+                & \vdots & \\
+\displaystyle\frac{d}{dt}x_n & = & F_n(x_1, \cdots , x_n)\\
+\end{array}
+\right.
+\]
+
+のような連立常微分方程式を固定点\(x_{k(fp)}\)の近傍でテイラー展開すると、
+
+\[
+\begin{array}{ccl}
+\displaystyle\frac{d}{dt}
+\left(
+\begin{array}{c}
+x_{1(fp)}+\Delta x_1\\
+\vdots \\
+x_{n(fp)}+\Delta x_n\\
+\end{array}
+\right)
+& = &
+\left(
+\begin{array}{c}
+F_{1(fp)}(x_1, \cdots , x_n)\\
+\vdots \\
+F_{n(fp)}(x_1, \cdots , x_n)\\
+\end{array}
+\right)
+
++
+
+\left(
+\begin{array}{ccc}
+\frac{\partial F_1}{\partial x_1} & \cdots & \frac{\partial F_1}{\partial x_n} \\
+\vdots                            &        & \vdots\\
+\frac{\partial F_n}{\partial x_1} & \cdots & \frac{\partial F_n}{\partial x_n} \\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+\Delta x_1\\
+\vdots \\
+\Delta x_n\\
+\end{array}
+\right)\\
+
+&
++
+&
+\displaystyle\frac{1}{2}
+\left( \Delta x_1 , \cdots , \Delta x_n \right)
+\left(
+\begin{array}{ccc}
+\frac{\partial^2 F_1}{\partial x_1^2} & \cdots & \frac{\partial^2 F_1}{\partial x_1 \partial x_n} \\
+\vdots                            &    \ddots    & \vdots\\
+\frac{\partial^2 F_n}{\partial x_n \partial x_1} & \cdots & \frac{\partial^2 F_n}{\partial x_n^2} \\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+\Delta x_1\\
+\vdots \\
+\Delta x_n\\
+\end{array}
+\right)\\
+
+\end{array}
+\]
+
+を得ます(3次項以降省略)。このうち、固定点の定義より\(F_k(x_{1(fp)}, \cdots , x_{n(fp)})=0\)なので0次の項は
+無視できます。また、2次の項\((\Delta x_{k(fp)})^2\)は微小量の2乗ですから、固定点近傍においては2次の項を近似的に0とみなして無視することができます。
+よって下記のような式が得られます。
+
+\[
+\frac{d}{dt}
+\left(
+\begin{array}{c}
+\Delta x_1\\
+\vdots \\
+\Delta x_n\\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{ccc}
+\frac{\partial F_1}{\partial x_1} & \cdots & \frac{\partial F_1}{\partial x_n} \\
+\vdots                            &        & \vdots\\
+\frac{\partial F_n}{\partial x_1} & \cdots & \frac{\partial F_n}{\partial x_n} \\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+\Delta x_1\\
+\vdots \\
+\Delta x_n\\
+\end{array}
+\right)\\
+\]
+
+ベクトル表記にすると、
+
+\[ \frac{d}{dt}\Delta {\bf x} = {\bf J}\Delta {\bf x}\]
+
+右辺に残った1階偏微分からなる行列{\bf J}をヤコビ行列と呼びます。
+
+\paragraph{行列指数関数(matrix exponential)}
+線形化した連立微分方程式の解となる関数です。上で得た微分方程式
+
+\[ \frac{d}{dt}\Delta {\bf x} = {\bf J}\Delta {\bf x}\]
+
+の解は下記のようになります。
+
+\[\Delta {\bf x}=\exp({\bf J}t)\Delta {\bf x}_0\]
+
+ただし、
+
+\[\exp({\bf J}t) = {\bf I} + \frac{{\bf J}t}{1!} + \frac{{\bf J}^2 t^2}{2!} + \frac{{\bf J}^3 t^3}{3!} + \cdots\]
+
+であり、\(\Delta {\bf x}_0\)は系に与えられた摂動の大きさ(固定点からのずれの初期値)です。
+
+\paragraph{固有値(eigenvalue)}
+行列指数関数は後々扱いが面倒なので、ヤコビ行列{\bf J}の固有値\(\lambda\)・固有ベクトル{\bf v}を用いて普通の指数関数に書き直しておきます。
+
+\begin{eqnarray*}
+\exp({\bf J}t){\bf v} & = & \left({\bf I} + \frac{{\bf J}t}{1!} + \frac{{\bf J}^2 t^2}{2!} + \frac{{\bf J}^3 t^3}{3!} + \cdots \right){\bf v}\\
+                      & = & \left(1 + \frac{\lambda t}{1!} + \frac{\lambda^2 t^2}{2!} + \frac{\lambda^3 t^3}{3!} + \cdots \right){\bf v}\\
+                      & = & \exp(\lambda t) {\bf v}\\
+\end{eqnarray*}
+
+また、初期摂動\(\Delta {\bf x}_0\)も固有ベクトルの線形結合として下のように表せます。
+
+\[\Delta {\bf x}_0 = c_1 {\bf v}_1 + \cdots c_n {\bf v}_n \]
+
+幾何学的な描像を図\ref{fig:06sysbio}に示しました。
+
+\begin{figure}[ht]
+        \centering \includegraphics[height=6cm]{sysbio/img/decomposition.eps}
+        \caption{摂動は固有ベクトルの線形結合として表せる。}
+        \label{fig:06sysbio} \end{figure}
+
+
+よって、固定点からのずれ\(\Delta {\bf x}\)は、
+
+\begin{eqnarray*}
+\Delta {\bf x}(t) & = & \exp({\bf J}t)\Delta {\bf x}_0\\
+                 & = & \exp({\bf J}t)(c_1 {\bf v}_1 + \cdots c_n {\bf v}_n) \\
+                 & = & c_1 \exp(\lambda_1 t){\bf v}_1 + \cdots c_n \exp(\lambda_n t){\bf v}_n \\
+\end{eqnarray*}
+
+となり、固有値が正の時には\(\Delta {\bf x}\)が発散し、負の時には収束する(すなわち固定点に戻る)ことがわかります(図\ref{fig:07sysbio})。
+
+\clearpage
+
+\begin{figure}[ht]
+        \centering \includegraphics[height=5cm]{sysbio/img/eigenvector.eps}
+        \caption{(左)固有値がすべて負なら解軌跡は固定点に収束する。(右)正の固有値を含む固定点では解軌跡が発散する。}
+        \label{fig:07sysbio} \end{figure}
+
+
+\paragraph{固定点の分類} ヤコビ行列の固有値の正負・虚実の組み合わせにより、固定点は下表のように分類されます。注目している化学反応系の固定点がどのタイプにあたるのかを調べることで、化学反応系の動態を定性的に把握できます(図\ref{fig:08asysbio}、 \ref{fig:08bsysbio})。\\
+
+\begin{center}
+表: 固有値による固定点の分類\\
+\begin{tabular}{clll}
+\hline
+固有値の虚実 & 固有値の符号       & 固定点の名称 & 時系列の特徴 \\
+\hline
+実数  & すべて正         & Unstable node  & 不安定な定常状態\\
+　　　& すべて負         & Stable node    & 安定した定常状態\\
+      & 正負混在         & Saddle         & 不安定な定常状態\\
+\hline
+複素数 & 実部がすべて負  & Stable spiral  & 減衰振動(安定解)\\
+　　　 & 正の実部を持つ  & Unstable spiral & 発散振動(不安定解)\\
+       & 純虚数          & Center          & 調和振動\\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{figure}[ht]
+        \centering \includegraphics[height=6cm]{sysbio/img/node_stability.eps}
+                \caption{実数固有値のみの場合の固定点の分類。(左)それぞれの固定点近傍におけるベクトル場の特徴。正の固有値を1つでも含むと不安定な定常状態となる。(右)時系列の特徴。}
+        \label{fig:08asysbio} \end{figure}
+        
+\begin{figure}[ht]
+        \centering \includegraphics[height=6cm]{sysbio/img/spiral_stability.eps}
+        \caption{複素固有値を含む場合の固定点の分類。(左)それぞれの固定点近傍におけるベクトル場の特徴。実部の符号によって安定性を判別する。(右)時系列の特徴。}
+        \label{fig:08bsysbio} \end{figure}
+
+
+\paragraph{固有値の正負・虚実の判別法}
+ヤコビ行列が2行2列の場合、下記のようにすると固有方程式を解かずに固有値の符号を知ることができます。ヤコビ行列を
+
+\[{\bf J} =
+\left(
+\begin{array}{rr}
+a& b\\
+c& d\\
+\end{array}
+\right)
+\]
+
+とおくと、固有方程式は\(\lambda^2-(a+d)\lambda+(ad-bc)=0\)となります。この固有方程式の2つの解を\(\lambda_1\) 、\(\lambda_2\)とすると、2次方程式の解と係数の関係から、
+
+\[
+\begin{array}{lclclcl}
+\tau & = & \lambda_1 + \lambda_2 & = & a + d & = & {\rm tr}({\bf J})\\
+\Delta & = &\lambda_1 \lambda_2 & = & ad - bc & = & \det({\bf J})\\
+\end{array}
+\]
+
+と書くことができます。\(\Delta\)の正負から、2つ固有値(の実部)が同符号であるか判定でき、その符号が正負どちらなのかは\(\tau\)の正負に対応します。また、\(\tau^2 -4\Delta\)の正負からは固有値が実数・複素数のどちらになるかを判定できます。
+
+\paragraph{分岐(bifurcation)} パラメータの変化により、固定点の数や種類が変わること。Sel'kovモデルはパラメータの値によって、Spiralの安定性が変わるHopf分岐を示します。
+
+\paragraph{リミットサイクル(limit cycle)} 相平面中にできる閉曲線。非線形振動の軌跡に相当します。
+Center周囲には同心円状に閉軌道が存在する(図\ref{fig:08bsysbio})のに対し、リミットサイクルの周辺には
+閉軌道は存在しません(図\ref{fig:09sysbio}右)。固有値を\(\lambda = a+bi\)とおいたとき、振動の周期はおおよそ\(\displaystyle\frac{2\pi}{b}\)となります。実習課題(3)で描いた概日時計モデルの解軌跡もリミットサイクルです。
+
+\paragraph{Hopf 分岐 (Hopf bifurcation)}
+振動現象ときわめて密接な関係にある分岐です。共役な複素固有値対が複素平面の虚軸を左から右に横切るとき(すなわち実部が負から正になるとき)、Stable spiralがUnstable spiralに変化することを指します。{\bf Hopf分岐が存在する場合、Unstable node の周囲にはリミットサイクルが存在することが保証されています。}よってHopf分岐により、系が定常状態から振動状態へとその挙動を変えます。
+細胞内における分子濃度の振動現象のほとんどは Hopf 分岐で説明できます。
+
+\begin{figure}[ht]
+        \centering \includegraphics[height=6cm]{sysbio/img/hopf_limitcycle.eps}
+        \caption{(左)共役な複素固有値対が虚軸を左から右に横切るとき、Stable spiralがUnstable spiralに変化する。(右)これに伴い、Unstable spiral を取り巻くようにリミットサイクル(赤で描いた閉軌道)が生じる。}
+        \label{fig:10sysbio} \end{figure}
+
+
+
+\subsection{コマンドラインからのパラメータ設定}
+振動現象の数理的背景を学んだところで、Goldbeterの概日時計モデルに戻りましょう。
+Goldbeterは\(v_d\)の値に依存して振動の周期がどのように変化す
+るかを参考文献中のFigure 4のグラフで示しています。こうしたデータを取得するにはデー
+タポイントを1つ取得する毎にemファイルの\verb+vd+を書き換えるか、[Stub
+Object].setPropertyを使うかといった方法が考えられます。が、いちいち書
+き換えのたびにいちいちファイルを開いて保存するという操作を繰り返すのは
+面倒です。そこで、ファイルを何度も書き直す必要なしにパラメータを変える
+方法を紹介します。\\
+
+\begin{itembox}[l]{{\tt phaseplane.pyの書き換え箇所}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+R_toy14_Stub.setProperty( 'vd' , 0.95 ) を
+R_toy14_Stub.setProperty( 'vd' , vd_value ) に書き換えます。
+\end{verbatim}
+\end{itembox}
+\ \\
+
+「変数\verb+vd_value+の初期値を定義せずにスクリプトを実行していいのか?」
+と思ったかもしれません。実は\verb+vd_value+の初期値をコマンドラインで
+定義できるのです。\\
+
+\begin{shadebox}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+ecell3-session -Dvd_value=2.0 phaseplane.py
+\end{verbatim}
+\end{shadebox}
+\ \\
+
+複数のパラメータを設定することもできます。\\
+
+\begin{itembox}[l]{一般的な書式}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+ecell3-session -D[Param1]=[Value1] -D[Param2]=[Value2] ... [Session Script]
+\end{verbatim}
+\end{itembox}
+\ \\
+また、後述する発展課題のように、パラメータの値を少しずつ変化させたいような場合は、下の\verb+param.py+の例で示したように\verb+system+関数を使うと良いでしょう。Pythonの\verb+system+関数はカッコ内で指定したコマンドを実行します。\\
+
+\begin{itembox}[l]{\tt param.py : パラメータを少しずつ変える}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+import os
+
+x = 1.0        # パラメータの初期値を 1.0 とする。
+while x < 2.0 :
+    os.system("ecell3-session -Dvd=%f script.py" % x)
+    x += 0.1   # 0.1 ずつ増やす。
+\end{verbatim}
+\end{itembox}
+\ \\
+実行法は \verb+python param.py+ と、コマンドラインに打ち込むだけです。
+
+
+
+\subsection{実習課題(5): Goldbeterの追試 (2)}
+パラメータvdを0.5から2.7の間で0.1ずつ変化させ、[Goldbeter 1995]の
+Figure 4のグラフが正しいかどうか調べなさい。必要があれば、シミュレーショ
+ン時間(phaseplane.pyでは72秒)を延長すること。振動の周期を求めるには、振動の腹(振幅が極大になる点)から腹までの時間を計測します。
+
+
+\subsection{Griffith モデル: 双安定性}
+細胞内には、あたかもスイッチのON/OFFかのように、2つの安定状態を持つ系が
+存在します。このような性質を「双安定性(bistability)」と呼び、力学系の理論では
+安定固定点(Stable nodeまたはStable spiral)が2つ存在する状態として説明されます。
+ここでは双安定性を示す系の例として、Griffithによって提案された、自己フィー
+ドバック・ループを持つ遺伝子発現系のモデルを紹介します。このモデルでは遺伝子XからmRNAが
+転写され、そのmRNAから翻訳されたタンパク質が遺伝子X自体の転写を活性化し
+ます。Griffithはこれを次のようにモデル化しました(ただし、\(x\)はタンパ
+ク質、\(y\)はmRNAの存在量)。
+
+\begin{figure}[ht]
+        \centering \includegraphics[height=3cm]{sysbio/img/griffith_model.eps}
+        \caption{Griffithモデル。翻訳されたタンパク質は自身をコードする遺伝子の転写を活性化する。}
+        \label{fig:04sysbio} \end{figure}
+
+\[
+\left\{
+\begin{array}{lclclll}
+\dot x & = & -ax + y\\
+\dot y & = & \displaystyle\frac{x^2}{1+x^2} - by\\
+\end{array}
+\right.\]
+
+Griffithモデルはパラメータ\(a\)、\(b\)の値によってSaddleとNodeの個数が変わるSaddle-Node分岐を示します。
+
+\subsection{発展課題: Griffithモデルの相平面解析}
+指定がある問題以外は紙と鉛筆で解きなさい。この問題は必須ではありません。
+\begin{enumerate}
+\item Griffith モデルのヌルクラインを相平面上に描きなさい。
+\item 「1」の結果にベクトル場の概略を描き加えなさい。
+\item Griffith モデルを線形化し、ヤコビ行列を求めなさい。
+\item ヤコビ行列の固有値の符号を調べ、Griffith モデルに現れる固定点を分類しなさい。
+\item \(ab < \displaystyle\frac{1}{2}\)、\(ab=\displaystyle\frac{1}{2}\) 、\(ab > \displaystyle\frac{1}{2}\) の3つの場合についてベクトル場を描きなさい。固定点の個数、性質はどのように3つの場合でどのように異なっているか。
+\item Griffith モデルをE-Cellで動かしなさい。mRNAもしくはタンパク質の量を変化させ、双安定性が見られるかを検討しなさい。物質の量を変化させるには\verb+setProperty+関数を使う。
+\end{enumerate}
+
+
+%\end{document}
+
+%%% Local Variables: 
+%%% mode: japanese-latex
+%%% TeX-master: "../text-3rdyears"
+%%% End: 
+

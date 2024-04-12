@@ -1,0 +1,292 @@
+This is e-pTeX, Version 3.141592653-p3.9.0-210218-2.6 (utf8.euc) (TeX Live 2021) (preloaded format=platex 2021.7.26)  28 FEB 2022 18:23
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**thischapter.tex
+(./thischapter.tex
+pLaTeX2e <2021-06-01>+2 (based on LaTeX2e <2021-06-01> patch level 1)
+L3 programming layer <2021-07-12>
+(/usr/local/texlive/2021/texmf-dist/tex/platex/base/jreport.cls
+Document Class: jreport 2020/09/30 v1.8f Standard pLaTeX class
+\c@@paper=\count181
+(/usr/local/texlive/2021/texmf-dist/tex/platex/base/jsize12.clo
+File: jsize12.clo 2020/09/30 v1.8f Standard pLaTeX file (size option)
+)
+\c@part=\count182
+\c@chapter=\count183
+\c@section=\count184
+\c@subsection=\count185
+\c@subsubsection=\count186
+\c@paragraph=\count187
+\c@subparagraph=\count188
+\c@figure=\count189
+\c@table=\count190
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\symmincho=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
+(Font)                  JY1/mc/m/n --> JY1/gt/m/n on input line 704.
+\toclineskip=\dimen154
+\@lnumwidth=\dimen155
+\bibindent=\dimen156
+\heisei=\count191
+)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/ascmac/ascmac.sty
+Package: ascmac 2020/01/15 v2.1 ascmac wrapper (community edition) 
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/ascmac/tascmac.sty
+Package: tascmac 2020/01/15 v2.1 ascmac package (community edition) 
+\@savetbaselineshift=\dimen157
+\@saveybaselineshift=\dimen158
+\scb@x=\box67
+\scscb@x=\box68
+\@bw=\dimen159
+\@nbox=\box69
+\@nbody=\box70
+\@scw=\dimen160
+\ascmac@hoboxa=\box71
+\ascmac@hoboxb=\box72
+\@itemh=\dimen161
+\@iboxpos=\toks17
+\@iboxstr=\box73
+\@bwsp=\box74
+\@@bwsp=\box75
+\@bcal=\count192
+\shaderule=\dimen162
+))
+(./TitlePage.sty
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2020/12/05 v1.2c Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks18
+)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: dvips.def on input line 107.
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/graphics-def/dvips.def
+File: dvips.def 2017/06/20 v3.1d Graphics/color driver for dvips
+))
+\Gin@req@height=\dimen163
+\Gin@req@width=\dimen164
+))
+(./Appendix.sty) (./verbatimfiles.sty
+\c@lineno=\count193
+)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
+Package: fancyhdr 2021/01/28 v4.0.1 Extensive control of page headers and foote
+rs
+\f@nch@headwidth=\skip49
+\f@nch@O@elh=\skip50
+\f@nch@O@erh=\skip51
+\f@nch@O@olh=\skip52
+\f@nch@O@orh=\skip53
+\f@nch@O@elf=\skip54
+\f@nch@O@erf=\skip55
+\f@nch@O@olf=\skip56
+\f@nch@O@orf=\skip57
+)
+(./jumoline.sty
+Package: jumoline 2001/05/31 v1.2 
+\UnderlineDepth=\dimen165
+\MidlineHeight=\dimen166
+\OverlineHeight=\dimen167
+\UMOlineThickness=\dimen168
+\UMO@height=\dimen169
+\UMO@depth=\dimen170
+\UMO@dqspace=\dimen171
+\UMO@tempdim=\dimen172
+\UMO@prejfmglue=\skip58
+\UMO@postjfmglue=\skip59
+\UMO@mode=\count194
+\UMO@spacefactor=\count195
+\UMO@firstxspcode=\count196
+\UMO@lastxspcode=\count197
+\UMO@inhibitxspcode=\count198
+\UMO@prebreakpenalty=\count199
+\UMO@postbreakpenalty=\count266
+\UMO@kpostbreakpenalty=\count267
+)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2021/04/20 v2.17j AMS math features
+\@mathmargin=\skip60
+
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2021/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks19
+\ex@=\dimen173
+))
+(/usr/local/texlive/2021/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen174
+)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count268
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count269
+\leftroot@=\count270
+LaTeX Info: Redefining \overline on input line 399.
+\classnum@=\count271
+\DOTSCASE@=\count272
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box76
+\strutbox@=\box77
+\big@size=\dimen175
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count273
+\c@MaxMatrixCols=\count274
+\dotsspace@=\muskip16
+\c@parentequation=\count275
+\dspbrk@lvl=\count276
+\tag@help=\toks20
+\row@=\count277
+\column@=\count278
+\maxfields@=\count279
+\andhelp@=\toks21
+\eqnshift@=\dimen176
+\alignsep@=\dimen177
+\tagshift@=\dimen178
+\tagwidth@=\dimen179
+\totwidth@=\dimen180
+\lineht@=\dimen181
+\@envbody=\toks22
+\multlinegap=\skip61
+\multlinetaggap=\skip62
+\mathdisplay@stack=\toks23
+LaTeX Info: Redefining \[ on input line 2923.
+LaTeX Info: Redefining \] on input line 2924.
+)
+(/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup5
+\symAMSb=\mathgroup6
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+LaTeX Font Info:    Overwriting math alphabet `\bm' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/cmr/bx/it on input line 21.
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/l3backend/l3backend-dvips.def
+File: l3backend-dvips.def 2021-07-12 L3 backend support: dvips
+\l__pdf_internal_box=\box78
+\g__pdf_backend_object_int=\count280
+\l__pdf_backend_content_box=\box79
+\l__pdf_backend_model_box=\box80
+\g__pdf_backend_annotation_int=\count281
+\g__pdf_backend_link_int=\count282
+\g__pdf_backend_link_sf_int=\count283
+)
+No file thischapter.aux.
+\openout1 = `thischapter.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 33.
+LaTeX Font Info:    ... okay on input line 33.
+(../Constraint/mfa.tex
+第 1 章
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <24.88> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 1.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <24.88> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 1.
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 3.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 3.
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <17.28> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 19.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <17.28> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 19.
+[1
+
+
+]
+LaTeX Font Info:    Trying to load font information for U+msa on input line 91.
+
+ (/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 91.
+
+
+(/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) [2]
+File: ../Constraint/img/mfa1.epsi Graphic file (type eps)
+
+<../Constraint/img/mfa1.epsi> [3]
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 123.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 123.
+File: ../MCA/img/mca2.epsi Graphic file (type eps)
+ <../MCA/img/mca2.epsi> [4]
+File: ../MCA/img/mca3.epsi Graphic file (type eps)
+
+<../MCA/img/mca3.epsi>
+
+LaTeX Warning: Command \textendash invalid in math mode on input line 228.
+
+[5]
+File: ../Constraint/img/mfa4.epsi Graphic file (type eps)
+ <../Constraint/img/mfa4.epsi>
+LaTeX Font Info:    Font shape `JT1/mc/m/it' in size <12> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 250.
+LaTeX Font Info:    Font shape `JY1/mc/m/it' in size <12> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 250.
+ [6]
+File: ../Constraint/img/mfa5.epsi Graphic file (type eps)
+ <../Constraint/img/mfa5.epsi>
+File: ../Constraint/img/mfa6.epsi Graphic file (type eps)
+
+<../Constraint/img/mfa6.epsi>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[7]) [8] (./thischapter.aux) ) 
+Here is how much of TeX's memory you used:
+ 2580 strings out of 479005
+ 36085 string characters out of 5862675
+ 342359 words of memory out of 5000000
+ 20698 multiletter control sequences out of 15000+600000
+ 418460 words of font info for 87 fonts, out of 8000000 for 9000
+ 929 hyphenation exceptions out of 8191
+ 72i,12n,80p,338b,348s stack positions out of 5000i,500n,10000p,200000b,80000s
+
+Output written on thischapter.dvi (8 pages, 19548 bytes).

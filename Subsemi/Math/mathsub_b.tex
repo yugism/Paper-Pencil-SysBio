@@ -1,0 +1,127 @@
+\documentclass{jarticle}
+\headheight = 0pt
+\headsep = 0pt
+\textheight = 730pt
+\textwidth = 460pt
+\topmargin = 5pt
+\leftmargin = 5pt
+\oddsidemargin = 5pt
+%\footheight = 0pt
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{document}
+\begin{center}
+{\Large \bf 数学サブゼミb 修了認定試験}
+\end{center}
+\pagestyle{empty}
+\section{統計的検定 II}
+\subsection{配列の出現周期}
+霊長類{\it Yugius Katsuyukius}ミトコンドリアゲノム中の\verb+ctggtg+
+という6 塩基オリゴ配列の出現周期を調べたところ、存在数は7個で、周期は
+352bp (分散= 50bp)であった。また、この裏配列、\verb+caccag+の場合は存
+在数10個、周期は318bp (分散 = 46bp)であった。表と裏で配列出現周期傾向
+が有意に異なるとすれば何らかの選択圧が存在している可能性が高い。このオ
+リゴ配列の出現周期に差があるかどうか統計的検定によって判定しなさい。正
+規分布、\(t\)分布、\(\chi^2\)分布、\(F\)分布、ポアソン分布のうち利用す
+べき分布を選び、有意水準0.05で検定すること。
+\subsection{長い配列の出現頻度}
+ある遺伝子近辺8197塩基の範囲に6塩基配列\({\rm
+5}^{\prime}\)-\verb+GCTATA+-\({\rm 3}^{\prime}\)が1つも見つからなかった。この
+ようなことは通常起こり得るかを統計的に検定しなさい。正規分布、\(t\)分
+布、\(\chi^2\)分布、\(F\)分布、ポアソン分布のうちから利用すべき分布を
+選び、有意水準0.05で検定すること。
+\subsection{相関係数}
+表は、細菌菌株(No.1〜7)のメタノールとエタノール(C1,C2)に対する資化性\footnote{何らかの物質を分解して利用できる性質のこと。}を3
+ 段階評価(0,1,2)でまとめた結果である。
+
+\begin{flushleft}
+\begin{minipage}{300pt}
+\begin{enumerate}
+\item C1,C2間の関係を数値要約するために、Pearsonの積率相関係数\(r_p\)を求めなさ
+い。
+\item データを順位に変換した表を作成し、Spearmanの順位相関係数\(r_s\)を求めなさ
+い。
+\item (1)で求めた\(r_p\)の有意性について統計的検定を行いなさい。
+\end{enumerate}
+\end{minipage}
+\hfill
+\begin{minipage}{140pt}
+\begin{small}
+\begin{tabular}{l|ccc}
+菌株No. & C1 & C2 \\
+\hline
+1       &  0 &  0 \\
+2       &  0 &  1 \\
+3       &  1 &  0 \\
+4       &  1 &  1 \\
+5       &  1 &  2 \\
+6       &  2 &  1 \\
+7       &  2 &  2 \\
+\end{tabular}
+\end{small}
+\end{minipage}
+\end{flushleft}
+
+\section{線形代数 II: 固有値と安定性}
+定常状態にある酵素反応系モデルをテイラー展開で1次の項まで近似したところ、下のような式に書き下ろすことができた。
+\begin{small}
+\[
+\frac{d}{dt} \vec{s}
+=
+{\bf J} \cdot \vec{s}
+\mbox{\ \ \ \ \ \ \ ただし\ \ \ }
+\vec{s} =
+\left(
+\begin{array}{c}
+\Delta [S_1]\\
+\Delta [S_2]\\
+\end{array}
+\right)
+\begin{array}{r}
+  \\
+  \\
+, \\
+\end{array}
+{\bf J}
+=
+\left(
+\begin{array}{rr}
+-\frac{1}{2} & 2 \\
+0            & -\frac{3}{4} \\
+\end{array}
+\right)
+\]
+\end{small}
+\begin{flushleft}
+\begin{minipage}{240pt}
+\begin{enumerate}
+\item 行列{\bf J}の固有値・固有ベクトルを求めなさい。
+\item 行列{\bf J}を対角化しなさい。「行列を対角化する」とは、任意の行列Aの固有ベクトル\(\vec{v}_1 \cdots \vec{v}_n\)を各列に並べた行列を\(P=(\vec{v}_1 \cdots \vec{v}_n\))、固有値を対角要素に並べた行列を\(\Lambda\)とおいたとき、\(P^{-1}AP=\Lambda\)を求めることを言う。右にその導出過程を示す。
+\item 対角化の結果を用いて\({\bf J}^n\)を求めなさい。
+\end{enumerate}
+\end{minipage}
+\hfill
+\begin{minipage}{200pt}
+\ \\ \ \\
+\begin{small}
+固有値・固有ベクトルの定義より、
+\begin{eqnarray*}
+A(\vec{v}_1 \cdots \vec{v}_n) & = & (\vec{v}_1 \cdots \vec{v}_n) 
+\left(
+\begin{array}{ccc}
+\lambda_1 &  & 0 \\
+    & \ddots &  \\
+0         &  & \lambda_n \\
+\end{array}
+\right)\\
+AP   & = & P\Lambda \\
+P^{-1}AP   & = & \Lambda 
+\end{eqnarray*}
+\end{small}
+\end{minipage}
+\end{flushleft}
+\begin{enumerate}
+\addtocounter{enumi}{3}
+\item この系に摂動を与えた場合、物質濃度が発散するか再び定常状態に戻るかを推定しなさい。\(t \rightarrow \infty\) のとき \(n \rightarrow \infty\) とする。
+\end{enumerate}
+
+\end{document}

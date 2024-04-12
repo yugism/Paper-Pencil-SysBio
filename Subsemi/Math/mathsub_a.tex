@@ -1,0 +1,108 @@
+\documentstyle{jarticle}
+\headheight = 0pt
+\headsep = 0pt
+\textheight = 720pt
+\textwidth = 440pt
+\topmargin = 5pt
+\leftmargin = 5pt
+\oddsidemargin = 5pt
+\footheight = 0pt
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{document}
+\begin{center} {\Large \bf 数学サブゼミa 修了認定試験} \end{center}
+\pagestyle{empty}
+\section{微積分: テイラー展開と数値積分}
+\begin{enumerate}
+\item \(e^x\)、sin \(x\)、cos \(x\)をそれぞれマクローリン展開しなさい
+\item (1)の結果を用いてオイラーの公式\(e^{i\theta} = {\rm cos} \theta + i\ {\rm sin} \theta\)を証明しなさい。
+\item \(y = f(x)\)をテイラー展開し、オイラー法\(y_{n+1}=y_{n} + h f^{\prime}(x_n)\)が1次の数値積分法(=誤差項が2次)であることを示しなさい。
+\item グルコース濃度の変動に関する常微分方程式\(\frac{d{\rm [Glucose]}}{dt}=-k{\rm [Glucose]}\)をオイラー法で解きなさい。積分ステップ幅\(h=1.0{\rm sec}\)とし、\(t=0 \sim 5.0\) secの範囲について解くこと。反応定数\(k=0.2{\rm sec}^{-1}\)、\(t=0\) sec のとき[Glucose]=1.0mMとする。
+\item (4)の常微分方程式の解析解を求め、\(t = 5.0\) sec 時点での数値解との誤差を百分率で示しなさい。\(e=2.7\)とする。
+\end{enumerate}
+\section{統計的検定I: 塩基組成の偏り}
+\begin{flushleft}
+\begin{minipage}{320pt}
+\ \ \ 霊長類{\it Yugius katsuyukius}の{\it why1}遺伝子近辺1000塩基の塩
+基組成を調べ、全ゲノムの塩基組成と比較したところ右の表のようになった。
+{\it why1}遺伝子近辺には塩基組成に偏りがあるかどうか統計的に検定しなさ
+い。
+\end{minipage}
+\hfill
+\begin{minipage}{100pt}
+\begin{small}
+\begin{tabular}{c|r||c|r}
+\hline
+\multicolumn{2}{c}{全ゲノム} & \multicolumn{2}{c}{{\it why1}近辺} \\
+\hline
+A & 30\% & A & 34\%\\
+T & 30\% & T & 26\%\\
+G & 20\% & G & 28\%\\
+C & 20\% & C & 12\%\\
+\hline
+\end{tabular}
+\end{small}
+\end{minipage}
+\end{flushleft}
+\begin{enumerate}
+\item 帰無仮説\(H_0\)と対立仮説\(H_1\)を書きなさい。
+\item 正規分布、\(t\)分布、\(\chi^2\)分布、\(F\)分布、ポアソン分布のうち
+から利用すべき分布を選び、その理由を簡潔に記しなさい。
+\item 検定統計量を求め、有意水準を0.05として仮説を検定しなさい。
+\end{enumerate}
+\section{線形代数 I: 逆行列と定常流束分布}
+下の反応系について以下の問に答えなさい。
+\begin{flushleft}
+\begin{minipage}{100pt}
+\begin{small}
+\begin{tabular}{|l||l|}
+\hline
+流束名      & 化学量論関係\\
+\(J_1\)     & D \(\rightarrow\) A + 2B\\
+\(J_2\)     & C \(\rightarrow\) B + D\\
+\(J_3\)     & B \(\rightarrow\) 2A + 2C\\
+\(J_4\)     & A \(\rightarrow\) 2C + 2D\\
+\(J_{in}\)  & \({\rm X}_1\) \(\rightarrow\) A \\
+\(J_{out}\) & 2D \(\rightarrow\) \({\rm X}_2\) \\
+\hline
+\end{tabular}
+\end{small}
+\end{minipage}
+\hfill
+\begin{minipage}{300pt}
+\begin{enumerate}
+\item 物質Aが定常状態にあるとき、その物質収支について、代数方程式\(1 \cdot J_1+ 0 \cdot J_2 +2 \cdot J_3 -1 \cdot J_4 + 1 \cdot J_{in} + 0 \cdot J_{out}= 0\) が成り立つ。同様の方程式をB\(\sim\)Dについて書き下ろしなさい。
+\item (1)で導いたA\(\sim\)Dについての収支方程式を以下の形式に書き換えなさい(右上の\(T\)は転置の意味)。
+\end{enumerate}
+\begin{center}
+\({\small \bf S_{1}}\cdot (J_1 \  J_2 \  J_3 \  J_4)^T + {\bf S_{2}}\cdot (J_{in} \ J_{out})^T = O\)\\
+\end{center}
+\end{minipage}
+\end{flushleft}
+\begin{enumerate}
+\addtocounter{enumi}{2}
+\item 行列\(A\)から\(i\)行と\(j\)列に属する要素すべてを除いた行列の行列式に\((-1)^{i+j}\)を掛けたものを\(i\)行\(j\)列の余因子と呼び、\(A_{ij}\)と書く。また、行列のすべての要素について余因子を求め、下左のように並べたものを余因子行列と呼び、\({\rm adj} A\)と表す。いま、下右に示したように化学量論係数行列\({\bf S_{1}}\)の余因子行列adj \({\bf S_{1}}\)が途中まで計算できている。\(\Box\)を埋めて\({\bf S_{1}}\)の余因子行列を完成させなさい。
+\begin{small}
+\begin{center}
+\begin{tabular}{cc}
+\({\rm adj\ } A = 
+      \left(\begin{array}{ccc} 
+      A_{11} & \cdots & A_{1n} \\ 
+      \vdots & \ddots & \vdots \\ 
+      A_{n1} & \cdots & A_{nn} \\ 
+      \end{array}\right)^T\)
+&
+\({\rm adj\ } {\bf S_{1}} = 
+      \left(\begin{array}{rrrr} 
+        0 & \Box  & -10 &  5\\ 
+      -10 &  -2   &   3 & \Box\\ 
+        5 &   9   &  -1 & -7\\ 
+        5 &  -14  &  -4 & -3\\ 
+      \end{array}\right)^T\)\\ 
+\end{tabular}
+\end{center}
+\end{small}
+\item 化学量論係数行列\({\bf S_{1}}\)の行列式det \({\bf S_{1}}\)を計算しなさい。
+\item 化学量論係数行列\({\bf S_{1}}\)の逆行列\({\bf S_{1}}^{-1}\)を計算しなさい。\({\bf S_{1}}^{-1} = \frac{{\rm adj\ } {\bf S_{1}}}{{\rm det\ }{\bf S_{1}}}\)である。
+\item \(J_1 \sim J_4\)の定常状態流束を\(J_{in},J_{out}\)を用いて表しなさい。\\
+\end{enumerate}
+\end{document}

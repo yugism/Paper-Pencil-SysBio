@@ -1,0 +1,60 @@
+\documentstyle{jarticle}
+\headheight = 0pt
+\headsep = 0pt
+\textheight = 700pt
+\textwidth = 440pt
+\topmargin = 5pt
+\leftmargin = 5pt
+\oddsidemargin = 5pt
+\footheight = 0pt
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{document}
+\begin{center} {\Large \bf 速度定数\(k\)からの物理化学a} \end{center}
+\pagestyle{empty}
+\section{Boltzmann分布、分配関数、平衡定数}
+\(\varepsilon_i\)Jのエネルギーを持つ分子の数を\(N_i\)個、\(\varepsilon_j\)Jのエネルギーを持つ分子の数を\(N_j\)個とする。このとき、\(N_i\)と\(N_j\)の比は
+
+\[\frac{N_i}{N_j} = e^{-\frac{\varepsilon_i - \varepsilon_j}{k_B T}}\]
+となる確率が最も高い。この式を\underline{\bf Boltzmann分布}という。以下の問いに答えなさい。
+
+\begin{enumerate}
+\item ある分子\(N\)の最低エネルギー状態を\(\varepsilon_0\)Jとし、
+\(\varepsilon_0\)Jのエネルギーを持つ分子の個数を\(N_0\)とする。このと
+き、任意のエネルギー状態\(\varepsilon_i\)にある分子の個数\(N_i\)を
+\(N_0\)、\(\varepsilon_0\)、\(\varepsilon_i\)で表しなさい。\label{e0}
+\item 分子\(N\)の総数は\({\displaystyle N_{\rm total} = \sum_{i=0}^{n}
+N_i}\)である。(\ref{e0})の結果を用いて\(N_{\rm total}\)を\(N_0\)、
+\(\varepsilon_0\)、\(\varepsilon_i\)で表しなさい。\label{total}
+\item すべてのエネルギー状態の和\({\displaystyle q = 1 +
+e^{-\frac{\varepsilon_1 - \varepsilon_0}{k_B T}} + \cdots
+e^{-\frac{\varepsilon_n - \varepsilon_0}{k_B T}} = \sum_{i=0}^{n}
+e^{-\frac{\varepsilon_i - \varepsilon_0}{k_B T}}}\)を\underline{\bf 分
+配関数}と呼ぶ。(\ref{total})の結果を分配関数\(q\)を用いて簡単にしなさ
+い。
+\item 分子Aと分子Bが平衡状態にあるとき、平衡定数は\({\displaystyle
+K_{eq} = \frac{N_B}{N_A}}\)と表すことができる。また、最低エネルギー状
+態にある分子A、Bの個数をそれぞれ\(N_0^A\)、\(N_0^B\)とすると、
+Boltzmann分布より\({\displaystyle \frac{N_0^B}{N_0^A}=e^{-\frac{\varepsilon_0^B - \varepsilon_0^A}{k_B T}}}\)である。これらの関係を用いて、\({\displaystyle K_{eq} = \frac{q_B}{q_A}e^{-\frac{\varepsilon_0^B - \varepsilon_0^A}{k_B T}}}\)となることを示しなさい。ただし、\(q_A\)、\(q_B\)はそれぞれ分子A、Bの分配関数とする。\label{partition}
+\end{enumerate}
+
+\section{遷移状態理論を導く}
+
+\[A + B \rightleftharpoons (AB) \rightarrow C\]
+
+\[v = \frac{d[C]}{dt} = [AB] \times ({\mbox 横切る速度}) \times ({\mbox 透過係数})\]
+
+\begin{enumerate}
+\item 透過係数を\(\kappa\)、横切る速度 \({\displaystyle = \nu = \frac{E}{h} = \frac{k_B T}{h}}\)、\([AB] = K_{eq} [A][B]\)として書き換えなさい。
+\item 平衡定数\(K_{eq}\)をA、B、ABの分配関数を用いて書き換えなさい。
+\end{enumerate}
+
+\section{MD + 遷移状態理論 \(\rightarrow k\)}
+分子動力学(MD)シミュレーションにより、ある反応が起こる前と後での内部エネルギー変化は\(\Delta U = 1.23\)J/molであることが示された。系の温度を310K、エンタルピー変化\(\Delta H \simeq \Delta U\)として次の問いに答えなさい。
+
+\begin{enumerate}
+\item エントロピー変化\(\Delta S\)はどのくらいか。\({\displaystyle \Delta S = \frac{\Delta U}{T}}\)である。
+\item Eylingの遷移状態理論によれば、速度定数\(k\)は以下の式で表される。MDから求まった\(\Delta H\)、\(\Delta S\)が使えるよう、熱力学の第1法則\(\Delta G = \Delta H - T \Delta S\)を用いて書き直しなさい。
+\[k = \frac{k_B T}{h}\kappa e^{-\frac{\Delta G^0}{RT}}\]
+\item MDから求まった\(\Delta H\)、\(\Delta S\)を代入して、速度定数\(k\)を求めなさい。
+\end{enumerate}
+\end{document}

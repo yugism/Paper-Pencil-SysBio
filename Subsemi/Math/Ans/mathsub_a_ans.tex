@@ -1,0 +1,216 @@
+\documentclass{article}
+\title{math_sub_a-3_ans}
+\begin{document}
+\section{微積分: テイラー展開と数値積分}
+\subsection{\(e^x\)、sin \(x\)、cos \(x\)を
+それぞれマクローリン展開しなさい}
+
+\[
+ e^x = \sum^{\infty}_{n=1}\frac{x^n}{n!}
+\]
+
+\[
+ \sin x = \sum^{\infty}_{n=1} (-1)^n \frac{x^{2n-1}}{(2n-1)!}
+\]
+
+\[
+ \cos x = \sum^{\infty}_{n=0} (-1)^n \frac{x^{2n}}{(2n)!}
+\]
+
+\subsection{ (1)の結果を用いてオイラーの公式
+\(e^{i\theta } = {\rm cos} \theta + i\ {\rm sin} \theta \)を証明しなさい。}
+
+\[
+ e^{ix} = 1 + \frac{1}{1!}i\theta + \frac{1}{2!}(i\theta)^2 + \cdots
+\]
+
+\[
+ e^{ix} = \{ 1 - \frac{1}{2!}\theta^2 + \cdots \} + 
+ i\{ \theta - \frac{1}{3!}\theta^3 + \cdots \}
+\]
+
+\[
+ e^{ix} = \cos \theta + i \sin \theta
+\]
+
+\subsection{\(y = f(x)\)をテイラー展開し、オイラー法\(y_{n+1}=y_{n} + h
+f^{\prime}(x_n)\)が1次の数値積分法(=誤差項が2次)であることを示しなさい。}
+
+y=f(x)をaの回りでテイラー展開すると
+\[
+ y = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!} (x-a)^2 + \cdots
+\]
+オイラー法でh=x-aなので、
+\[
+y_{n+1} = y_n + f'(x_n)(x-a) 
+\]
+よって2次以降は誤差となる。
+
+
+\subsection{グルコース濃度の変動に関する常微分方程式\(\frac{d{\rm
+[Glucose]}}{dt}=-k{\rm [Glucose]}\)をオイラー法で解きなさい。積分ステッ
+プ幅\(h=1.0{\rm sec}\)とし、\(t=0 \sim 5.0\) secの範囲について解くこと。
+反応定数\(k=0.2{\rm sec}^{-1}\)、\(t=0\) sec のとき[Glucose]=1.0mMとする。}
+
+\[
+ y_1 = 1 + ( -0.2 * 1) = 0.8
+\]
+
+\[
+ y_2 = 0.8 + ( -0.2 * 0.8) = 0.64
+\]
+
+\[
+ y_3 = 0.64 + ( -0.2 * 0.64) = 0.512
+\]
+
+\[
+ y_4 = 0.512 + ( -0.2 * ) = 0.4096
+\]
+
+\[
+ y_5 = 0.4096 + ( -0.2 * 0.4096) = 0.32768
+\]
+
+\subsection{(4)の常微分方程式の解析解を求め、\(t = 5.0\) sec 時点での
+数値解との誤差を百分率で示しなさい。\(e=2.7\)とする。}
+
+\[
+ \frac{dx}{dt} = -kx
+\]
+
+\[
+ \frac{1}{x}\frac{dx}{dt} = -k
+\]
+
+\[
+\int \frac{1}{x}\frac{dx}{dt} dt = -k \int dt 
+\]
+
+\[
+ \log x = -kt + C
+\]
+\[
+ x = e^{-kt+C}
+\]
+よって、k=0.2,t=5.0のとき、
+\[
+ x = e^{-1} = \frac{1}{2.7}
+\]
+
+よって、誤差は11.53
+
+\section{統計的検定I:  塩基の偏り}
+荒川です。
+
+昨日急いで作ったために手計算を考えていませんでした。
+手計算でやるとすると昨日の数字だとちょっと大変なので、以下に変えました。
+
+  genome why1
+A 30     34
+T 30     26
+G 20     28
+C 20     12
+
+これだとクロス集計後Eがそれぞれ 32, 28, 24, 16 となり、分母が84にまで約分
+できます。
+
+df 3 で 5\% の有意水準でのχ二乗値は 7.81。
+
+ただ、上のχ二乗値は 8/32 + 8/28 + 32/24 + 32/16 = 3 + 73/84 
+
+よってH1は棄却、H0が採択。両群間に差はない、ということになります。
+
+> > (2)
+> > χ二乗検定  二群間の差に優位性があるかをみるため
+> 
+> 　t検定もこの説明に当てはまってしまうので、
+> 　「項目別に分類されたデータが2群間で有意に差があるか」
+> 　という感じでどうでしょうか。
+
+これは了解です。
+
+\section{線形代数I}
+\subsection{}
+\[$$$A:$$J1$+0$\cdot$$J2$+2$\cdot$$J3$-$J4$+$Jin$+0$\cdot$$Jout$=0$$
+$$$B:$2$\cdot$$J1$+$J2$-$J3$+0$\cdot$$J4$+0$\cdot$$Jin$+0$\cdot$$Jout$=0$$
+$$$C:$0$\cdot$$J1$-$J2$+2$\cdot$$J3$+2$\cdot$$J4$+0$\cdot$$Jin$+0$\cdot$$Jout$=0$$
+$$$D:$-$J1$+$J2$+0$\cdot$$J3$+2$\cdot$$J4$+0$\cdot$$Jin$-2$\cdot$$Jout$=0$$
+\]
+\subsection{}
+\[\left(
+\begin{array}{@{\,}cccc@{\,}}
+1&0&2&-1\\
+2&1&-1&0\\
+0&-1&2&2\\
+-1&1&0&2
+\end{array}
+\right)\left(\begin{array}{@{\,}cccc@{\,}}
+J1\\
+J2\\
+J3\\
+J4\\
+\end{array}\right)
++\left(\begin{array}{@{\,}cccc@{\,}}
+1&0\\
+0&0\\
+0&0\\
+0&-2\\
+\end{array}\right)
+\left(\begin{array}{@{\,}cccc@{\,}}
+Jin\\
+Jout\\
+\end{array}\right)=0
+\]
+\subsection{}
+\[adj S1=\left(
+\begin{array}{@{\,}cccc@{\,}}
+0&-10&-10&5\\
+-10&-2&3&-4\\
+-5&9&-1&-7\\
+5&-14&-4&-3\\
+\end{array}\right)^T
+=\left(\begin{array}{@{\,}cccc@{\,}}
+0&-10&-5&5\\
+-10&-2&9&-14\\
+-10&3&-1&-4\\
+5&-4&-7&-3\\
+\end{array}\right)
+\]
+\subsection{}
+\[
+$$$detS1=$1$\cdot0$+2$\cdot$(-10)+0$\cdot$(-5)-1$\cdot$5=-25$$
+$$$detS1=$1$\cdot$0+0$\cdot$(-10)+2$\cdot$(-10)-1$\cdot$5=-25$  (JIC)$$$
+\]
+\subsection{}
+\[S1^{-1}=\frac{adjS1}{detS1}
+=\left(\begin{array}{@{\,}cccc@{\,}}
+0&\frac{2}{5}&\frac{1}{5}&-\frac{1}{5}\\
+\frac{2}{5}&\frac{2}{25}&-\frac{9}{25}&\frac{14}{25}\\
+\frac{2}{5}&-\frac{3}{25}&\frac{1}{25}&\frac{4}{25}\\
+-\frac{1}{5}&\frac{4}{25}&\frac{7}{25}&\frac{3}{25}\\
+\end{array}\right)
+\]
+\subsection{}
+\[\left(\begin{array}{@{\,}cccc@{\,}}
+J1\\
+J2\\
+J3\\
+J4\\
+\end{array}\right)
+=\left(\begin{array}{@{\,}cccc@{\,}}
+0&-\frac{2}{5}\\
+-\frac{2}{5}&\frac{28}{25}\\
+-\frac{2}{5}&\frac{8}{25}\\
+\frac{1}{5}&\frac{6}{25}\\
+\end{array}\right)
+\left(\begin{array}{@{\,}cccc@{\,}}
+Jin\\
+Jout\\
+\end{array}\right)
+\]
+\end{document}
+
+
+
+

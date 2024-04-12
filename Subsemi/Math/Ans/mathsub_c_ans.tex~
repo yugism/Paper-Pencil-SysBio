@@ -1,0 +1,107 @@
+\documentclass{jarticle}
+\begin{document}
+\section{エラーバー}
+\section{零空間}
+\subsection{}
+\begin{equation}
+S=\left(\begin{array}{rrrrr}              
+-1&0&0&1&1\\
+1&-1&0&0&1\\
+0&1&-1&0&1\\
+0&0&1&-1&1\\
+\end{array}
+\right)
+\to
+\left(
+\begin{array}{rrrrrr}
+-1&0&0&1&-1&0\\
+1&-1&0&0&0&1\\
+0&1&-1&0&1&0\\
+0&0&0&0&0&0\\
+\end{array}
+\right)
+\end{equation}
+i.e. rankS=3
+\subsection{}
+\begin{equation}
+\left(
+\begin{array}{c}
+V1\\
+V2\\
+V3\\
+V4\\
+V5\\
+V6\\
+\end{array}
+\right)
+=
+\left(
+\begin{array}{rrr}
+1&-1&0\\
+1&-1&1\\
+1&0&1\\
+1&0&0\\
+0&1&0\\
+0&0&1\\
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+V4\\
+V5\\
+V6\\
+\end{array}
+\right)
+\end{equation}
+
+\section{ベイズの定理}
+変異株が与えられた場合、これが4時間経過時に溶菌しないで残ってい
+    る確率は下式のように 0.6 である。  
+
+\begin{equation}
+ 1 - 0.4 = 0.6
+\end{equation}
+
+
+\subsection{}
+ 実験者がランダムに１サンプル観察したとき、それが4時間経過時に溶菌
+      せずに残る確率を求める。\\
+
+    まず、野生株が与えられた場合、これが4時間経過時に溶菌しないで残っている確
+    率は下式より、0.05である。
+
+\begin{equation}
+ 1 - 0.95 = 0.05
+\end{equation}
+
+    また、観察するサンプルが変異株である確率は 1/1000 であり、
+    野生株である確率は 999/1000 である。\\
+
+    以上より、求める確立は下式のように 0.05055 である。
+
+\begin{equation}
+ 0.001 × 0.6 + 0.999 × 0.05 = 0.05055    
+\end{equation}
+
+    
+\subsection{}
+
+ベイズの定理より、\begin{math}P(変異株|8時間で溶菌しない) = \frac{P(8時間で溶菌しない|変異株)P(変異株)}{P(8時間で溶菌しない)}\end{math}が成り立つ。\\
+
+変異株が与えられたとき、それが8時間経過時までに溶菌しない確率は
+
+\begin{math}P(8時間で溶菌しない|変異株) = 0.6^{(8/4)}\end{math}で
+ある。\\
+また、\begin{math}P(8時間で溶菌しない) = 0.05^{(8/4)}×0.999+0.6^{(8/4)}×0.001\end{math}である。\\
+
+ 以上より、観察したサンプルが突然変異株である確立\begin{math}P(変異株|8時間で溶菌しない)\end{math}は下式の様に 0.0028575 である。
+    
+\begin{equation}
+ \frac{0.6^{(8/4)}×0.001}{0.05^{(8/4)}×0.999+0.6^{(8/4)}×0.001} = 0.0028575
+\end{equation}
+
+\section{フーリエ変換}
+\end{document}
+
+
+

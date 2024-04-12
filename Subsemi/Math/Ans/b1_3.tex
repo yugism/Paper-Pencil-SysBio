@@ -1,0 +1,43 @@
+\documentclass[epsf,a4j]{jarticle}
+\usepackage{epsf}
+\usepackage{ascmac}
+\textheight=230mm
+\textwidth=157mm
+\topmargin=-5mm
+\oddsidemargin=0mm
+\evensidemargin=0mm
+\begin{document}
+\setcounter{section}{0}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\setcounter{footnote}{0}
+\setcounter{equation}{0}
+\large{1.3   相関係数の差} 
+　遺伝子の長さと発現量に関する相関係数を\textit{E.coli}の遺伝子83個と\textit{B.subtilis}の遺伝子66個について求めたところ、\\
+\textit{E.coli}の相関係数は$r_e$ = -0.31、\textit{B.subtilis}は$r_b$ = -0.23であった。\\
+遺伝子の長さ、発現量が２変量正規分布に従うとして、２つの相関係数に有意差があるかどうか検定しなさい。\\
+有意水準0.05で検定すること。
+
+\large{1.3   相関係数の差    解答} 
+
+２変数が２変量正規分布に従うとき、母相関係数ρが0と異なるかを判定する。\\
+有意水準は0.05であるため、帰無仮説$H_0$のもとで検定確率P<0.05であれば相関係数が0ではないと判断出来る。\\
+
+＝＝＝＝Pの算出＝＝＝＝\\
+
+検定統計量$t = \frac{r\sqrt{n-2}}{\sqrt{1-r^2}}$\\
+自由度をn-2(両側分布のため)として、t分布を求める。\\
+$P=tdist(|t|, n-2, 2)$\\
+\\
+\textit{tdist}はスチューデントt分布を求める関数。
+＝＝＝＝＝＝＝＝＝＝＝＝
+
+\textit{E.coli},\textit{B.sub}それぞれにおいてPを算出。\\
+　\textit{E.coli}の遺伝子83個と\textit{B.subtilis}の遺伝子66個について求めたところ、\\
+\textit{E.coli}の相関係数は$r_e$ = -0.31、\textit{B.subtilis}は$r_b$ = -0.23であった。\\
+
+・\textit{E.coli}の場合　　$n_e$ = 83, $r_e$ = 0.31 より、 $P_e$ = 0.004344\\
+　　　　　　$P_e<0.05$であるため、相関係数は0でないと判断できる。
+・\textit{B.sub}の場合　　$n_b$ = 66, $r_b$ = -0.23 より、 $P_b$ = 0.063195\\
+　　　　　　$P_b>0.05$であるため、相関係数は0と判断する\\。
+\end{document}

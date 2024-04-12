@@ -1,0 +1,88 @@
+This is pTeX, Version p2.1.8, based on TeX, Version 3.14159 (EUC) (Web2C 7.2) (format=platex 1999.7.19)  23 MAY 2003 15:25
+**mathsub_c_ans.tex
+(mathsub_c_ans.tex
+pLaTeX2e <1998/09/01>+1 (based on LaTeX2e <1998/06/01> patch level 0)
+(/usr/share/texmf/tex/platex/base/jarticle.cls
+Document Class: jarticle 1998/12/24 v1.1o Standard pLaTeX class
+\c@@paper=\count81
+(/usr/share/texmf/tex/platex/base/jsize10.clo
+File: jsize10.clo 1998/12/24 v1.1o Standard pLaTeX file (size option)
+)
+\c@part=\count82
+\c@section=\count83
+\c@subsection=\count84
+\c@subsubsection=\count85
+\c@paragraph=\count86
+\c@subparagraph=\count87
+\c@figure=\count88
+\c@table=\count89
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\symmincho=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
+(Font)                  JY1/mc/m/n --> JY1/gt/m/n on input line 594.
+LaTeX Info: Redefining \mathrm on input line 596.
+LaTeX Info: Redefining \mathbf on input line 597.
+\toclineskip=\dimen118
+\@lnumwidth=\dimen119
+\bibindent=\dimen120
+\heisei=\count90
+) (mathsub_c_ans.aux)
+\openout1 = `mathsub_c_ans.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 2.
+LaTeX Font Info:    ... okay on input line 2.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 3.
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 3.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 5.
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 5.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 6.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 6.
+ [1
+
+]
+Overfull \hbox (38.91245pt too wide) in paragraph at lines 89--90
+[]\JY1/mc/m/n/10 ベイズの定理より、 $\OML/cmm/m/it/10 P\OT1/cmr/m/n/10 (\JY1/mc
+/m/n/10 変異株 \OMS/cmsy/m/n/10 j\OT1/cmr/m/n/10 8 \JY1/mc/m/n/10 時間で溶菌し
+ない\OT1/cmr/m/n/10 ) = []$
+ []
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <14.4> on input line 103.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 105.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 105.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 105.
+[2] [3] (mathsub_c_ans.aux) ) 
+Here is how much of TeX's memory you used:
+ 282 strings out of 10663
+ 2825 string characters out of 69599
+ 54128 words of memory out of 263001
+ 3449 multiletter control sequences out of 10000+0
+ 13260 words of font info for 51 fonts, out of 200000 for 1000
+ 14 hyphenation exceptions out of 1000
+ 22i,7n,20p,809b,210s stack positions out of 300i,100n,500p,30000b,4000s
+
+Output written on mathsub_c_ans.dvi (3 pages, 7188 bytes).

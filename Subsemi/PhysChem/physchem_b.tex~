@@ -1,0 +1,32 @@
+\documentstyle{jarticle}
+\headheight = 0pt
+\headsep = 0pt
+\textheight = 700pt
+\textwidth = 440pt
+\topmargin = 5pt
+\leftmargin = 5pt
+\oddsidemargin = 5pt
+\footheight = 0pt
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{document}
+\begin{center} {\Large \bf 速度定数\(k\)からの物理化学b} \end{center}
+\pagestyle{empty}
+\section{Arrhenius式}
+
+\begin{enumerate}
+\item 
+\end{enumerate}
+
+\section{Smolchowskiの拡散衝突モデル}
+
+\begin{enumerate}
+\item 
+\end{enumerate}
+
+\section{剛体球衝突モデル}
+
+\begin{enumerate}
+\item 
+\end{enumerate}
+
+\end{document}

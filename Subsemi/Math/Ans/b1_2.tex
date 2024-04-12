@@ -1,0 +1,64 @@
+\newpage\documentstyle[epsf,a4j]{jbook}
+\renewcommand{\thechapter}{}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\cleardoublepage}{}
+\renewcommand{\bibname}{参考文献}
+
+\textheight=230mm 
+\textwidth=157mm
+\topmargin=-5mm
+\oddsidemargin=0mm
+\evensidemargin=0mm
+\pagestyle{myheadings}
+\begin{document}
+
+\setcounter{section}{0}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\setcounter{footnote}{0}
+\setcounter{equation}{0}
+
+ \begin{center}
+{\large {\bf b-1.2 長い配列の出現頻度}}   
+ \end{center}
+
+ある事象が起こる確率が低い場合にポアソン分布が成り立つ。
+このポアソン分布の確立密度関数は次式で表す。\\
+
+\begin{equation}
+ f(x) = \frac{e^{-λ} * λ^{x}}{x!}
+  \label{equation2}
+\end{equation}
+
+   \begin{center}   
+    {\footnotesize λ= np\\
+    x = 事象発生回数} 
+   \end{center}
+
+12000塩基中の６塩基配列の数は11995であり、ある６塩基配列が存在しうる確率
+が\begin{math}\frac{1}{4^{6}}\end{math}であるため、
+   
+\begin{equation}
+λ = 11995 * \frac{1}{4^{6}} 
+\end{equation}
+\begin{equation}
+λ = 2.928466797
+\end{equation}
+
+となる。また、
+\begin{equation}
+x = 0
+\end{equation}
+
+であるため、
+
+\begin{equation}
+f(x) = .0534789
+\end{equation}
+
+となり、有意水準0.05での検定の場合、帰無仮説を採用し、
+「12000塩基中にある６塩基配列が１つもない現象は実際にありえる」こととな
+る。
+
+
+\end{document}

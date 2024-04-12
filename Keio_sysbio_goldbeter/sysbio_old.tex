@@ -1,0 +1,523 @@
+%\documentclass[a4paper,11pt]{jsarticle}
+%\usepackage{graphicx}
+%\usepackage{ascmac}
+%\usepackage{url}
+
+%\def\演習問題#1{{\flushleft\underline{\bf 演習問題~#1}}}
+
+%\begin{document}
+
+細胞内には転写制御、シグナル伝達、代謝といった分子間相互作用ネットワー
+クが存在します。こうしたネットワークの動態を理論的に追究するための手段
+として、数理生物学やシステム生物学の分野ではコンピュータ・シミュレーショ
+ンが利用されています。ここでは慶應義塾大学先端生命科学研究所で開発され
+た汎用細胞シミュレーション・ソフト「E-Cell」を使ってシミュレーションの
+基本的な作法を学びます。\\
+\indent E-Cellは公式ウェブサイト(\verb+http://www.e-cell.org+)から無料でダウンロードできますので、自宅にPCがある人は予習・復習に活用してください。
+
+
+\subsection{ショウジョウバエ概日時計モデル}
+今回の実習では、E-Cellパッケージに同梱されているショウジョウバエ概日時
+計モデルの操作を通して、細胞内反応経路シミュレーションを体験します。
+E-Cellのマニュアルは下記のパスに格納されていますので、予習復習に活用し
+てください。
+
+\begin{verbatim}
+     C:\Program Files\E-Cell3\share\doc\users-manual.pdf
+\end{verbatim}
+
+概日時計モデルなどのサンプルモデルは下記のフォルダに格納されています。
+
+\begin{verbatim}
+     C:\Program Files\E-Cell3\share\doc\sample
+\end{verbatim}
+
+概日時計モデル関連ファイル一式は"Drosophila"フォルダに入っています。
+これを個人用ディスクスペースにコピーして、以下の作業に使って下さい。\\
+
+\indent 今回用いるショウジョウバエ概日時計モデルはブリュッセル自由大学のAlfred
+Goldbeterによって1995年に提案されました(A.Goldbeter, "A model for circadian oscillations in the Drosophila period protein(PER)" {\it Proc. Biol. Sci.}, 261:319-324, 1995.)。PERと呼ばれるタンパク質が自身
+をコードする遺伝子\(per\)の転写を抑制するというネガティヴ・フィードバッ
+クが最大の特徴です(図\ref{fig:01sysbio})。\\
+
+\begin{figure}[ht]
+        \centering
+        \includegraphics[height=6cm]{sysbio/img/goldbeter_pathway.epsi}
+        \caption{ショウジョウバエ概日時計モデルの反応経路([Goldbeter 1995]より転載)} \label{fig:01sysbio}
+        \end{figure}
+
+各反応の挙動は反応速度論に基く常微分方程式によって記述されます。連立常
+微分方程式を数値的に積分し、系の時間発展を予測することがシミュレーショ
+ンの本質です。\\
+
+\clearpage
+
+\begin{eqnarray*}
+\frac{dM}{dt} & = & v_s \frac{K_I^n}{K_I^n + P_N^n} -  v_m \frac{M}{K_m + M}\\
+\frac{dP_0}{dt} & = & k_s M - V_1 \frac{P_0}{K_1 + P_0} + V_2 \frac{P_1}{K_2 + P_1}\\
+\frac{dP_1}{dt} & = & V_1 \frac{P_0}{K_1 + P_0} - V_2 \frac{P_1}{K_2 + P_1} - V_3 \frac{P_1}{K_3 + P_1} + V_4 \frac{P_2}{K_4 + P_2}\\
+\frac{dP_2}{dt} & = & V_3 \frac{P_1}{K_3 + P_1} - V_4 \frac{P_2}{K_4 + P_2} - k_1 P_2 + k_2 P_n - v_d \frac{P_2}{k_d + P_2}\\
+\frac{dP_N}{dt} & = & k_1 P_2 - k_2 P_N\\  	 
+\end{eqnarray*}
+
+フィードバック以外のこのモデルの特徴を要約すると、下記のようになります。
+
+\begin{enumerate} 
+\item \(per\) mRNA(M) は核内で合成された後、細胞質に移動して最大速度\(v_s\)で蓄積し、最大速度\(v_m\)、Michaelis定数\(K_m\)の条件で分解される。
+\item PERタンパク(\(P_0\))の合成量は、mRNA量(M)に比例し、速度定数\(k_s\)に規定される。
+\item \(P_0\)、\(P_1\)、\(P_2\)の順にリン酸化が進み、逆方向に脱リン酸化が起こる。(\(V_1\)-\(V_4\))
+\item 十分にリン酸化されたタンパク(PER2)は最大速度\(v_d\)、Michaelis定数\(K_d\)で酵素によって分解される。
+\item また、\(P_2\)は速度定数\(k_1\)によって規定された量が核内に移行する。核内のPERタンパクは\(P_N\)と呼ぶ。
+\item \(P_N\)は、\(P_N\)の量と、速度定数\(k_2\)に比例して細胞質に再移行する。
+\item 核内PERタンパクが\(per\)転写に及ぼすフィードバックはHill式で記述される(nはHill係数、 \(K_I\)は抑制の閾値を規定する定数である)。
+\end{enumerate}
+
+ 
+\subsection{E-Cell操作法入門}
+それでは概日時計モデルを動かしながらE-Cellの基本的な操作法を学んでいき
+ましょう。下記の手続きを順に実行してみましょう。
+
+\begin{enumerate}
+\item デスクトップ上の"E-Cell Console"をダブルクリックします。
+\item \verb+C:\Program Files\E-Cell3\share\doc\sample\Drosophila+の内容一式をコピーした作業用フォルダに移動します。
+\item 別途配付するファイル \verb+Pn.py+ を作業用フォルダにコピーします。
+\item \verb+ecell3-session Pn.py+ とコマンドを打ち込んでみましょう。
+\item 作業用フォルダに"Data"というフォルダが作成されています。その中に保存されているファイルがシミュレーション結果です。これを表計算ソフトで開きます(図\ref{fig:02sysbio})
+\begin{figure}[ht]
+        \centering \includegraphics[height=6cm]{sysbio/img/excel.epsi}
+        \caption{表計算ソフトで開いたシミュレーション結果}
+        \label{fig:02sysbio} \end{figure}
+\item グラフ化してみましょう(図\ref{fig:03sysbio})。
+\begin{figure}[ht]
+        \centering
+        \includegraphics[height=6cm]{sysbio/img/graph.epsi}
+        \caption{グラフ化したシミュレーション結果} \label{fig:03sysbio}
+        \end{figure}
+\end{enumerate}
+
+
+\subsection{E-Cell Session Scriptの解読}
+最初に実行したPn.pyというファイルはシミュレーションの手順を記述したプ
+ログラムです。オブジェクト指向スクリプト言語Pythonで記述されています。
+公式マニュアルでは"E-Cell Session Script"としてpp.41-62 で説明されてい
+ます。Pn.pyには一体どのようなシミュレーション手続きが書かれているのか、
+実際にソースコードを読みながら理解していきましょう。コマンドラインで\\
+
+\begin{center}
+  \begin{shadebox}
+    \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+     notepad Pn.py     
+\end{verbatim}
+  \end{shadebox}
+\end{center}
+\ \\
+
+と入力するとメモ帳でPn.pyを開けます。\\
+
+\begin{itembox}[l]{{\tt Pn.py}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+loadModel( 'Drosophila.eml' )	
+# 「E-Cellに概日時計モデルを読み込め」という命令。
+# モデルはDrosophila.emlに記述されています(詳細後述)。
+
+Pn_logger = createLoggerStub( 'Variable:/CELL/CYTOPLASM:Pn:Value' )
+Pn_logger.create()
+# 「Pnの分子数を記録するオブジェクト(Loggerと呼ばれる)を用意せよ」という命令。
+
+run( 72 )
+# 「72秒間シミュレーションせよ」という命令。
+
+stop()
+# 「計算を停止せよ」という命令。
+
+saveLoggerData()
+# 「Loggerに記録されたデータをファイルに保存せよ」という命令。
+\end{verbatim}
+\end{itembox}
+
+
+
+\subsection{E-Cell Model (EM) ファイルの解読}
+Pn.pyの手続きに従って数値積分された連立常微分方程式モデルは
+Drosophila.emに記述されています。Pn.pyでE-Cellが読み込んでいる
+Drosophila.emlはDrosophila.emをXML形式に変換したものです。Session
+Script同様、ソースコードを読みつつモデルの記述法を習得していきましょう。
+公式マニュアルではpp.5-29 に詳しい説明が出ています。\\
+
+\begin{itembox}[l]{{\tt Drosophila.em (1)}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+# E-Cellの数値積分アルゴリズムを決めるオブジェクトのことをStepperと呼びます。
+# ここではODE45という積分アルゴリズムを実装したStepperを選択し、
+# ''DE''という名前をつけています。
+
+Stepper ODE45Stepper( DE )  
+{
+        # no property
+}
+\end{verbatim}
+\end{itembox}
+
+\begin{itembox}[l]{{\tt Drosophila.em (2)}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+
+# Systemは細胞内区画に相当するオブジェクトです。
+
+System System( / )
+{
+        StepperID	DE;
+        # このSystemにおける積分では''DE''をステッパに使う
+
+        Variable Variable( SIZE ) { Value 0.000000000000001; }
+        # SIZEはSystemの体積パラメータ
+}
+\end{verbatim}
+\end{itembox}
+
+\begin{itembox}[l]{{\tt Drosophila.em (3)}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+        # Variable文では分子の名前と初期状態での濃度を記述します。
+        
+        Variable Variable( M )  # Mという名前の分子を定義
+        {
+                Value	3.61328202E-01;
+                # 初期値は3.61328202-E01(個)
+        }
+\end{verbatim}
+\end{itembox}
+
+\begin{itembox}[l]{{\tt Drosophila.em (4)}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+        # Process文では化学反応の名前と速度式を定義します。
+
+        Process ExpressionFluxProcess( R_toy1 )	 
+        # R_toy1という名前の反応を定義。
+        {
+                vs	0.76;    # vsというパラメータとその値を定義
+                KI	1;       # KIというパラメータとその値の定義
+
+                Expression "( (vs*KI) / (KI + (C0.MolarConc * C0.MolarConc 
+                * C0.MolarConc) ) * self.getSuperSystem().SizeN_A )";
+
+                # Expressionとは速度式の定義です。
+                # ここでC0.MolarConcはPnの濃度のこと。
+                # なぜC0がPnなのかについては次の行の説明を参照。
+
+                VariableReferenceList [ P0 Variable:.:M 1 ][ C0 Variable:.:Pn ];
+                # R_toy1の反応に関わる分子を記述。
+                # [ ]は、[速度式中での変数名  モデルにおける分子名  化学量論係数]
+                # 1ステップ当たりの物質の増減は化学量論係数×速度式。
+        }
+\end{verbatim}
+\end{itembox}
+\ \\
+\indent emファイルをemlファイルに変換するにはコマンドラインで下記のような命令を実行します。\\
+
+\begin{center}
+  \begin{shadebox}
+    \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+     ecell3-em2eml Drosophila.em
+\end{verbatim}
+  \end{shadebox}
+\end{center}
+\ \\
+実行すると、Drosophila.emlというファイルが生成されます。
+
+
+\subsection{実習課題(1): 簡単な微分方程式モデルの実装}
+ここまでに紹介したトピックだけで、簡単なモデルを書くことができます。下記の実習課題に取り組みなさい。
+
+\begin{enumerate}
+\item Systemの体積とStepperを定義しなさい。体積とStepperはDrosophila.emと同じもので構いません。
+\item 物質Sが\(1.0 \times 106\)分子だけ存在することをVariable文で定義しなさい。\item 物質Sが微分方程式\(\displaystyle\frac{dS}{dt}=-kS\)に従って増減することをProcess文で定義しなさい。\(k = 0.2\ {\rm sec}^{-1}\)とします。
+\item emファイルをemlファイルに変換しなさい。
+\item このモデルを30秒間シミュレーションするSession Scriptを書きなさい。Sの時系列データを保存すること。
+\item Sの時系列データをグラフ化しなさい。
+\item 発展課題: 解析解との時系列平均誤差\(\displaystyle\varepsilon=\frac{1}{n}\sum_{i=1}^n\frac{|X^{\rm analytical}_i - X^{\rm numerical}_i|}{ X^{\rm analytical}_i}\)を評価しなさい。
+\end{enumerate}
+
+
+
+\subsection{Euler法: 数値積分アルゴリズム入門}
+「シミュレーションの本質は微分方程式の数値積分」「E-Cell は数値積分を
+している」といった具合に「数値積分」という用語をここまでに何度か使いま
+した。この単元では最も簡単な数値積分アルゴリズムであるEuler法のソース
+コードを読むことで、E-Cellが行っている演算を理解します。\\
+
+\indent Euler法は下の式によって定義されます。
+
+\[f(t+\Delta t) = f(t) + f^{\prime}(t)\Delta t\]
+
+テイラー展開の2次以上の項を省いた形になっています。増分の形で書くと、
+
+\begin{eqnarray*}
+\Delta f(t) & = & f(t+\Delta t) - f(t)\\
+      & = & f^{\prime}(t)\Delta t
+\end{eqnarray*}
+
+前説での実習で取りあげた、物質Sの濃度の時間変化の場合で考えてみましょう。時刻tにおける物質Sの濃度を\(S(t)\)とし、そこから微小時間\(\Delta t\)だけ進んだ時刻\(t+\Delta t\)における物質Sの濃度を\(S(t+\Delta t)\)で表します。これを上のEuler法の定義に当てはめると、
+
+\[S(t+\Delta t) = S(t) + S^{\prime}(t)\Delta t\]
+
+となります。 \(S^{\prime}(t)\)というのはSの時間微分\(\displaystyle\frac{dS}{dt}\)のことですので、
+
+\[S(t+\Delta t) = S(t) + \Delta t \frac{dS}{dt}\]
+
+という式が得られます。先の実習課題では\(\displaystyle\frac{dS}{dt}\)は\(\displaystyle\frac{dS}{dt} = -kS\)という速度式で定義されていましたので、
+
+\[S(t+\Delta t) = S(t) - k \cdot S \cdot \Delta t \]
+
+これを増分の形にすると、
+
+\begin{eqnarray*}
+\Delta S(t) & = & S(t+\Delta t) - S(t)\\
+            & = & S^{\prime}(t)\Delta t\\
+            & = & \Delta t \frac{dS}{dt}\\
+            & = & - k \cdot S \cdot \Delta t\\
+\end{eqnarray*}
+
+よってEuler法を用いる場合、微小時間\(\Delta t\)の間にSがどの程度増減す
+るかは\(- k \cdot S \cdot \Delta t\)で計算できることがわかりました。\\
+
+\indent Euler法に従って、物質Sの時間変化を計算するスクリプトeuler.pyを下記に示します。行っている演算は先の実習でE-Cellを用いて行った数値積分と同等のものです。\\
+
+\begin{itembox}[l]{{\tt euler.py}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+t = 0.0
+dt = 0.001
+endtime = 30.0
+
+S = 1.0E-3
+dS = 0.0
+k = 0.2
+
+while t <= endtime :
+    print t,'\t',S
+    dS = - k * S * dt
+    S = S + dS
+    t = t + dt
+\end{verbatim}
+\end{itembox}
+
+
+\subsection{実習課題(2): \(\Delta t\)と計算精度}
+euler.pyの変数\verb+dt+は微小時間\(\Delta t\)に相当します。\verb+dt+について、下記の問いに答えなさい。
+\begin{enumerate}
+\item \verb+dt+の幅を0.001より大きくした場合と小さくした場合では、解析解との時系列平均誤差\(\displaystyle\varepsilon=\frac{1}{n}\sum_{i=1}^n\frac{|X^{\rm analytical}_i - X^{\rm numerical}_i|}{ X^{\rm analytical}_i}\)がどのように変化するか仮説を立てなさい。理由も述べること。
+\item \verb+dt+の値を変えたeuler.pyを実行し、仮説を検証しなさい。
+\end{enumerate}
+
+\subsection{E-Cellのモデルは改造しやすい}
+前節のeuler.pyは、同等の働きをするE-Cellモデルのファイルよりもコンパクトにまとまっていました。とすると、一体E-Cellを使うメリットは何でしょうか？メリットがわかる一例として、下のような代謝系(解糖系の一部)を考えます。
+\[\stackrel{v_{\rm in}}{\longrightarrow} {\rm F6P} \stackrel{v_{\rm PFK}}{\longrightarrow} {\rm ADP} \stackrel{v_{\rm out}}{\longrightarrow} \]
+
+
+F6Pはフルクトース6リン酸、ADPはアデノシン二リン酸です。\(v_{in}\)、\(v_{out}\)はそれぞれF6Pの生成速度とADPの分解速度を表します。\(v_{PFK}\)はF6Pを基質とし、
+ADPを産物とする酵素であるホスホフルクトキナーゼ(PFK)の反応速度を表します。F6PとADPの物質収支についての微分方程式は下のように書き下ろせます。
+
+\[
+\left\{
+\begin{array}{lclclcl}
+\frac{d[{\rm F6P}]}{dt} & = & v_{in}  & - & v_{PFK} & \cdots & (1)\\
+\frac{d[{\rm ADP}]}{dt} & = & v_{PFK} & - & v_{out} & \cdots & (2)\\
+\end{array}
+\right.\]
+
+さて、今、PFKの酵素活性が全く無い状態をモデル化したいとします。この場合、式(1)、(2)における\(v_{PFK}\)項がゼロとなりますので、微分方程式は下の式(3)、(4)のように書き換えられます。
+
+\[
+\left\{
+\begin{array}{lclclcl}
+\frac{d[{\rm F6P}]}{dt} & = & v_{in}  &  &  & \cdots & (3)\\
+\frac{d[{\rm ADP}]}{dt} & = &  & - & v_{out} & \cdots & (4)\\
+\end{array}
+\right.\]
+
+\(v_{PFK}\)は1基質1産物反応として扱っているので、この書き換えでは2つの項を消去しました。この程度ならばモデルの改造は簡単です。しかし、もっとスケールの大きなモデルではどうなるでしょうか。系が複雑になってくると、モデルを構築する過程において、複数の酵素からなる反応経路を一度に削除したり、あるいはその逆に、ひとまとまりの反応経路をモデルに追加したりといった操作が頻繁に行われます。これをeuler.pyのような微分方程式をそのままプログラム化したモデルで行おうとすると、追加または削除した反応の基質・産物となる物質すべてについて微分方程式を書き直さなければなりません。この書き直しは、微分方程式から項を一つ一つ追加または削除するという、ミスを犯しやすい作業と言えます。\\
+
+\indent 一方、E-Cellのモデルはこのような改造を容易に行うことができます。{\bf Processを書いておけば、物質収支の微分方程式はE-Cell内部に自動的に構築されるからです}。よって、PFKの酵素活性が全く無いモデルを作りたいときには、\(v_{PFK}\)を定義しているProcessをモデルから外すだけで済みます。複数の酵素をひとまとめにして追加・削除するような試行錯誤を繰り返す必要があるときには、対応するProcess群をファイル内の１ヶ所にまとめておき、1度のカット\&ペーストでモデルを改造するといった方法をとります。
+
+\subsection{実習課題(3): やや進んだ微分方程式モデルの実装}
+下記の実習課題に取り組みなさい。
+
+\begin{enumerate}
+\item Systemの体積とStepperを定義しなさい。体積とStepperはDrosophila.emと同じもので構いません。
+\item F6P、ADPがそれぞれ\(1.0 \times 106\)分子だけ存在することをVariable文で定義しなさい。
+\item F6P、ADPがそれぞれ微分方程式(1)、(2)に従って増減することをProcess文で定義しなさい。\(k = 0.2\ {\rm sec}^{-1}\)とします。
+\item emファイルをemlファイルに変換しなさい。
+\item このモデルを30秒間シミュレーションするSession Scriptを書きなさい。F6PおよびADPの時系列データを保存すること。
+\item F6PおよびADPの時系列データをグラフ化しなさい。
+\end{enumerate}
+
+\subsection{Stub(スタブ): Variable、Processを操作する}
+この節ではSession Scriptの使い勝手を飛躍的に高めるStubというオブジェク
+トの使い方を紹介します。Stubを使うとシミュレーション中のモデルから物質
+濃度や反応活性のデータを取り出すことができるほか、物質濃度や反応パラメー
+タを任意の値に変えることができます。公式マニュアルではpp.45-49にStubに
+ついての解説が掲載されています。まずはStubの活用例として、アトラクタを
+描くためのデータを出力するスクリプトattractor.pyのソースコードを読んで
+いきましょう。
+
+\begin{itembox}[l]{{\tt attractor.py}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+loadModel( 'Drosophila.eml' )
+# 前述
+
+Pn_Stub = createEntityStub( 'Variable:/CELL/CYTOPLASM:Pn' )
+# Pn(核移行したPER)を操作するためのStubを用意。
+
+M_Stub = createEntityStub( 'Variable:/CELL/CYTOPLASM:M' )
+# M(per mRNA)を操作するためのStubを用意。
+
+R_toy14_Stub = createEntityStub( 'Process:/CELL/CYTOPLASM:R_toy14' )
+# 化学反応R_toy14(二リン酸化されたPERの分解速度)のStubを用意。
+
+Pn_Stub.setProperty( 'Value' , 6.21367E-01 )
+# 「Pnの分子数を6.21367E-01にセットせよ」という命令。
+# 6.21367E-01はPnの初期値なので計算結果は変わらない。
+# ここではsetPropertyの使用例として示した。
+
+R_toy14_Stub.setProperty( 'vd' , 0.95 )
+# 「化学反応R_toy14のパラメータvdを0.95にセットせよ」という命令。
+# 0.95はvdの初期値なので計算結果は変わらない。
+# 上と同様にsetPropertyの使用例として示した。
+
+
+while getCurrentTime() < 72.0:
+# 時刻(シミュレーション開始がt=0)が72秒を越えるまで
+# 以下の字下げした部分の操作を繰り返す
+
+        Pn = Pn_Stub.getProperty('Value')
+        # その時刻におけるPnの分子数(Value)
+
+        M  = M_Stub.getProperty('Value')
+        # その時刻におけるMの分子数(Value)
+
+        R_toy14 = R_toy14_Stub.getProperty('Activity')
+        # その時刻におけるR_toy14の活性(Activity, 単位[reaction/sec])
+
+        print Pn, '\t', M, '\t', R_toy14
+        # タブ区切り(\t)で出力する
+
+        step()
+        # 時計をΔt(初期設定では1ミリ秒)だけ進める
+
+stop()
+# 前述
+\end{verbatim}
+\end{itembox}
+\ \\
+
+このスクリプトで重要なのは、\verb+createEntityStub+、\verb+setProperty+、\verb+getProperty+が出てくる行です。機能を整理すると、下記のようになります。
+
+\begin{enumerate}
+\item \verb+createEntityStub+ → 指定したVariable(物質)またはProcess(反応)のStubを生成
+\item \verb+[Stub Object].setProperty+ → VariableまたはProcessの属性(例えば濃度やパラメータ)を設定 
+\item \verb+[Stub Object].getProperty+ → VariableまたはProcessの属性(例えば濃度やパラメータ)を取得 
+\end{enumerate}
+
+ではattractor.pyを実行してみましょう。\\
+
+\begin{shadebox}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+     ecell3-session attractor.py
+\end{verbatim}
+\end{shadebox}
+
+\ \\
+と入力するとデータが標準出力に出力されます。この出力結果をファイルに保
+存するには、\\
+
+\begin{shadebox}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+     ecell3-session attractor.py > data.txt
+\end{verbatim}
+\end{shadebox}
+\ \\
+のようにします。data.txtをグラフ化してみましょう。
+
+\subsection{実習課題(4): Goldbeterの追試 (1)}
+\begin{enumerate}
+\item "[Pt][タブ区切り][M]"を毎行出力するようにattractor.pyを改造しなさい。ただしPtはPt=P0+P1+P2+Pnで定義されます。
+\item 改造したattractor.pyが出力したデータから、[Goldbeter 1995]のFigure 3に描かれたアトラクタを作成しなさい。
+\end{enumerate}
+
+\subsection{コマンドラインからのパラメータ設定}
+Goldbeterは参考論文の\(v_d\)の値に依存して振動の周期がどのように変化す
+るかをFigure 4のグラフで示しています。こうしたデータを取得するにはデー
+タポイントを1つ取得する毎にemファイルの\verb+vd+を書き換えるか、[Stub
+Object].setPropertyを使うかといった方法が考えられます。が、いちいち書
+き換えのたびにいちいちファイルを開いて保存するという操作を繰り返すのは
+面倒です。そこで、ファイルを何度も書き直す必要なしにパラメータを変える
+方法を紹介します。\\
+
+\begin{itembox}[l]{{\tt attractor.pyの書き換え箇所}}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+R_toy14_Stub.setProperty( 'vd' , 0.95 ) を
+R_toy14_Stub.setProperty( 'vd' , vd_value ) に書き換えます。
+\end{verbatim}
+\end{itembox}
+\ \\
+
+「変数\verb+vd_value+の初期値を定義せずにスクリプトを実行していいのか?」
+と思ったかもしれません。実は\verb+vd_value+の初期値をコマンドラインで
+定義できるのです。\\
+
+\begin{shadebox}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+ecell3-session -Dvd_value=2.0 attractor.py
+\end{verbatim}
+\end{shadebox}
+\ \\
+
+複数のパラメータを設定することもできます。\\
+
+\begin{itembox}[l]{一般的な書式}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+ecell3-session -D[Param1]=[Value1] -D[Param2]=[Value2] ... [Session Script]
+\end{verbatim}
+\end{itembox}
+\ \\
+また、後述する実習課題(4)のように、パラメータの値を少しずつ変化させたいような場合は、下の\verb+param.py+の例で示したように\verb+system+関数を使うと良いでしょう。Pythonの\verb+system+関数はカッコ内で指定したコマンドを実行します。\\
+
+\begin{itembox}[l]{\tt param.py : パラメータを少しずつ変える}
+  \setlength{\baselineskip}{12pt}
+\begin{verbatim}
+import os
+
+x = 1.0        # パラメータの初期値を 1.0 とする。
+while x < 2.0 :
+    os.system("ecell3-session -Dvd=%f script.py" % x)
+    x += 0.1   # 0.1 ずつ増やす。
+\end{verbatim}
+\end{itembox}
+\ \\
+実行法は \verb+python param.py+ と、コマンドラインに打ち込むだけです。
+
+
+
+\subsection{実習課題(5): Goldbeterの追試 (2)}
+パラメータvdを0.5から2.7の間で0.1ずつ変化させ、[Goldbeter 1995]の
+Figure 4のグラフが正しいかどうか調べなさい。必要があれば、シミュレーショ
+ン時間(attractor.pyでは72秒)を延長すること。振動の周期を求めるには、振動の腹(振幅が極大になる点)から腹までの時間を計測します。
+
+%\end{document}
+
+%%% Local Variables: 
+%%% mode: japanese-latex
+%%% TeX-master: "../text-3rdyears"
+%%% End: 
+

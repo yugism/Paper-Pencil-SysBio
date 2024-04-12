@@ -1,0 +1,89 @@
+\documentclass{jarticle}
+\headheight = 0pt
+\headsep = 0pt
+\textheight = 730pt
+\textwidth = 460pt
+\topmargin = 5pt
+\leftmargin = 5pt
+\oddsidemargin = 5pt
+%\footheight = 0pt
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{document}
+\begin{center}
+{\Large \bf 数学サブゼミd 修了認定試験}\\
+\end{center}
+\pagestyle{empty}
+\section{マルコフ・モデル: Viterbi法によるCpGアイランドの予測}
+\begin{flushleft}
+\begin{minipage}{280pt}
+\ \ \ \ 定常1次マルコフモデルを用いて、ある遺伝子の上流の6連続塩基CGACGT
+がCpG アイランドに属しているか否かを調べたい。マルコフ・モデルの考え方
+では読み取られた塩基の記号を「{\bf シンボル}」と呼び、シンボルにCpGを
+構成する(+)か否(-)かの情報を付加した\({\rm C}^+\)のような記号を「{\bf 
+状態}」と呼んで区別する。\({\rm C}^+{\rm G}^+\)のように状態が並
+んだものを「{\bf パス}」と呼ぶ。\\
+\ \ \ \ \(i+1\)塩基目の塩基状態が\(l\) となるパスのうち、最も尤
+もらしいパスの確率を表す\(v\) 値は右上の式のように定義される。ただし、
+\(k\)を任意の塩基状態、\(a_{kl}\)は\(k\)の次に状態\(l\)が現われる確率({\bf 遷移確率})、\(e_{l}(x_{i+1})\)は\(i+1\)番目の塩基の
+状態が\(l\)であると判明したときにシンボルが\(x\)である確率({\bf 出力確率})と定
+める。
+\end{minipage}
+\hfill
+\begin{minipage}{160pt}
+\begin{small}
+
+\(v\)値の定義:
+\[v_{l}(i+1) = e_{l}(x_{i+1}) \max_k (v_{k}(i) \cdot a_{kl})\]
+
+\(v\)値の表:\\
+\begin{tabular}{l|rrrrrr}
+\(v\)         & C & G & A & C & G & T \\
+\hline
+\({\rm A}^+\) & 0 & 0 &   & 0 & 0 & 0 \\
+\({\rm T}^+\) & 0 & 0 & 0 & 0 & 0 & \\
+\({\rm G}^+\) & 0 & \(v_{{\rm G}^+}(2)\) & 0 & 0 &   & 0 \\
+\({\rm C}^+\) &   & 0 & 0 &   & 0 & 0 \\
+\({\rm A}^-\) & 0 & 0 &   & 0 & 0 & 0 \\
+\({\rm T}^-\) & 0 & 0 & 0 & 0 & 0 & \\
+\({\rm G}^-\) & 0 &   & 0 & 0 &   & 0 \\
+\({\rm C}^-\) &   & 0 & 0 &   & 0 & 0 \\
+\end{tabular}\\
+\end{small}
+\end{minipage}
+\end{flushleft}
+
+\begin{enumerate}
+\item \(v\)値表で値の入っていない\(v_{{\rm G}^+}(2)\)を求めなさい。\(a_{{\rm C}^+{\rm G}^+}=\)、\(a_{{\rm C}^-{\rm G}^+}=\)、シンボルと状態の塩基が同じ場合は出力確率\(e=1\)、異なる場合は\(e=0\)とする。
+\item 最も尤もらしいパスはどれか。
+\item 2連続塩基CAはCpGアイランドの内、外、境界のうちどれにあたると考えるのが妥当か。
+\end{enumerate}
+
+
+
+\section{ラプラス変換: 微分積分方程式が微分積分なしで解ける}
+時刻\(t\)におけるある転写因子TFの発現速度\(v(t)\)は、観測開始から時刻\(t\)までのTFの全発現量と正の相関があり、時刻\(t\)におけるTFの発現速度の増加率と負の相関があることがわかっている。これを微分積分方程式\({\displaystyle v(t) = -a \frac{dv(t)}{dt} +b \int^{t}_{0} v(u) du}\) \ (ただし\(a=1.0{\rm \ sec}, b=2.0{\rm \ sec}^{-1}, v(0)=1.0{\rm nM/sec}\))で表現した。
+\begin{enumerate}
+\item ラプラス変換し、\(V(s)\)について解きなさい。ただし、\(V(s)={\mathcal L}[v(t)]\)である。
+\item (1)の結果をラプラス逆変換して微分積分方程式の解\(v(t)\)を求めなさい。
+\end{enumerate}
+
+\section{偏微分方程式 I: 拡散方程式を解く}
+グルコース主体の培地で育つ直径1\(\mu\)mほどの球形微生物がいる。いま、
+細胞内におけるグルコースの濃淡を知りたい。グルコース濃度は\(y(x,t)+0.5\)mMで表されるものとし、\(y(x,t)\)は拡散方程式\({\displaystyle \frac{\partial}{\partial
+t}y(x,t) = D \frac{\partial^2}{\partial x^2}y(x,t)}\)に従う。細胞膜の
+位置を\(x=0\mu\)mおよび\(x=1.0\mu\)m、細胞の中心を\(x=0.5\mu\)mとおき、
+時間\(t=0\)secにおける濃度分布を\(y(x,0)=0.5 \cos 2\pi x\)mM、
+グルコースの拡散定数を\(D=25\mu {\rm m}^2/\)secとする。また、境界条
+件を\({\displaystyle \frac{\partial}{\partial x} y(0,t) = \frac{\partial}{\partial x} y(1,t) = 0}\)とする。
+\begin{enumerate}
+\item 未知関数\(y(x,t)\) が\(x\)の関数\(V(x)\)と\(t\)の関数\(W(t)\)の
+積になっている(\(y(x,t)=V(x)W(t)\))と仮定して、 \({\displaystyle \frac{\partial}{\partial
+t}y(x,t)}\)と\({\displaystyle \frac{\partial^2}{\partial x^2}y(x,t)}\)
+を求めなさい。求まった結果は拡散方程式に代入し、変数分離しなさい。
+\item (1)の式を定数\(\lambda\)と等しいとおき、\(V(x)\)、\(W(t)\)それぞれについての常微分方程式に書き直しなさい。
+\item (2)で求めた\(W(t)\)、\(V(x)\)についての常微分方程式をそれぞれ解きなさい。任意定数を含んだ解でよい。
+\item 上記の境界条件を満たすように、(3)の解が含む任意定数の値を定めなさい。
+\item 求まった\(V(x)\)、\(W(t)\)から\(y(x,t)\)を書き下ろしなさい。重ね合わせを忘れないこと。
+\item 初期条件\(y(x,0)=0.5 \cos 2 \pi x \)mMをあてはめて拡散方程式の解を導きなさい。細胞の中央における0.001秒後のグルコース濃度はどの程度と考えられるか。
+\end{enumerate}
+\end{document}

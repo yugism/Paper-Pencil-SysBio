@@ -1,0 +1,44 @@
+\documentclass{jarticle}
+\usepackage{amsmath,amssymb}
+\headheight = 0pt
+\headsep = 0pt
+\textheight = 730pt
+\textwidth = 460pt
+\topmargin = 5pt
+\leftmargin = 5pt
+\oddsidemargin = 5pt
+%\footheight = 0pt
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{document}
+\begin{center}
+{\Large \bf 数学サブゼミg 修了認定試験}\\
+\end{center}
+\section{偏微分方程式II: ポアソン方程式をグリーン関数法で解く}
+ポアソン方程式\(\nabla^2 \Phi =F(x,y)\)を解いて、湧き出しのある流れ場の速度ポテンシャル\(\Phi\)を求めたい。
+
+\begin{enumerate}
+\item 湧き出し\(F(x,y)\)を単位湧き出し\(\delta(x-m)\delta(y-n)\)に、解\(\Phi(x,y)\)をグリーン関数G(x,y;m,n)に置き換えた方程式を書き下ろしなさい\label{replace}。
+\item \({\displaystyle \Phi(x,y)=\int\int_D G(x,y;m,n)F(m,n)dmdn}\)が成り立つことを下の手順に従って示しなさい。
+
+  \begin{enumerate}
+  \item \(P={\displaystyle \int\int_D G(x,y;m,n)F(m,n)dmdn}\)\label{substitute}とおいた場合の\(\nabla^2 P\)を書きなさい。
+  \item (\ref{substitute})の結果に(\ref{replace})の結果を適用して、\(\nabla^2 P={\displaystyle \int\int_D \delta(x-m)\delta(y-n)F(m,n)dmdn}\)を示しなさい。
+  \item \({\displaystyle \int^{\infty}_{-\infty}f(x)\delta(x-m)dx = f(m)}\)という関係を利用して、\(\nabla^2 P = F(x,y) = \nabla^2 \Phi\)を示しなさい。
+  \end{enumerate}
+\item グリーン関数G、デルタ関数をフーリエ積分形で書き、(\ref{replace})に代入しなさい。
+\item グリーン関数を求めなさい。
+\item \({\displaystyle \Phi(x,y)=\int\int_D G(x,y;m,n)F(m,n)dmdn}\)より、速度ポテンシャルを求めなさい。
+\item 求まった\(\Phi\)から流速\({\bf v}\)を求めなさい。
+\end{enumerate}
+
+\section{時系列解析: AICとARMA}
+
+\section{複素関数論II: 等角写像と解析接続の応用}
+\section{偏微分方程式 III: シュレディンガー方程式を解く}
+\section{ルベーグ測度と確率過程}
+\section{確率微分方程式}
+\section{群論}
+群の3条件、1パラメータ変換群、リー群の条件
+\section{微分幾何学}
+微分形式、チェイン、多様体、コンパクト集合
+\end{document}

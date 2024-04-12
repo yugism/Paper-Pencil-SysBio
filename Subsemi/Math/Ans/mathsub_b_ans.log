@@ -1,0 +1,198 @@
+This is pTeX, Version p2.1.8, based on TeX, Version 3.14159 (EUC) (Web2C 7.2) (format=platex 1999.7.19)  22 MAY 2003 13:00
+**mathsub_b_ans.tex
+(mathsub_b_ans.tex
+pLaTeX2e <1998/09/01>+1 (based on LaTeX2e <1998/06/01> patch level 0)
+(/usr/share/texmf/tex/platex/base/pl209.def
+Entering pLaTeX 2.09 compatibility mode.
+(/usr/share/texmf/tex/latex/base/latex209.def
+File: latex209.def 1998/05/13 v0.52 Standard LaTeX file
+
+
+          Entering LaTeX 2.09 COMPATIBILITY MODE
+ *************************************************************
+    !!WARNING!!    !!WARNING!!    !!WARNING!!    !!WARNING!!   
+ 
+ This mode attempts to provide an emulation of the LaTeX 2.09
+ author environment so that OLD documents can be successfully
+ processed. It should NOT be used for NEW documents!
+ 
+ New documents should use Standard LaTeX conventions and start
+ with the \documentclass command.
+ 
+ Compatibility mode is UNLIKELY TO WORK with LaTeX 2.09 style
+ files that change any internal macros, especially not with
+ those that change the FONT SELECTION or OUTPUT ROUTINES.
+ 
+ Therefore such style files MUST BE UPDATED to use
+          Current Standard LaTeX: LaTeX2e.
+ If you suspect that you may be using such a style file, which
+ is probably very, very old by now, then you should attempt to
+ get it updated by sending a copy of this error message to the
+ author of that file.
+ *************************************************************
+
+\footheight=\dimen118
+\@maxsep=\dimen119
+\@dblmaxsep=\dimen120
+\@cla=\count81
+\@clb=\count82
+\mscount=\count83
+(/usr/share/texmf/tex/latex/base/tracefnt.sty
+Package: tracefnt 1997/05/29 v3.0j Standard LaTeX package (font tracing)
+\tracingfonts=\count84
+LaTeX Info: Redefining \selectfont on input line 139.
+)
+\symbold=\mathgroup4
+\symsans=\mathgroup5
+\symtypewriter=\mathgroup6
+\symitalic=\mathgroup7
+\symsmallcaps=\mathgroup8
+\symslanted=\mathgroup9
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 331.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 332.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 333.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 339.
+LaTeX Info: Redefining \em on input line 349.
+
+(/usr/share/texmf/tex/latex/base/latexsym.sty
+Package: latexsym 1996/11/20 v2.2d Standard LaTeX package (lasy symbols)
+\symlasy=\mathgroup10
+LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
+(Font)                  U/lasy/m/n --> U/lasy/b/n on input line 85.
+)
+LaTeX Font Info:    Redeclaring math delimiter \lgroup on input line 413.
+LaTeX Font Info:    Redeclaring math delimiter \rgroup on input line 415.
+LaTeX Font Info:    Redeclaring math delimiter \bracevert on input line 417.
+)
+(/usr/share/texmf/tex/platex/base/ptrace.sty
+LaTeX Info: Redefining \selectfont on input line 40.
+\adjust@box=\box41
+\adjust@dimen=\dimen121
+)
+\symmincho=\mathgroup11
+\symgothic=\mathgroup12
+LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
+(Font)                  JY1/mc/m/n --> JY1/gt/m/n on input line 59.
+LaTeX Info: Redefining \bf on input line 73.
+LaTeX Info: Redefining \rm on input line 80.
+LaTeX Info: Redefining \sf on input line 81.
+LaTeX Info: Redefining \sl on input line 82.
+LaTeX Info: Redefining \sc on input line 83.
+LaTeX Info: Redefining \it on input line 84.
+LaTeX Info: Redefining \tt on input line 85.
+LaTeX Info: Redefining \em on input line 86.
+)
+(/usr/share/texmf/tex/platex/base/jbook.cls
+Document Class: jbook 1998/12/24 v1.1o Standard pLaTeX class
+\c@@paper=\count85
+(/usr/share/texmf/tex/platex/base/jbk10.clo
+File: jbk10.clo 1998/12/24 v1.1o Standard pLaTeX file (size option)
+)
+\c@part=\count86
+\c@chapter=\count87
+\c@section=\count88
+\c@subsection=\count89
+\c@subsubsection=\count90
+\c@paragraph=\count91
+\c@subparagraph=\count92
+\c@figure=\count93
+\c@table=\count94
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+LaTeX Font Info:    Redeclaring symbol font `mincho' on input line 669.
+LaTeX Font Info:    Overwriting symbol font `mincho' in version `normal'
+(Font)                  JY1/mc/m/n --> JY1/mc/m/n on input line 669.
+LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
+(Font)                  JY1/gt/m/n --> JY1/mc/m/n on input line 669.
+LaTeX Font Info:    Redeclaring math alphabet \mathmc on input line 670.
+LaTeX Font Info:    Overwriting symbol font `mincho' in version `bold'
+(Font)                  JY1/mc/m/n --> JY1/gt/m/n on input line 671.
+LaTeX Font Info:    Redeclaring math alphabet \mathgt on input line 672.
+LaTeX Info: Redefining \mathrm on input line 673.
+LaTeX Info: Redefining \mathbf on input line 674.
+Compatibility mode: definition of \mc ignored.
+Compatibility mode: definition of \gt ignored.
+Compatibility mode: definition of \rm ignored.
+Compatibility mode: definition of \sf ignored.
+Compatibility mode: definition of \tt ignored.
+Compatibility mode: definition of \bf ignored.
+Compatibility mode: definition of \it ignored.
+Compatibility mode: definition of \sl ignored.
+Compatibility mode: definition of \sc ignored.
+LaTeX Info: Redefining \cal on input line 695.
+LaTeX Info: Redefining \mit on input line 696.
+\toclineskip=\dimen122
+\@lnumwidth=\dimen123
+\bibindent=\dimen124
+\heisei=\count95
+)
+(/usr/share/texmf/tex/generic/misc/epsf.sty
+EPSbox version 1.7b for LaTeX/jdvi2kps2.1-3.0 (May 26, 1992)
+Based on EPSF macro package. version 1.2 - Released July 16, 1990
+\@darg=\dimen125
+\eps@xdim=\dimen126
+\eps@ydim=\dimen127
+\eps@width=\dimen128
+\eps@height=\dimen129
+\eps@tempdima=\dimen130
+\eps@tempdimb=\dimen131
+\eps@cnta=\count96
+\eps@cntb=\count97
+\eps@cntc=\count98
+\eps@cntd=\count99
+\ps@stream=\read1
+) (mathsub_b_ans.aux)
+\openout1 = `mathsub_b_ans.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 13.
+LaTeX Font Info:    ... okay on input line 13.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 21.
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <14.4> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 21.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 23.
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 23.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 34.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 34.
+LaTeX Font Info:    Try loading font information for U+lasy on input line 34.
+ (/usr/share/texmf/tex/latex/base/ulasy.fd
+File: ulasy.fd 1996/11/20 v2.2dLaTeX symbol font definitions
+)
+LaTeX Font Warning: Font shape `JY1/mc/m/it' undefined
+(Font)              using `JY1/mc/m/n' instead on input line 81.
+LaTeX Font Warning: Font shape `JT1/mc/m/it' undefined
+(Font)              using `JT1/mc/m/n' instead on input line 81.
+ [1
+
+] [2]
+[3] (mathsub_b_ans.aux)
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+ ) 
+Here is how much of TeX's memory you used:
+ 542 strings out of 10663
+ 5738 string characters out of 69599
+ 57053 words of memory out of 263001
+ 3683 multiletter control sequences out of 10000+0
+ 16078 words of font info for 63 fonts, out of 200000 for 1000
+ 14 hyphenation exceptions out of 1000
+ 23i,7n,19p,206b,189s stack positions out of 300i,100n,500p,30000b,4000s
+
+Output written on mathsub_b_ans.dvi (3 pages, 8260 bytes).

@@ -1,0 +1,77 @@
+\documentclass[a4paper,12pt,oneside]{jreport}
+\usepackage{ascmac}
+\usepackage{TitlePage}
+\usepackage{Appendix}
+\usepackage{verbatimfiles}
+\usepackage{fancyhdr}
+\usepackage{jumoline}
+\usepackage{amsmath,amssymb}
+%\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx]{}
+
+% 紙面の大きさ
+\addtolength{\textheight}{2\topmargin}
+\setlength{\topmargin}{0pt}
+\addtolength{\textwidth}{0.51\marginparwidth}
+\setlength{\marginparwidth}{0.49\marginparwidth}
+\setlength{\evensidemargin}{\oddsidemargin}
+
+% Font の宣言
+\DeclareMathAlphabet{\bm}{OT1}{cmr}{bx}{it}     % bold-math
+\SetMathAlphabet{\bm}{bold}{OT1}{cmr}{bx}{it}   %
+\DeclareFontShape{JY1}{mc}{m}{it}{<->ssub*gt/m/n}{} % To avoid useless warnging
+\DeclareFontShape{JT1}{mc}{m}{it}{<->ssub*gt/m/n}{} % To avoid useless warnging
+\DeclareFontShape{JY1}{gt}{m}{it}{<->ssub*gt/m/n}{} % To avoid useless warnging
+\DeclareFontShape{JT1}{gt}{m}{it}{<->ssub*gt/m/n}{} % To avoid useless warnging
+
+\newcommand{\ruby}[2]{${\displaystyle \mathop{\mbox{#1}}^{\mbox{\tiny #2}}}$}
+%\title{\bf 紙と鉛筆で学ぶシステム生物学の数理 \rm}
+%\author{柚木克之}
+
+\renewcommand{\bibname}{引用文献}
+
+\begin{document}
+% 表紙
+%\maketitle
+
+% 目次
+\pagenumbering{roman}
+\setcounter{page}{1}
+%\tableofcontents
+
+% 本文
+\newpage
+\pagenumbering{arabic}
+% 序論
+
+%\input{./foreword.tex}
+\input{../Constraint/mfa.tex}
+%%\input{../PDE/pde.tex}
+%\input{../MCA/mca.tex}
+%%\input{../Control/control.tex}
+%\input{../Bifurcation/dynamical.tex}
+%\input{../Kinetics/kinetics.tex}
+%\input{../Physics/physics.tex}
+%\input{../ODE/ode.tex}
+%\input{../Stochastic/gillespie.tex}
+%%\input{../Stochastic/noise.tex}
+%\input{../Bayes/bayes.tex}
+%\input{../PowerLaw/powerlaw.tex}
+%\input{../Multivariate/multivariate.tex}
+%\input{../Minerva/minerva.tex}
+% 謝辞
+%\addcontentsline{toc}{chapter}{謝辞}
+%\input{thanks}
+% 参考文献
+%\addcontentsline{toc}{chapter}{\bibname}
+%\input{biblio}
+
+% 付録
+%\appendix{A}{微分積分}
+%\input{../Supplementary/suppl1}
+%\appendix{B}{線形代数}
+%\input{../Supplementary/suppl2}
+%\appendix{C}{物理学}
+%\input{../Supplementary/physics}
+
+\end{document}

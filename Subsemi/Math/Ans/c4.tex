@@ -1,0 +1,47 @@
+\documentstyle[epsf]{jarticle}
+
+\begin{document}
+
+\section{ フーリエ変換と $Ca^{2+}$ 振動 }
+
+\subsection{ $[Ca^{s+}](t)$ をフーリエ展開しなさい。}
+
+\[
+\int^{ \infty }_{- \infty } f(t)e^{ -j \omega t } dt =  \int^{\pi}_{-\pi} 1e^{ -j \omega t } dt 
+\]
+
+\[
+= \left[ \frac{e^{ -j \omega t } }{ - j \omega } \right]^{ \pi }_{ - \pi } 
+\]
+
+\[
+= - \frac{1}{j \omega } ( e^{ - j \omega \pi } -  e^{ j \omega \pi } ) 
+\]
+
+\[
+= 2\frac{ \sin \omega \pi }{ \omega }
+\]
+
+\subsection{(1)で求めたフーリエ変換の値を「パワー」と言い、
+横軸に周波数、縦軸にパワー
+をとったグラフをパワースペクトルと呼ぶ。パワースペクトルを描きなさい。}
+
+パワースペクトルを書いてみる。
+
+$\omega = 0$の時、$2\frac{ \sin \omega \pi }{ \omega } = 2\pi$
+
+$\omega = \frac{1}{2}$の時、$2\frac{ \sin \omega \pi }{ \omega } = 4$
+
+$\omega = 1$の時、$2\frac{ \sin \omega \pi }{ \omega } = 0$
+
+のパワースペクトルを書く。
+
+\subsection{パワースペクトルによれば、転写因子\(\kappa\)、\(\varepsilon\)のどちらが活性化されると思われるか。}
+
+$\omega = \frac{1}{2}$の時、$2\frac{ \sin \omega \pi }{ \omega } = 4$
+
+$\omega = 8\frac{1}{4}$の時、$2\frac{ \sin \omega \pi }{ \omega } = \frac{ 8 \sqrt{66} }{ 66 }$
+
+よって、$\kappa$の方がパワーが大きいので活性化する。
+
+\end{document}

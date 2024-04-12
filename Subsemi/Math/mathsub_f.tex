@@ -1,0 +1,56 @@
+\documentclass{jarticle}
+\usepackage{amsmath,amssymb}
+\headheight = 0pt
+\headsep = 0pt
+\textheight = 730pt
+\textwidth = 460pt
+\topmargin = 5pt
+\leftmargin = 5pt
+\oddsidemargin = 5pt
+%\footheight = 0pt
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{document}
+\begin{center}
+{\Large \bf 数学サブゼミf 修了認定試験}\\
+\end{center}
+\section{複素関数論I: 複素積分で揚力を求める}
+接線がその点における速度ベクトル\({\bf v} = (v_x,v_y,v_z)^T\)となるよ
+うな曲線を流線という。任意の流線の流量(単位時間あたりに移動する流体の
+体積)を\(\Psi\)で表し、流れ関数(stream function)と呼ぶ。任意の流線は
+\(\Psi = k\)(\(k\)は任意の定数)で表される。2次元の流れで考えると、速度
+の\(x,y\)成分はそれぞれ\({\displaystyle v_x = \frac{\partial
+\Psi}{\partial y}, v_y = -\frac{\partial \Psi}{\partial x}}\)のように
+流れ関数の位置偏微分として書ける\footnote{\(\because\) この流線から
+\(\Delta n\)だけ離れたところを流れている流線の流量を\(\Psi + \Delta
+\Psi\)とすると、面\(\Delta n\)を通過して入って来る質量は\(\rho {\bf v}
+\Delta t \Delta n\)。単位時間に入って来る体積は\({\bf v} \Delta n =
+\Delta \Psi\)。x要素とy要素に分解して\(v_x \Delta y + v_y ( - \Delta x
+) = \Delta \Psi\)。極限をとって\(d \Psi = v_x dy - v_y dx\)。また、
+\(\Psi\)はxとyの関数なので\(d\Psi = \frac{\partial \Psi}{\partial y}
+dy + \frac{\partial \Psi}{\partial x} dx\)。よって\(v_x =
+\frac{\partial \Psi}{\partial y}, v_y = -\frac{\partial \Psi}{\partial
+x}\)}。\\ \indent \(f=\Phi + i \Psi, z =x + iy\)とおくとき、\(f(z)\)を
+複素速度ポテンシャルといい、\({\displaystyle w = \frac{df}{dz}= v_x -
+i v_y}\)を複素速度という。\(x\)軸に平行な速度\(U\)の一様流が半径\(a\)
+の円柱にぶつかるような流れの複素速度ポテンシャルは\(f(z) =
+U\left(z+\frac{a^2}{z}\right) + i \kappa \log z\)である。
+
+\begin{enumerate}
+\item 複素関数が正則であるとはどういう意味か簡潔に説明しなさい。
+\item 一般の複素速度ポテンシャル\(f(z) = \Phi + i \Psi\)が正則かどうかコーシー=リーマン条件で判定しなさい。
+\item 複素速度\({\displaystyle w = \frac{df}{dz}}\)を求めなさい。
+\item 流れの中に置かれた物体にかかる力を\(F(X,Y)\)とすると、\({\displaystyle X - i Y = \frac{i}{2}\rho \int_C w^2 dz}\)である(ブラウジウスの第1公式)。これを利用して円柱が流れから受ける抵抗、揚力を求めたい。
+  \begin{enumerate}
+  \item \(w^2\)を計算し、ローラン級数の形に整理しなさい。\label{lauren}
+  \item (\ref{lauren})の級数のうち特異点のない項について積分しなさい。コーシーの積分\underline{\bf 定理}を適用すること。
+  \item (\ref{lauren})の級数のうち特異点のある項について積分しなさい。留数定理を適用すること。
+  \item \({\displaystyle \int_C w^2 dz}\)を求めなさい。
+  \item 円柱が流れから受ける抵抗、揚力はそれぞれいくらか。
+  \end{enumerate}
+\end{enumerate}
+
+\section{多変量解析II}
+\subsection{主成分分析}
+\subsection{因子分析}
+\subsection{正準相関分析}
+\end{document}

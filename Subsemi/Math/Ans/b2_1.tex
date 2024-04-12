@@ -1,0 +1,187 @@
+\newpage\documentstyle[epsf,a4j]{jbook}
+\renewcommand{\thechapter}{}
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\cleardoublepage}{}
+\renewcommand{\bibname}{参考文献}
+
+\textheight=230mm 
+\textwidth=157mm
+\topmargin=-5mm
+\oddsidemargin=0mm
+\evensidemargin=0mm
+\pagestyle{myheadings}
+\begin{document}
+
+\setcounter{section}{0}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+\setcounter{footnote}{0}
+\setcounter{equation}{0}
+
+ \begin{center}
+{\large {\bf  線形代数２：固有値と安定性}}   
+ \end{center}
+
+\begin{equation}
+J=\left[ 
+\begin{array}{cc}
+\frac{-1}{2} &2   \\
+ 0&\frac{-3}{4}  \\
+\end{array} 
+\right]
+\end{equation} 
+(1)\\
+固有値は行列Jが与えられている時に
+
+\begin{equation}
+\left|λI-J\right|=0…行列式\\
+I…Jと次元数の同じ単位行列\\
+w=\left[ 
+\begin{array}{cc}
+1 &0   \\
+ 0&1  \\
+\end{array} 
+\right]
+\end{equation}
+となるようなλを考えればよい。行列式は以下のようになり、\\
+
+\begin{equation}
+\left(λ+\frac{1}{2}\right)\left(λ+\frac{3}{4}\right)=0
+\end{equation}
+よって\\
+\begin{equation}
+λ＝\frac{-1}{2},\frac{-3}{4}
+\end{equation}
+となる。\\
+この二つのλが固有値。\\
+
+
+
+
+固有ベクトルは\\
+\begin{equation}
+\left(J-λI\right)\left(x\right)=0…行列式
+\end{equation}
+を満たすようなベクトルxのことなので
+固有値$\frac{-1}{2}$の時は\\
+\begin{equation}
+w=\left[ 
+\begin{array}{cc}
+0 &2   \\
+ 0&\frac{-1}{4}  \\
+\end{array} 
+\right]
+\left[
+\begin{array}{c}
+x1   \\
+x2  \\
+\end{array} 
+\right]
+=\left[
+\begin{array}{c}
+0   \\
+0  \\
+\end{array} 
+\right]
+\end{equation}
+
+を満たすベクトルxは
+\begin{equation}
+\left[\begin{array}{c}
+1\\
+0\\
+\end{array}
+\right]
+\end{equation}
+固有値$\frac{-3}{4}$の時は
+\begin{equation}
+w=\left[ 
+\begin{array}{cc}
+\frac{1}{4} &2   \\
+ 0&0  \\
+\end{array} 
+\right]
+\left[
+\begin{array}{c}
+x1   \\
+x2  \\
+\end{array} 
+\right]
+=\left[
+\begin{array}{c}
+0   \\
+0  \\
+\end{array} 
+\right]
+\end{equation}
+
+を満たすベクトルxは
+\begin{equation}
+\left[\begin{array}{c}
+-8\\
+1\\
+\end{array}
+\right]
+\end{equation}
+\\
+(２)\\
+対角化は試験問題に載せてあるように
+$P^{-1}AP=Λ$\\
+の過程を示す。
+Pの逆行列は
+
+\begin{equation}
+P^{-1}=\left[ 
+\begin{array}{cc}
+1 &8   \\
+ 0&1  \\
+\end{array} 
+\right]
+\end{equation} 
+なので$P^{-1}AP=Λ$を解くと
+\begin{equation}
+Λ=\left[ 
+\begin{array}{cc}
+\frac{-1}{2} &0   \\
+ 0&\frac{-3}{4}  \\
+\end{array} 
+\right]
+\end{equation}
+よって対角化は示された。\\
+(３)\\
+$J^{n}$は 
+\begin{equation}
+J^{n}=D\left(
+\begin{array}{cc}
+λ^{n}&0\\
+0&λ^{n}\\
+\end{array}\right)
+D^{-1}
+\end{equation}
+で求まるのでこれを計算すると\\
+\begin{equation}
+J^{n}=\left(
+\begin{array}{cc}
+λ^{n}&0\\
+0&λ^{n}\\
+\end{array}
+\right)
+\end{equation}
+となる。
+(４)\\
+時間をt→∞としたときにn→∞となっているため、
+時間発展の結果は
+\begin{equation}
+J^{n}=\left(
+\begin{array}{cc}
+λ^{n}&0\\
+0&λ^{n}\\
+\end{array}
+\right)
+\end{equation}
+のλに固有値を代入したものになり、実質０に収束するため、
+時間変化が０になる、すなわち定常状態に戻ると推測される。\\
+終了
+
+\end{document}
+

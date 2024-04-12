@@ -1,0 +1,64 @@
+\documentclass{jarticle}
+\usepackage{amsmath,amssymb}
+\headheight = 0pt
+\headsep = 0pt
+\textheight = 730pt
+\textwidth = 460pt
+\topmargin = 5pt
+\leftmargin = 5pt
+\oddsidemargin = 5pt
+%\footheight = 0pt
+\renewcommand{\labelenumi}{(\arabic{enumi})}
+\begin{document}
+\begin{center}
+{\Large \bf 数学サブゼミe 修了認定試験}\\
+\end{center}
+\pagestyle{empty}
+\section{ベクトル解析: ナヴィエ=ストークス方程式の変形}
+\begin{flushleft}
+\begin{minipage}{250pt}
+\ \ \ 気体や液体のことを流体と呼ぶ。気体は縮む流体であり、液体は縮まない流体である。流体の運動は右に示したナヴィエ=ストークス(Navier-Stokes)方程式と連続の方程式(equation of continuity)に支配される。
+\end{minipage}
+\hfill
+\begin{minipage}{180pt}
+\[
+\left\{
+\begin{array}{l}
+{\displaystyle \frac{\partial {\bf v}}{\partial t} + ({\bf v} \cdot \nabla) {\bf v} = - \frac{1}{\rho} {\rm grad\ } p + \frac{\mu}{\rho} \nabla^2 {\bf v} + f}\\
+{\displaystyle \frac{\partial \rho}{\partial t} + {\rm div\ } (\rho {\bf v}) = 0}\\
+\end{array}
+\right.
+\]
+\end{minipage}
+\end{flushleft}
+\ \ \ ただし、\({\displaystyle \nabla =
+\left(\frac{\partial}{\partial x},\frac{\partial}{\partial
+y},\frac{\partial}{\partial z}\right)^T}\)、\({\displaystyle {\bf v} =
+(v_x,v_y,v_z)^T}\)、\(\rho\)は流体の密度、\(\mu\)は流体の粘性係数、
+\(p\)は圧力、\(f\)は外力を表す。
+\begin{enumerate}
+\item div {\bf v} を求めなさい。ただし、div {\bf v}\( = \nabla \cdot {\bf v}\) である(記号\(\cdot\)はスカラー積)。
+\item rot {\bf v} を求めなさい。ただし、rot {\bf v}\( = \nabla \times {\bf v}\) であり、ベクトル積は\({\bf a} \times {\bf b} = 
+\begin{array}{|rrr|}
+e_x & e_y & e_z\\
+a_x & a_y & a_z\\
+b_x & b_y & b_z\\
+\end{array}
+\)である。\label{rot}
+\item grad \(q^2\) を計算しなさい。ただし、\(q=|{\bf v}|\)で、grad \(q^2 = \nabla q^2\) である。\label{grad}
+\item 粘性がない場合(\(\mu = 0\))のナヴィエ=ストークス方程式をオイラーの運動方程式と言う。(\ref{rot})および(\ref{grad})の結果を用いてオイラーの運動方程式の左辺\({\displaystyle \frac{\partial {\bf v}}{\partial t} + ({\bf v} \cdot \nabla) {\bf v}}\)が\({\displaystyle \frac{\partial {\bf v}}{\partial t} + \frac{1}{2} {\rm grad\ } q^2 - {\bf v} \times {\bf \omega}}\)と書き換えられることを示しなさい。ただし\(\omega = {\rm rot\ } {\bf v}\)である。\label{euler}
+\item 以下の手順に従い、(\ref{euler})の形のオイラーの運動方程式から渦度方程式\({\displaystyle \frac{\partial \omega}{\partial t} = {\rm rot\ }({\bf v} \times {\bf \omega})}\)を導きなさい。\({\bf \omega}\)を渦度と言い、\({\bf \omega} = {\rm rot\ } {\bf v}\)である。
+  \begin{enumerate}
+  \item 外力を保存力と仮定すると\(f = - {\rm grad\ } \Omega\)と書ける。これをオイラーの運動方程式に代入しなさい。\label{step1}
+  \item 密度\(\rho\)が圧力\(p\)だけの関数と仮定すると、\(\frac{1}{\rho}{\rm grad\ }p = {\rm grad\ } P\)と書ける。これをオイラーの方程式に代入しなさい。\label{step3}
+  \item (\ref{step1})\(\sim\)(\ref{step3})によって導かれた式の両辺のrotをとりなさい。ただし、rot(grad \(f\))=0である。 
+  \end{enumerate}
+\item \(\omega = 0\)のとき流れは渦無しと呼ばれ、流速ベクトルは\({\bf v} = {\rm grad\ } \Phi\)と書ける(\(\because \omega = {\rm rot\ }{\bf v} = {\rm rot\ }({\rm grad\ } \Phi) = 0\))。\(\Phi\)を速度ポテンシャルと呼ぶ。渦度方程式に\({\bf v} = {\rm grad\ } \Phi\)を代入し、一般化ベルヌーイの定理\({\displaystyle \frac{\partial \Phi}{\partial t} + \frac{1}{2} q^2} + P + \Omega = f(t)\)を導きなさい。
+\item 縮まない流体(\(\rho =\)一定)のを想定し、連続の方程式 \({\displaystyle \frac{\partial \rho}{\partial t} + {\rm div\ } \rho {\bf v} = 0}\)からラプラス方程式\(\nabla^2 \Phi = 0\)を導きなさい。\({\bf v} = {\rm grad\ } \Phi\)、\({\rm div(grad\ }f)=\nabla^2f\)である。
+\end{enumerate}
+
+\section{多変量解析I}
+\subsection{判別分析}
+\subsection{クラスター分析}
+進化系統樹
+\end{document}
